@@ -62,5 +62,4 @@ public class MemberDto {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
 	private LocalDateTime memberChange;	
 	
-	private Integer memberPoint;
 }
