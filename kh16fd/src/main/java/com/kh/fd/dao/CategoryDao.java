@@ -22,16 +22,16 @@ public class CategoryDao {
     	return sqlSession.selectList("category.list");
     }
     
-    public void insert(CategoryDto dto) {
-        sqlSession.insert("category.insert", dto);
+    public void insert(CategoryDto categoryDto) {
+        sqlSession.insert("category.insert", categoryDto);
     }
 
     public CategoryDto selectOne(int categoryNo) {
         return sqlSession.selectOne("category.detail", categoryNo);
     }
 
-    public boolean update(CategoryDto dto) {
-        return sqlSession.update("category.update", dto) > 0;
+    public boolean updateUnit(CategoryDto categoryDto) {
+        return sqlSession.update("category.updateUnit", categoryDto) > 0;
     }
 
     public boolean delete(int categoryNo) {

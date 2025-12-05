@@ -33,10 +33,10 @@ public class CategoryRestController {
         }
     )
     @PostMapping("/")
-    public void add(@RequestBody CategoryDto dto) {
+    public void add(@RequestBody CategoryDto categoryDto) {
         int seq = (int) categoryDao.sequence();
-        dto.setCategoryNo(seq);
-        categoryDao.insert(dto);
+        categoryDto.setCategoryNo(seq);
+        categoryDao.insert(categoryDto);
     }
     
     //목록
@@ -48,51 +48,37 @@ public class CategoryRestController {
     //조회
     @GetMapping("/{categoryNo}")
     public CategoryDto detail(@PathVariable int categoryNo) {
-        CategoryDto dto = categoryDao.selectOne(categoryNo);
-        if (dto == null) throw new TargetNotFoundException("존재하지 않는 카테고리 번호");
-        return dto;
+        CategoryDto categoryDto = categoryDao.selectOne(categoryNo);
+        if (categoryDto == null) throw new TargetNotFoundException("존재하지 않는 카테고리 번호");
+        return categoryDto;
     }
 
     //삭제
     @DeleteMapping("/{categoryNo}")
     public void delete(@PathVariable int categoryNo) {
-        CategoryDto dto = categoryDao.selectOne(categoryNo);
-        if (dto == null) throw new TargetNotFoundException("존재하지 않는 카테고리 번호");
+        CategoryDto categoryDto = categoryDao.selectOne(categoryNo);
+        if (categoryDto == null) throw new TargetNotFoundException("존재하지 않는 카테고리 번호");
         categoryDao.delete(categoryNo);
     }
 
-    //전체 수정
+    //전체 수정 
     @PutMapping("/{categoryNo}")
-    public void edit(@PathVariable int categoryNo,@RequestBody CategoryDto dto) {
-        CategoryDto origin = categoryDao.selectOne(categoryNo);
-        if (origin == null) throw new TargetNotFoundException();
+    public void edit(@PathVariable int categoryNo, @RequestBody CategoryDto categoryDto) {
+        if (categoryDao.selectOne(categoryNo) == null)
+            throw new TargetNotFoundException();
 
-        origin.setCategoryNo(categoryNo); // 
-        
-        origin.setCategoryName(dto.getCategoryName());
-        origin.setParentCategoryNo(dto.getParentCategoryNo());
-        origin.setCategoryOrder(dto.getCategoryOrder());
-
-        categoryDao.update(origin);
+        categoryDto.setCategoryNo(categoryNo);
+        categoryDao.updateUnit(categoryDto);
     }
     
     //부분 수정
+ // 부분 수정 (PATCH) - updateUnit 사용
     @PatchMapping("/{categoryNo}")
-    public void editUnit(@PathVariable int categoryNo, @RequestBody CategoryDto dto) {
-        CategoryDto origin = categoryDao.selectOne(categoryNo);
-        if (origin == null) throw new TargetNotFoundException();
+    public void editUnit(@PathVariable int categoryNo, @RequestBody CategoryDto categoryDto) {
+        if (categoryDao.selectOne(categoryNo) == null)
+            throw new TargetNotFoundException();
 
-        origin.setCategoryNo(categoryNo); // 
-
-        if (dto.getCategoryName() != null)
-            origin.setCategoryName(dto.getCategoryName());
-
-        if (dto.getParentCategoryNo() != null)
-            origin.setParentCategoryNo(dto.getParentCategoryNo());
-
-        if (dto.getCategoryOrder() != 0)
-            origin.setCategoryOrder(dto.getCategoryOrder());
-
-        categoryDao.update(origin);
+        categoryDto.setCategoryNo(categoryNo);
+        categoryDao.updateUnit(categoryDto);
     }
 }
