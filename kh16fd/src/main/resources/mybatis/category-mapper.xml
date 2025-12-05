@@ -4,44 +4,62 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="category">
 
+    <!-- 시퀀스 -->
     <select id="sequence" resultType="long">
         select category_seq.nextval from dual
     </select>
-	
-	<!-- C -->
+
+    <!-- C : 등록 -->
     <insert id="insert">
         insert into category(
-            category_no, category_name, parent_category, category_order
+            category_no, 
+            category_name, 
+            parent_category_no, 
+            category_order
         ) values (
-            #{categoryNo}, #{categoryName}, #{parentCategory}, #{categoryOrder}
+            #{categoryNo}, 
+            #{categoryName}, 
+            #{parentCategoryNo}, 
+            #{categoryOrder}
         )
     </insert>
-	
-	<!-- R -->
+
+    <!-- R : 전체 조회 -->
     <select id="list" resultType="CategoryDto">
-        select * from category
+        select 
+            category_no as categoryNo,
+            category_name as categoryName,
+            parent_category_no as parentCategoryNo,
+            category_order as categoryOrder
+        from category
         order by category_order asc
     </select>
 
+    <!-- R : 상세 조회 -->
     <select id="detail" resultType="CategoryDto">
-        select *
+        select 
+            category_no as categoryNo,
+            category_name as categoryName,
+            parent_category_no as parentCategoryNo,
+            category_order as categoryOrder
         from category
         where category_no = #{categoryNo}
     </select>
-	
-	<!-- U -->
+
+    <!-- U : 전체 수정 -->
     <update id="update">
         update category
         set
             category_name = #{categoryName},
-            parent_category = #{parentCategory},
+            parent_category_no = #{parentCategoryNo},
             category_order = #{categoryOrder}
         where category_no = #{categoryNo}
     </update>
-	
-	<!-- D -->
+
+    <!-- D : 삭제 -->
     <delete id="delete">
-        delete from category where category_no = #{categoryNo}
+        delete from category
+        where category_no = #{categoryNo}
     </delete>
 
 </mapper>
