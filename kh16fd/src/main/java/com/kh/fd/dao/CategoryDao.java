@@ -13,6 +13,10 @@ public class CategoryDao {
 
     @Autowired
     private SqlSession sqlSession;
+    
+    public long sequence() {
+        return sqlSession.selectOne("category.sequence");
+    }
 
     public List<CategoryDto> selectList() {
     	return sqlSession.selectList("category.list");
