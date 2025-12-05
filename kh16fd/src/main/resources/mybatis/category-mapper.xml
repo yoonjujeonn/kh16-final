@@ -45,16 +45,23 @@
         from category
         where category_no = #{categoryNo}
     </select>
-
-    <!-- U : 전체 수정 -->
-    <update id="update">
-        update category
-        set
+	
+	<!-- u : 부분 수정 -->
+    <update id="updateUnit">
+    update category
+    <set>
+        <if test="categoryName != null">
             category_name = #{categoryName},
+        </if>
+        <if test="parentCategoryNo != null">
             parent_category_no = #{parentCategoryNo},
-            category_order = #{categoryOrder}
-        where category_no = #{categoryNo}
-    </update>
+        </if>
+        <if test="categoryOrder != null">
+            category_order = #{categoryOrder},
+        </if>
+    </set>
+    where category_no = #{categoryNo}
+</update>
 
     <!-- D : 삭제 -->
     <delete id="delete">
