@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.MemberDto;
@@ -15,15 +15,15 @@ import com.kh.fd.dto.MemberDto;
 public class MemberDao {
 	@Autowired
 	private SqlSession sqlSession;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+//	@Autowired
+//	private PasswordEncoder passwordEncoder;
 	
 	public void insert(MemberDto memberDto) {
 		//삽입 전 암호화 작업 필요
-		//비밀번호 암호화 처리 추가
-		String origin = memberDto.getMemberPw();
-		String encoded = passwordEncoder.encode(origin); //암호화 작업 수행
-		memberDto.setMemberPw(encoded); //암호화한 비번으로 바꿔치기
+		//비밀번호 암호화 처리 추가 필요 현재 swagger 사용 못하는 오류로 봉인중
+//		String origin = memberDto.getMemberPw();
+//		String encoded = passwordEncoder.encode(origin); //암호화 작업 수행
+//		memberDto.setMemberPw(encoded); //암호화한 비번으로 바꿔치기
 		
 		sqlSession.insert("member.insert", memberDto);
 	}
