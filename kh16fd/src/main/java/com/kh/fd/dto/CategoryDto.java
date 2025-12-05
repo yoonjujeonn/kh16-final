@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RestaurantCategoryDto {
+public class CategoryDto {
     private int categoryNo;
     private String categoryName;
     private Integer parentCategoryNo;

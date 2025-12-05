@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="category">
+
+    <!-- 시퀀스 -->
+    <select id="sequence" resultType="long">
+        select category_seq.nextval from dual
+    </select>
+
+    <!-- C : 등록 -->
+    <insert id="insert">
+        insert into category(
+            category_no, 
+            category_name, 
+            parent_category_no, 
+            category_order
+        ) values (
+            #{categoryNo}, 
+            #{categoryName}, 
+            #{parentCategoryNo}, 
+            #{categoryOrder}
+        )
+    </insert>
+
+    <!-- R : 전체 조회 -->
+    <select id="list" resultType="CategoryDto">
+        select 
+            category_no as categoryNo,
+            category_name as categoryName,
+            parent_category_no as parentCategoryNo,
+            category_order as categoryOrder
+        from category
+        order by category_order asc
+    </select>
+
+    <!-- R : 상세 조회 -->
+    <select id="detail" resultType="CategoryDto">
+        select 
+            category_no as categoryNo,
+            category_name as categoryName,
+            parent_category_no as parentCategoryNo,
+            category_order as categoryOrder
+        from category
+        where category_no = #{categoryNo}
+    </select>
+	
+	<!-- u : 부분 수정 -->
+    <update id="updateUnit">
+    update category
+    <set>
+        <if test="categoryName != null">
+            category_name = #{categoryName},
+        </if>
+        <if test="parentCategoryNo != null">
+            parent_category_no = #{parentCategoryNo},
+        </if>
+        <if test="categoryOrder != null">
+            category_order = #{categoryOrder},
+        </if>
+    </set>
+    where category_no = #{categoryNo}
+</update>
+
+    <!-- D : 삭제 -->
+    <delete id="delete">
+        delete from category
+        where category_no = #{categoryNo}
+    </delete>
+
+</mapper>
