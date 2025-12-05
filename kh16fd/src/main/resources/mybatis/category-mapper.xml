@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="category">
+
+    <select id="sequence" resultType="long">
+        select category_seq.nextval from dual
+    </select>
+	
+	<!-- C -->
+    <insert id="insert">
+        insert into category(
+            category_no, category_name, parent_category, category_order
+        ) values (
+            #{categoryNo}, #{categoryName}, #{parentCategory}, #{categoryOrder}
+        )
+    </insert>
+	
+	<!-- R -->
+    <select id="list" resultType="CategoryDto">
+        select * from category
+        order by category_order asc
+    </select>
+
+    <select id="detail" resultType="CategoryDto">
+        select *
+        from category
+        where category_no = #{categoryNo}
+    </select>
+	
+	<!-- U -->
+    <update id="update">
+        update category
+        set
+            category_name = #{categoryName},
+            parent_category = #{parentCategory},
+            category_order = #{categoryOrder}
+        where category_no = #{categoryNo}
+    </update>
+	
+	<!-- D -->
+    <delete id="delete">
+        delete from category where category_no = #{categoryNo}
+    </delete>
+
+</mapper>
