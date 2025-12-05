@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.PaymentDto;
+import com.kh.fd.vo.TokenVO;
 
 @Repository
 public class PaymentDao {
@@ -21,9 +22,9 @@ public class PaymentDao {
 		sqlSession.insert("payment.insert",paymentDto);
 	}
 	
-//	public List<PaymentDto> selectList(TokenVO tokenVO){
-//		return sqlSession.selectList("payment.listByOwner",tokenVO);
-//	}
+	public List<PaymentDto> selectList(TokenVO tokenVO){
+		return sqlSession.selectList("payment.listByOwner",tokenVO);
+	}
 	
 	public PaymentDto selectOne(long paymentNo) {
 		return sqlSession.selectOne("payment.detail",paymentNo);
