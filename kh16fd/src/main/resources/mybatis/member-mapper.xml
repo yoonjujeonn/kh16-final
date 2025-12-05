@@ -10,18 +10,12 @@
 		insert into member(
 			member_id, member_pw, member_nickname, 
 			member_birth, member_contact, member_email,
-			member_level,  
 			member_post, member_address1, member_address2
-			member_join, member_login, member_change,
-			member_status
 		)
 		values(
 			#{memberId}, #{memberPw}, #{memberNickname}, 
-			#{memberBirth}, #{memberEmail}, #{memberContact}, 
-			#{memberPost}, #{memberAddress1}, #{memberAddress2},
-			#{memberLevel}, 
-			#{memberJoin}, #{memberLogin}, #{memberChange},
-			#{memberStatus}
+			#{memberBirth},  #{memberContact}, #{memberEmail},
+			#{memberPost}, #{memberAddress1}, #{memberAddress2}
 		)
 	</insert>
 	<!-- 상세 조회(R) -->
