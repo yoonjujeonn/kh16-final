@@ -27,7 +27,7 @@ public class PaymentDetailDao {
 		return sqlSession.selectList("paymentDetail.listByOrigin", paymentDetailOrigin);
 	}
 
-	public boolean cancelAll(long paymentDetailOrigin) {
+	public boolean cancel(long paymentDetailOrigin) {
 		return sqlSession.update("paymentDetail.cancel", paymentDetailOrigin) > 0;
 	}
 
