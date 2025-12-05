@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+
+	<!-- 등록 (C)-->
+	<!-- #은 동적 바인딩 홀더 내가 뭐 신경 안써도 알아서 안의 값을 처리해준다 -->
+	<insert id="insert">
+		insert into member(
+			member_id, member_pw, member_nickname, 
+			member_birth, member_contact, member_email,
+			member_post, member_address1, member_address2
+		)
+		values(
+			#{memberId}, #{memberPw}, #{memberNickname}, 
+			#{memberBirth},  #{memberContact}, #{memberEmail},
+			#{memberPost}, #{memberAddress1}, #{memberAddress2}
+		)
+	</insert>
+	<!-- 상세 조회(R) -->
+	<select id = "detail" resultType ="memberDto">
+		select * from member where member_id = #{memberId}
+	</select>
+	
+	<select id = "detailBymemberNickname" resultType = "memberDto">
+		select * from member where member_nickname = #{memberNickname}
+	</select>
+
+
+<!-- 	mybatis에서는 정적 배치는 $ 동적 배치는 #을 사용 -->
+	<select id="search" resultType="memberDto">
+		select * from member 
+		where 
+			instr(${column}, #{keyword}) > 0
+			and
+			member_level != '관리자'
+		order by ${column} asc , member_id asc
+					
+	</select>
+	
+	<!-- 
+		복합 검색(Complex Search) 
+		- 테이블 컬럼의 모든 요소를 활용한 검색
+		- 문자열, 숫자, 날짜 , 일치, 유사, 구간 등 다양한 처리가 가능하게 구현
+		- 컬럼이 있어도 되고 없어도 되도록 조건부 처리
+	-->
+	<select id="complexSearch" resultType="memberDto">
+		select * from member
+		<!-- 
+			where절이 조건부로 존재할 때 사용하는 태그 
+			- 내부에 작성된 and 구문은 상황에 맞게 알아서 제거됨
+			- 즉, 내부의 조건구문은 and 또는 or로 시작해야함 (대부분 and로 시작)
+		-->
+		<where>
+			<!-- 아이디 : 유사검색 -->
+			<if test="memberId != null">
+			and instr(member_id, #{memberId}) > 0
+			</if>
+			<!-- 닉네임 : 유사검색 -->
+			<if test="memberNickname != null">
+			and instr(member_nickname, #{memberNickname}) > 0
+			</if>
+			<!-- 이메일 : 유사검색 -->
+			<if test="memberEmail != null">
+			and instr(member_email, #{memberEmail}) > 0
+			</if>
+			<!-- 전화번호 : 유사검색(시작) -->
+			<if test="memberContact != null">
+			and member_contact like #{memberContact} || '%'
+<!-- 			and member_contact like concat()#{memberContact}, '%') -->
+			</if>
+			<!-- 생년월일 : 일치검색 -->
+			<if test="memberBirth != null">
+			and member_birth = #{memberBirth}
+			</if>
+			<!--포인트: 구간검색 -->
+			<choose>
+				<when test="minmemberPoint != null and maxmemberPoint != null">
+					and member_point between #{minmemberPoint} and #{maxmemberPoint}
+				</when>
+				<when test="minmemberPoint != null">
+					<!-- and member_point &gt;= #{minmemberPoint} -->
+					<!--사용 못하는 글자가 있음 char data 구문을 만들어 표시 -->
+					<![CDATA[
+						and member_point >= #{minmemberPoint}
+					]]> 
+				</when>
+				<when test="maxmemberPoint != null">
+					<![CDATA[
+						and member_point <= #{minmemberPoint}
+					]]> 
+					<!-- and member_point &lt;= #{maxmemberPoint}-->
+				</when>
+			</choose>
+			
+			<!-- 가입일: 구간 검색 -->
+			<choose>
+				<when test="beginmemberJoin != null and endmemberJoin != null">
+					and member_join between 
+						to_timestamp(#{beginmemberJoin} || '00:00:00.000', 'yyyy-mm-dd hh24:mi:ss.ff3') 
+						and 
+						to_timestamp(#{endmemberJoin} || '23:59:59.999', 'yyyy-mm-dd hh24:mi:ss.ff3')
+				</when>
+				<when test="beginmemberJoin != null">
+					<![CDATA[
+						and member_join >= to_timestamp(#{beginmemberJoin} || '00:00:00.000', 'yyyy-mm-dd hh24:mi:ss.ff3') 
+					]]> 
+				</when>
+				<when test="endmemberJoin != null">
+					<![CDATA[
+						and member_join <= to_timestamp(#{endmemberJoin} || '23:59:59.999', 'yyyy-mm-dd hh24:mi:ss.ff3')
+					]]> 
+				</when>			
+			</choose>
+			
+			<!-- 원하는 등급을 검색 -->
+			<if test="memberLevelList != null and memberLevelList.size() > 0">
+				<!-- item(변수명), collection(저장소), separator(구분자) -->
+				<foreach item="memberLevel" collection="memberLevelList"
+								separator="," open="and member_level in (" close=")">
+					#{memberLevel}
+				</foreach>
+			</if>
+			
+			<!-- 주소 토큰으로 검색 -->
+<!-- 			<if test="addressTokenList != null and addressTokenList.length > 0"> -->
+			<if test="addressTokenList != null and addressTokenList.size() > 0">
+				and 
+				<foreach collection="addressTokenList" item="token" 
+						separator="and" open="(" close=")">
+					instr(member_address1, #{token}) > 0
+				</foreach>
+			</if>
+			
+		</where>
+	</select>	
+	
+	
+</mapper>

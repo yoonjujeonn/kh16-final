@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="restaurant">
+
+    <!-- 시퀀스 -->
+    <select id="sequence" resultType="long">
+        select restaurant_seq.nextval from dual
+    </select>
+
+    <!-- C -->
+    <insert id="insert">
+        insert into restaurant(
+            restaurant_id, owner_id, restaurant_place, restaurant_name, restaurant_open,
+            restaurant_close, restaurant_break_start, restaurant_break_end, reservation_interval,
+            restaurant_phone, restaurant_address_x, restaurant_address_y, restaurant_description,
+            restaurant_opening_hours, restaurant_operation_status, restaurant_status, restaurant_avg_rating
+        ) values (
+            #{restaurantId}, #{ownerId}, #{restaurantPlace}, #{restaurantName}, #{restaurantOpen},
+            #{restaurantClose}, #{restaurantBreakStart}, #{restaurantBreakEnd}, #{reservationInterval},
+            #{restaurantPhone}, #{restaurantAddressX}, #{restaurantAddressY}, #{restaurantDescription},
+            #{restaurantOpeningHours}, #{restaurantOperationStatus}, #{restaurantStatus}, #{restaurantAvgRating}
+        )
+    </insert>
+
+    <!-- R(전체) -->
+    <select id="list" resultType="RestaurantDto">
+        select *
+        from restaurant
+        order by restaurant_id desc
+    </select>
+
+    <!-- R(상세) -->
+    <select id="detail" resultType="RestaurantDto">
+        select *
+        from restaurant
+        where restaurant_id = #{restaurantId}
+    </select>
+
+    <!-- U(부분 수정) -->
+    <update id="updateUnit">
+        update restaurant
+        <set>
+            <if test="ownerId != null"> owner_id = #{ownerId}, </if>
+            <if test="restaurantPlace != 0"> restaurant_place = #{restaurantPlace}, </if>
+            <if test="restaurantName != null"> restaurant_name = #{restaurantName}, </if>
+            <if test="restaurantOpen != null"> restaurant_open = #{restaurantOpen}, </if>
+            <if test="restaurantClose != null"> restaurant_close = #{restaurantClose}, </if>
+            <if test="restaurantBreakStart != null"> restaurant_break_start = #{restaurantBreakStart}, </if>
+            <if test="restaurantBreakEnd != null"> restaurant_break_end = #{restaurantBreakEnd}, </if>
+            <if test="reservationInterval != 0"> reservation_interval = #{reservationInterval}, </if>
+            <if test="restaurantPhone != null"> restaurant_phone = #{restaurantPhone}, </if>
+            <if test="restaurantAddressX != 0"> restaurant_address_x = #{restaurantAddressX}, </if>
+            <if test="restaurantAddressY != 0"> restaurant_address_y = #{restaurantAddressY}, </if>
+            <if test="restaurantDescription != null"> restaurant_description = #{restaurantDescription}, </if>
+            <if test="restaurantOpeningHours != null"> restaurant_opening_hours = #{restaurantOpeningHours}, </if>
+            <if test="restaurantOperationStatus != null"> restaurant_operation_status = #{restaurantOperationStatus}, </if>
+            <if test="restaurantStatus != null"> restaurant_status = #{restaurantStatus}, </if>
+            <if test="restaurantAvgRating != 0"> restaurant_avg_rating = #{restaurantAvgRating}, </if>
+        </set>
+        where restaurant_id = #{restaurantId}
+    </update>
+
+    <!-- D -->
+    <delete id="delete">
+        delete from restaurant
+        where restaurant_id = #{restaurantId}
+    </delete>
+
+</mapper>
