@@ -3,6 +3,7 @@ package com.kh.fd;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 //스케쥴러는 서버에 부담이 많이가는 작업이므로 반드시 허용 설정을 하도록 요구
 //@EnableScheduling

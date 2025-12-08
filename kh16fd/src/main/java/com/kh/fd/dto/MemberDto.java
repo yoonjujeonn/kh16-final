@@ -57,11 +57,17 @@ public class MemberDto {
 	private String memberAddress2;
 	//Timestamp 대신 LocalDateTime을 써도 무방하다 (mybatis가 자동변환)
 	//주의 할것 아래 포멧은 JSON 이 T가 없어도 되지만 시간 사이에 'T'를 넣는것이 표준 API 통신이나 웹 서비스에서 일반적으로 더 권장됨
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+//	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+//	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
 	private LocalDateTime memberJoin;
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+//	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+//	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
 	private LocalDateTime memberLogin;
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+//	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+//	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
 	private LocalDateTime memberChange;	
 	
 	//조건 있음 active(현재 회원) dormant(휴먼) withdrawn(탈퇴) 
@@ -70,6 +76,9 @@ public class MemberDto {
 	private String memberStatus;
 	
 	//멤버탈퇴 시간
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+//	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+//	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+//	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
 	private LocalDateTime memberWithdrawTime;	
 }
