@@ -1,5 +1,6 @@
 package com.kh.fd.restcontroller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -31,9 +32,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @Tag(name = "회원 관리 컨트롤러")
-
+@Slf4j
 @CrossOrigin
 @RestController
 @RequestMapping("/member")
@@ -171,7 +173,24 @@ public class MemberRestController {
 		memberDao.updateMember(memberDto);
 	}
 	
-	//회원 탈퇴 기능 스케줄러로 설정해야됨 여기서 하진 않을듯
+	//회원 탈퇴 기능 스케줄러로 설정해야됨 일단 비활성화 기능 만듬
+	@PatchMapping("/{memberId}/deactivate")
+	public void deactivate(@PathVariable String memberId,
+												@RequestBody MemberDto memberDto) {
+		MemberDto originDto = memberDao.selectOne(memberId);
+		if(originDto == null) throw new TargetNotFoundException();
+		if("관리자".equals(originDto.getMemberLevel())) {
+			throw new UnauthorizationException();
+		}
+//		memberDto.setMemberId(memberId);
+		memberDto.setMemberStatus("DORMANT");
+//		memberDto.setMemberWithdrawTime(java.time.Instant.now());
+		memberDto.setMemberWithdrawTime(LocalDateTime.now());
+		log.debug("시간 생김새 :" + LocalDateTime.now());
+ 
+		memberDao.updateMember(memberDto);
+	}	
+	
 	
 	//자영업자 삽입용 맵퍼
 	@PostMapping("/business")
