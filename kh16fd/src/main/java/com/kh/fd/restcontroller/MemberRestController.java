@@ -2,11 +2,13 @@ package com.kh.fd.restcontroller;
 
 import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,9 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.fd.dao.MemberDao;
+import com.kh.fd.dao.MemberTokenDao;
 import com.kh.fd.dto.MemberDto;
 import com.kh.fd.error.TargetNotFoundException;
+import com.kh.fd.error.UnauthorizationException;
+import com.kh.fd.service.TokenService;
+import com.kh.fd.vo.MemberComplexSearchVO;
 import com.kh.fd.vo.MemberLoginResponseVO;
+import com.kh.fd.vo.MemberRefreshVO;
+import com.kh.fd.vo.TokenVO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,10 +38,21 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/member")
 public class MemberRestController {
+
+    private final TokenService tokenService;
 	@Autowired
 	private MemberDao memberDao;
 	@Autowired
+	private MemberTokenDao memberTokenDao;
+	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private SqlSession sqlSession;
+	
+
+    MemberRestController(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 	
 	//차후 추가예정
 //	@Autowired
@@ -78,7 +97,6 @@ public class MemberRestController {
 	}
 	
 	//로그인
-	//	@GetMapping("/accountId/{accountId}/accountPw/{accountPw}")
 	@PostMapping("/login")
 	public MemberLoginResponseVO login(@RequestBody MemberDto  memberDto) {
 		MemberDto findDto = memberDao.selectOne(memberDto.getMemberId());
@@ -99,54 +117,64 @@ public class MemberRestController {
 		return MemberLoginResponseVO.builder()
 					.loginId(findDto.getMemberId()) //아이디
 					.loginLevel(findDto.getMemberLevel()) //등급
-					//토큰은 아직 미정!
-//					.accessToken(tokenService.generateAccessToken(findDto)) //액세스 토큰
-//					.refreshToken(tokenService.generateRefreshToken(findDto)) //갱신 토큰
+					.accessToken(tokenService.generateAccessToken(findDto)) //액세스 토큰
+					.refreshToken(tokenService.generateRefreshToken(findDto)) //갱신 토큰
 				.build();
 	}
 	
-//	@PostMapping("/refresh")
-//	public MemberLoginResponseVO refresh(
-//			@RequestBody MemberRefreshVO memberRefreshVO) {
-//		String refreshToken = memberRefreshVO.getRefreshToken();
-//		if(refreshToken == null) throw new UnauthorizationException();
-//		
-//		TokenVO tokenVO = tokenService.parse(refreshToken);
-//		//아이디와 토큰 문자열로 발급 내역을 조회하여 비교
-//		boolean valid = tokenService.checkRefreshToken(tokenVO, refreshToken);
-//		if(valid == false) throw new TargetNotfoundException();
-//		
-//		//재생성 후 반환
-//		return MemberLoginResponseVO.builder()
-//					.loginId(tokenVO.getLoginId())
-//					.loginLevel(tokenVO.getLoginLevel())
-//					.accessToken(tokenService.generateAccessToken(tokenVO))
-//					.refreshToken(tokenService.generateRefreshToken(tokenVO))
-//				.build();
-//	}
+	@PostMapping("/refresh")
+	public MemberLoginResponseVO refresh(
+			@RequestBody MemberRefreshVO memberRefreshVO) {
+		String refreshToken = memberRefreshVO.getRefreshToken();
+		if(refreshToken == null) throw new UnauthorizationException();
+		
+		TokenVO tokenVO = tokenService.parse(refreshToken);
+		//아이디와 토큰 문자열로 발급 내역을 조회하여 비교
+		boolean valid = tokenService.checkRefreshToken(tokenVO, refreshToken);
+		if(valid == false) throw new TargetNotFoundException();
+		
+		//재생성 후 반환
+		return MemberLoginResponseVO.builder()
+					.loginId(tokenVO.getLoginId())
+					.loginLevel(tokenVO.getLoginLevel())
+					.accessToken(tokenService.generateAccessToken(tokenVO))
+					.refreshToken(tokenService.generateRefreshToken(tokenVO))
+				.build();
+	}
 	
 	
 	//로그아웃
-//	@DeleteMapping("/logout")
-//	public void logout(
-//				@RequestHeader("Authorization") String bearerToken
-//	) {
-//		TokenVO tokenVO = tokenService.parse(bearerToken);
-//		accountTokenDao.deleteByTarget(tokenVO.getLoginId());
-//	}		
+	@DeleteMapping("/logout")
+	public void logout(
+				@RequestHeader("Authorization") String bearerToken
+	) {
+		TokenVO tokenVO = tokenService.parse(bearerToken);
+		memberTokenDao.deleteByTarget(tokenVO.getLoginId());
+	}		
 	
 	
 	//복합검색
-//	@PostMapping("/search") //어쩔 수 없는 선택
-//	public List<MemberDto> search(@RequestBody MemberComplexSearchVO vo) {
-//		return sqlSession.selectList("account.complexSearch", vo);
-//	}
+	@PostMapping("/search") //어쩔 수 없는 선택
+	public List<MemberDto> search(@RequestBody MemberComplexSearchVO vo) {
+		return sqlSession.selectList("member.complexSearch", vo);
+	}
 	
 	
-	//회원 정보 변경
+	//회원 정보 변경 (일례로 실제 회원 탈퇴는 여기서 플래그만 잡아둠
+	@PatchMapping("/{memberId}")
+	public void update(@PathVariable String memberId,
+												@RequestBody MemberDto memberDto) {
+		MemberDto originDto = memberDao.selectOne(memberId);
+		if(originDto == null) throw new TargetNotFoundException();
+		
+		memberDto.setMemberId(memberId);
+		memberDao.updateMember(memberDto);
+	}
+	
+	//회원 탈퇴 기능 스케줄러로 설정해야됨 여기서 하진 않을듯
 	
 	
-	//회원 탈퇴 기능
+	
 	
 	
 }

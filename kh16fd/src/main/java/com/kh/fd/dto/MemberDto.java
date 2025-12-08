@@ -69,5 +69,7 @@ public class MemberDto {
 	@Pattern(regexp = "^(active|dormant|withdraw)$")
 	private String memberStatus;
 	
-	
+	//멤버탈퇴 시간
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+	private LocalDateTime memberWithdrawTime;	
 }

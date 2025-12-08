@@ -43,4 +43,8 @@ public class MemberDao {
 		return sqlSession.selectList("member.seasch", params);
 	}	
 	
+	public boolean updateMember(MemberDto memberDto) {
+		return sqlSession.update("member.updateMember", memberDto) > 0;
+	}
+	
 }
