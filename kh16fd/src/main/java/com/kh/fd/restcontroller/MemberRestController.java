@@ -173,7 +173,20 @@ public class MemberRestController {
 	
 	//회원 탈퇴 기능 스케줄러로 설정해야됨 여기서 하진 않을듯
 	
+	//자영업자 삽입용 맵퍼
+	@PostMapping("/business")
+	public void addBusinessMember(@Valid @RequestBody MemberDto memberDto) {
+		//등록 처리
+		memberDao.insertOwner(memberDto); 
+	}
 	
+	
+	//관리자 삽입용 맵퍼 (삭제 필요?)
+	@PostMapping("/admin")
+	public void addAdmin(@Valid @RequestBody MemberDto memberDto) {
+		//등록 처리
+		memberDao.insertAdmin(memberDto); 
+	}
 	
 	
 	

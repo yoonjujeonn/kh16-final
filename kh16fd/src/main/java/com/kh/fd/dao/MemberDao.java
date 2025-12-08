@@ -19,13 +19,29 @@ public class MemberDao {
 	private PasswordEncoder passwordEncoder;
 	
 	public void insert(MemberDto memberDto) {
-		//삽입 전 암호화 작업 필요
-		//비밀번호 암호화 처리 추가 필요 현재 swagger 사용 못하는 오류로 봉인중
 		String origin = memberDto.getMemberPw();
 		String encoded = passwordEncoder.encode(origin); //암호화 작업 수행
 		memberDto.setMemberPw(encoded); //암호화한 비번으로 바꿔치기
 		
 		sqlSession.insert("member.insert", memberDto);
+	}
+	
+	public void insertOwner(MemberDto memberDto) {
+		String origin = memberDto.getMemberPw();
+		String encoded = passwordEncoder.encode(origin); //암호화 작업 수행
+		memberDto.setMemberPw(encoded); //암호화한 비번으로 바꿔치기
+		memberDto.setMemberLevel("자영업자"); //자영업자로 만들기
+		
+		sqlSession.insert("member.insertWithLevel", memberDto);		
+	}
+	
+	public void insertAdmin(MemberDto memberDto) {
+		String origin = memberDto.getMemberPw();
+		String encoded = passwordEncoder.encode(origin); //암호화 작업 수행
+		memberDto.setMemberPw(encoded); //암호화한 비번으로 바꿔치기
+		memberDto.setMemberLevel("관리자"); //자영업자로 만들기
+		
+		sqlSession.insert("member.insertWithLevel", memberDto);		
 	}
 	
 	public MemberDto selectOne(String memberId) {
@@ -46,5 +62,6 @@ public class MemberDao {
 	public boolean updateMember(MemberDto memberDto) {
 		return sqlSession.update("member.updateMember", memberDto) > 0;
 	}
+	
 	
 }
