@@ -136,5 +136,54 @@
 		</where>
 	</select>	
 	
+<update id="updateMember">
+ 	 	UPDATE member
+  	 	<set>
+  	 		<if test="memberPw != null">
+	 	 		member_pw = #{memberPw}
+  	 		</if>
+  	 		<if test="memberNickname != null">
+ 		 		, member_nickname = #{memberNickname}
+  	 		</if>
+  	 		<if test="memberBirth != null">
+	 	 		, member_birth = #{memberBirth}
+  	 		</if>
+  	 		<if test="memberContact != null">
+	 	 		, member_contact = #{memberContact}
+  	 		</if>
+  	 		<if test="memberEmail != null">
+	 	 		, member_email = #{memberEmail}
+  	 		</if>
+  	 		<if test="memberLevel != null">
+	 	 		, member_level = #{memberLevel}
+  	 		</if>
+  	 		<if test="memberPost != null">
+	 	 		, member_post = #{memberPost}
+  	 		</if>
+  	 		<if test="memberAddress1 != null">
+	 	 		, member_address1 = #{memberAddress1}
+  	 		</if>
+  	 		<if test="memberAddress2 != null">
+	 	 		, member_address2 = #{memberAddress2}
+  	 		</if>
+  	 		<if test="memberJoin != null">
+	 	 		, member_join = #{memberJoin}
+  	 		</if>
+  	 		<if test="memberLogin != null">
+	 	 		, member_login = #{memberLogin}
+  	 		</if>
+  	 		<if test="memberChange != null">
+	 	 		, member_change = #{memberChange}
+  	 		</if>
+  	 		<if test="memberStatus != null">
+	 	 		, member_status = #{memberStatus}
+  	 		</if>
+  	 		<if test="memberWithdrawTime != null">
+	 	 		, member_withdraw_time = #{memberWithdrawTime}
+  	 		</if>
+  	 	</set>
+ 	 	WHERE member_id = #{memberId}
+ 	 </update>
+	
 	
 </mapper>
