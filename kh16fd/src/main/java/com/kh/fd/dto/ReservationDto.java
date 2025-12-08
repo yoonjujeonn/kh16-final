@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ReservationDto {
 	private Long reservationId;
 	private String reservationMember;
-	private Long reservationRestaurant;
+	private Long reservationTarget;
 	private Long reservationSeat;
 	private Long reservationTime;
 	private Integer reservationPeopleCount;

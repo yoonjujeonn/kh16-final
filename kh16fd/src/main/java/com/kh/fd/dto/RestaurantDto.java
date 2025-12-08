@@ -19,12 +19,14 @@ public class RestaurantDto {
     private java.sql.Timestamp restaurantBreakStart;
     private java.sql.Timestamp restaurantBreakEnd;
     private int reservationInterval;
-    private String restaurantPhone;
+    private String restaurantContact;
+    private String restaurantAddress;
     private double restaurantAddressX;
     private double restaurantAddressY;
     private String restaurantDescription;
     private String restaurantOpeningHours;
     private String restaurantStatus;
     private double restaurantAvgRating;
+    private Integer restaurantReservationPrice;
     private java.sql.Timestamp restaurantCreatedAt;
 }
