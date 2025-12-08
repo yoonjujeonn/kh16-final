@@ -16,5 +16,6 @@ public class KakaoPayFlashVO {
 	private String tid;// 거래번호
 	private String returnUrl;// 복귀 주소
 	private List<KakaoPayQtyVO> qtyList;
+	private Long reservationId;
 
 }
