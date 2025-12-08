@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PlaceDto {
-    private int placeId;
+    private Long placeId;
     private String placeDepth1;
     private String placeDepth2;
     private String placeDepth3;

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PlaceGroupMappingDto {
-    private int placeGroupId;
-    private int placeId;
+    private Long placeGroupId;
+    private Long placeId;
 }

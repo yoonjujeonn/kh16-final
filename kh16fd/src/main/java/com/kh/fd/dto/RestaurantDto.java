@@ -1,5 +1,8 @@
 package com.kh.fd.dto;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,23 +13,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RestaurantDto {
-    private int restaurantId;
+    private Long restaurantId;
     private String ownerId;
-    private int restaurantPlace;
+    private Long restaurantPlace;
     private String restaurantName;
-    private java.sql.Timestamp restaurantOpen;
-    private java.sql.Timestamp restaurantClose;
-    private java.sql.Timestamp restaurantBreakStart;
-    private java.sql.Timestamp restaurantBreakEnd;
+    private String restaurantOpen;
+    private String restaurantClose;
+    private String restaurantBreakStart;
+    private String restaurantBreakEnd;
+    private String restaurantLastOrder; 
     private int reservationInterval;
     private String restaurantContact;
     private String restaurantAddress;
     private double restaurantAddressX;
     private double restaurantAddressY;
     private String restaurantDescription;
-    private String restaurantOpeningHours;
+    private String restaurantOpeningDays;
     private String restaurantStatus;
     private double restaurantAvgRating;
     private Integer restaurantReservationPrice;
-    private java.sql.Timestamp restaurantCreatedAt;
+    private LocalDateTime restaurantCreatedAt;
 }
