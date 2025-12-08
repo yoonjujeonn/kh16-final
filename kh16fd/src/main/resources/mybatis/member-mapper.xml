@@ -32,6 +32,8 @@
 	<select id="search" resultType="memberDto">
 		select * from member 
 		where 
+			member_status = 'active'
+			and
 			instr(${column}, #{keyword}) > 0
 			and
 			member_level != '관리자'
