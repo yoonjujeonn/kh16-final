@@ -13,9 +13,8 @@ import lombok.NoArgsConstructor;
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class TimeSlotDto {
 	private Long timeSlotId;
-	private Long timeSlotRestaurantId;
+	private Long timeSlotTarget;
 	private LocalDateTime timeSlotTargetDate;
 	private LocalDateTime timeSlotStart;
 	private LocalDateTime timeSlotEnd;
-	private String timeSlotStatus;
 }

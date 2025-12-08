@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="timeSlot">
+  <!-- 시퀀스 생성 -->
+    <select id="sequence" resultType="long">
+        select time_slot_seq.nextval from dual
+    </select>
+  <!-- 등록 -->
+  <insert id="insert">
+  	insert into time_slot(
+  	time_slot_id, time_slot_target, time_slot_target_date, 
+  	time_slot_start, time_slot_end
+  	) 
+  	values(
+  	#{timeSlotId}, #{timeSlotTarget}, #{timeSlotTargetDate}, 
+  	#{timeSlotStart}, #{timeSlotEnd}
+  	)
+  </insert>
+  
+  <!-- 전체 조회 -->
+  <select id="list" resultType="timeSlotDto">
+  	select * from time_slot 
+  	where time_slot_target = #{timeSlotTarget}
+  </select>
+  
+  <!-- 상세 조회 -->
+  <select id="detail" resultType="timeSlotDto">
+  	select * from time_slot where time_slot_id = #{timeSlotId}
+  </select>
+  
+  <!-- 수정 -->
+  
+  <!-- 삭제 -->
+</mapper>

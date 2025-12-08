@@ -13,13 +13,15 @@
         insert into restaurant(
             restaurant_id, owner_id, restaurant_place, restaurant_name, restaurant_open,
             restaurant_close, restaurant_break_start, restaurant_break_end, reservation_interval,
-            restaurant_phone, restaurant_address_x, restaurant_address_y, restaurant_description,
-            restaurant_opening_hours, restaurant_operation_status, restaurant_status, restaurant_avg_rating
+            restaurant_contact, restaurant_address, restaurant_address_x, restaurant_address_y, restaurant_description,
+            restaurant_opening_days, restaurant_last_order, restaurant_reservation_price
         ) values (
-            #{restaurantId}, #{ownerId}, #{restaurantPlace}, #{restaurantName}, #{restaurantOpen},
-            #{restaurantClose}, #{restaurantBreakStart}, #{restaurantBreakEnd}, #{reservationInterval},
-            #{restaurantPhone}, #{restaurantAddressX}, #{restaurantAddressY}, #{restaurantDescription},
-            #{restaurantOpeningHours}, #{restaurantOperationStatus}, #{restaurantStatus}, #{restaurantAvgRating}
+            #{restaurantId}, #{ownerId}, #{restaurantPlace}, #{restaurantName}, 
+            #{restaurantOpen}, #{restaurantClose}, #{restaurantBreakStart}, 
+            #{restaurantBreakEnd}, #{reservationInterval},#{restaurantContact}, 
+            #{restaurantAddress}, #{restaurantAddressX}, #{restaurantAddressY}, 
+            #{restaurantDescription}, #{restaurantOpeningDays}, #{restaurantLastOrder}, 
+            #{restaurantReservationPrice}
         )
     </insert>
 
