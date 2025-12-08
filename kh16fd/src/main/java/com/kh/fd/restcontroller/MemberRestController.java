@@ -143,4 +143,10 @@ public class MemberRestController {
 //	}
 	
 	
+	//회원 정보 변경
+	
+	
+	//회원 탈퇴 기능
+	
+	
 }
