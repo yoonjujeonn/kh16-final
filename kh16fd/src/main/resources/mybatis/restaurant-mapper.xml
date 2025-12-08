@@ -12,16 +12,19 @@
     <insert id="insert">
         insert into restaurant(
             restaurant_id, owner_id, restaurant_place, restaurant_name, restaurant_open,
-            restaurant_close, restaurant_break_start, restaurant_break_end, reservation_interval,
+            restaurant_close, restaurant_break_start, restaurant_break_end,
             restaurant_contact, restaurant_address, restaurant_address_x, restaurant_address_y, restaurant_description,
-            restaurant_opening_days, restaurant_last_order, restaurant_reservation_price
+            restaurant_opening_days, restaurant_last_order, reservation_interval, restaurant_reservation_price
         ) values (
             #{restaurantId}, #{ownerId}, #{restaurantPlace}, #{restaurantName}, 
             #{restaurantOpen}, #{restaurantClose}, #{restaurantBreakStart}, 
-            #{restaurantBreakEnd}, #{reservationInterval},#{restaurantContact}, 
+            #{restaurantBreakEnd}, #{restaurantContact}, 
             #{restaurantAddress}, #{restaurantAddressX}, #{restaurantAddressY}, 
             #{restaurantDescription}, #{restaurantOpeningDays}, #{restaurantLastOrder}, 
-            #{restaurantReservationPrice}
+            <if test="reservationInterval != null">#{reservationInterval}, </if>
+        	<if test="reservationInterval == null">DEFAULT, </if>
+            <if test="restaurantReservationPrice != null">#{restaurantReservationPrice}</if>
+        	<if test="restaurantReservationPrice == null">DEFAULT</if>
         )
     </insert>
 

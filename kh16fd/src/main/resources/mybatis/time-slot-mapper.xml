@@ -20,13 +20,13 @@
   </insert>
   
   <!-- 전체 조회 -->
-  <select id="list" resultType="timeSlotDto">
+  <select id="list" resultType="TimeSlotDto">
   	select * from time_slot 
   	where time_slot_target = #{timeSlotTarget}
   </select>
   
   <!-- 상세 조회 -->
-  <select id="detail" resultType="timeSlotDto">
+  <select id="detail" resultType="TimeSlotDto">
   	select * from time_slot where time_slot_id = #{timeSlotId}
   </select>
   
