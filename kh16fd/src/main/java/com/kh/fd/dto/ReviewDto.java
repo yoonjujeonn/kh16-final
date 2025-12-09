@@ -1,5 +1,7 @@
 package com.kh.fd.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +17,6 @@ public class ReviewDto {
     private String memberId;
     private String reviewContent;
     private double reviewRating;
-    private java.sql.Timestamp reviewCreatedAt;
+    private LocalDateTime reviewCreatedAt;
+    private LocalDateTime reviewUpdatedAt;
 }
