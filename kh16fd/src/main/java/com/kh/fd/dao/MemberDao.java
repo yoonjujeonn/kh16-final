@@ -63,5 +63,14 @@ public class MemberDao {
 		return sqlSession.update("member.updateMember", memberDto) > 0;
 	}
 	
+	public boolean updateLoginTime(String memberId) {
+		return sqlSession.update("member.updateLoginTime", memberId) > 0;
+	}
+	public boolean updateChangeTime(String memberId) {
+		return sqlSession.update("member.updateChangeTime", memberId) > 0;
+	}
+	public boolean updateWithdrawTime(String memberId) {
+		return sqlSession.update("member.updateWithdrawTime", memberId) > 0;
+	}
 	
 }
