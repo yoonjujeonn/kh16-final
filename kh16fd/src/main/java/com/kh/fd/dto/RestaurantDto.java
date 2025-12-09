@@ -3,6 +3,8 @@ package com.kh.fd.dto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RestaurantDto {
     private Long restaurantId;
     private String ownerId;
@@ -22,7 +25,7 @@ public class RestaurantDto {
     private String restaurantBreakStart;
     private String restaurantBreakEnd;
     private String restaurantLastOrder; 
-    private int reservationInterval;
+    private Integer reservationInterval;
     private String restaurantContact;
     private String restaurantAddress;
     private double restaurantAddressX;
