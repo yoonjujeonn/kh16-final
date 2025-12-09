@@ -1,6 +1,8 @@
 package com.kh.fd.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,5 +12,6 @@ import lombok.NoArgsConstructor;
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class RestaurantHolidayDto {
 	private Long restaurantId;
-	private LocalDateTime restaurantHolidayDate;
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate restaurantHolidayDate;
 }

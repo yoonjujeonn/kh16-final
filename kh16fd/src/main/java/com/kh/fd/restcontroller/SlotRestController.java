@@ -43,4 +43,5 @@ public class SlotRestController {
 	public List<SeatListVO> list(@PathVariable long restaurantId){
 		return seatDao.selectListByGroup(restaurantId);
 	}
+	
 }

@@ -1,4 +1,4 @@
-package com.kh.fd.service;
+package com.kh.fd;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -6,9 +6,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.kh.fd.dao.RestaurantDao;
 import com.kh.fd.dao.RestaurantHolidayDao;
@@ -21,8 +21,8 @@ import com.kh.fd.dto.TimeSlotDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
-public class SlotService {
+@SpringBootTest
+public class Test01CreatTimeSlotTest {
 	@Autowired
 	private RestaurantDao restaurantDao;
 	
@@ -35,10 +35,12 @@ public class SlotService {
 	@Autowired
 	private RestaurantHolidayDao restaurantHolidayDao;
 	
-	@Transactional
-	public void createTimeSlots(long timeSlotTarget) {
-	    RestaurantDto target = restaurantDao.selectOne(timeSlotTarget);
-	    LocalTime open = LocalTime.parse(target.getRestaurantOpen());
+	@Test
+	public void Test(){
+		long timeSlotTarget = 42;
+		
+		RestaurantDto target = restaurantDao.selectOne(timeSlotTarget);
+		LocalTime open = LocalTime.parse(target.getRestaurantOpen());
 	    LocalTime close = LocalTime.parse(target.getRestaurantLastOrder());
 	    LocalTime breakStart = LocalTime.parse(target.getRestaurantBreakStart());
 	    LocalTime breakEnd = LocalTime.parse(target.getRestaurantBreakEnd());
@@ -94,7 +96,7 @@ public class SlotService {
 	            // 브레이크타임 제외
 	            if (!(startTime.isBefore(breakEnd) && endTime.isAfter(breakStart))) {
 	                TimeSlotDto slot = TimeSlotDto.builder()
-	                        .timeSlotTarget(timeSlotTarget)
+	                		.timeSlotTarget(timeSlotTarget)
 	                        .timeSlotTargetDate(date)
 	                        .timeSlotStart(startTime)
 	                        .timeSlotEnd(endTime)
@@ -105,15 +107,9 @@ public class SlotService {
 	            startTime = endTime;
 	        }
 	    }
-	    
-	   for(TimeSlotDto timeSlotDto : timeSlotList) {
-		   //timeSlotDao.insert(timeSlotDto);
-		   log.debug("dto = {}", timeSlotDto);
-	   }
+
+	    timeSlotList.forEach(System.out::println);
+        System.out.println("총 슬롯 수 = " + timeSlotList.size());
+
 	}
-// 타임 슬롯 + 좌석 합쳐서 생성	
-//	@Transactional
-//	public long createTotalSlot() {
-//		
-//	}
 }
