@@ -204,6 +204,8 @@ public class MemberRestController {
 		memberDao.insertAdmin(memberDto); 
 	}
 	
+	//스케줄링 해야됨 한번 나중에 한번 볼것
+	
 	//회원 탈퇴 롤백 기능 관리자만 허용
 	@PatchMapping("/{memberId}/reactivate")
 	public void reactivate(@PathVariable String memberId ) {
