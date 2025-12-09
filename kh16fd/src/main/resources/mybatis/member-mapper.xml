@@ -171,17 +171,8 @@
   	 		<if test="memberJoin != null">
 	 	 		, member_join = #{memberJoin}
   	 		</if>
-  	 		<if test="memberLogin != null">
-	 	 		, member_login = #{memberLogin}
-  	 		</if>
-  	 		<if test="memberChange != null">
-	 	 		, member_change = #{memberChange}
-  	 		</if>
   	 		<if test="memberStatus != null">
 	 	 		, member_status = #{memberStatus}
-  	 		</if>
-  	 		<if test="memberWithdrawTime != null">
-	 	 		, member_withdraw_time = #{memberWithdrawTime}
   	 		</if>
   	 	</set>
  	 	WHERE member_id = #{memberId}
@@ -203,7 +194,16 @@
 		)
 	</insert>
 	
-
+	<update id="updateWithdrawTime">
+		update member set member_withdraw_time=systimestamp where member_id=#{memberId}
+	</update>
 	
+	<update id="updateLoginTime">
+		update member set member_login=systimestamp where member_id=#{memberId}
+	</update>
+
+	<update id="updateChangeTime">
+		update member set member_change=systimestamp where member_id=#{memberId}
+	</update>
 	
 </mapper>
