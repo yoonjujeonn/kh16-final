@@ -21,10 +21,15 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(memberInterceptor)
 							.addPathPatterns(
 									"/admin/**",
-									"/business/**"
+									"/business/**",
+									"/kakaopay/buy/**",
+									"/payment/**"
 							)
 							.excludePathPatterns(
-									"/member/business"
+									"/member/business",
+									"/kakaopay/buy/success/*", 
+									"/kakaopay/buy/fail/*",
+									"/kakaopay/buy/cancel/*"
 							);
 		
 		registry.addInterceptor(tokenRenewalInterceptor)
@@ -34,7 +39,10 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 									"/member/join", //비회원 페이지들은 갱신대상아님
 									"/member/login", //비회원 페이지들은 갱신대상아님
 									"/member/logout", //토큰을 만료시켜야 하므로 갱신대상 아님
-									"/cert/**" //인증은 비회원이 사용하는 기능
+									"/cert/**", //인증은 비회원이 사용하는 기능
+									"/kakaopay/buy/success/*",
+									"/kakaopay/buy/fail/*",
+									"/kakaopay/buy/cancel/*"
 							);
 		
 		

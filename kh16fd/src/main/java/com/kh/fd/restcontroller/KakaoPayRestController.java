@@ -93,7 +93,7 @@ public class KakaoPayRestController {
 		response.sendRedirect(flashVO.getReturnUrl() + "/cancel");
 	}
 	
-	@GetMapping("/buy/fail/{partnerOderId}")
+	@GetMapping("/buy/fail/{partnerOrderId}")
 	public void fail(@PathVariable String partnerOrderId, HttpServletResponse response) throws IOException {
 		KakaoPayFlashVO flashVO = flashMap.remove(partnerOrderId);
 		response.sendRedirect(flashVO.getReturnUrl() + "/fail");

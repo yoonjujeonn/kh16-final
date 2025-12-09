@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.fd.dao.PaymentDao;
 import com.kh.fd.dao.PaymentDetailDao;
+import com.kh.fd.dao.RestaurantDao;
 import com.kh.fd.dto.PaymentDetailDto;
 import com.kh.fd.dto.PaymentDto;
 import com.kh.fd.dto.ReservationDto;
@@ -25,8 +26,8 @@ public class PaymentService {
 	private PaymentDetailDao paymentDetailDao;
 	@Autowired
 	private KakaoPayService kakaoPayService;
-//	@Autowired
-//	private RestaurantDao restaurantDao;
+	@Autowired
+	private RestaurantDao restaurantDao;
 //	@Autowired
 //	private ReservationDao reservationDao;
 	
@@ -38,7 +39,7 @@ public class PaymentService {
 //		if(reservationDto==null) {
 //			throw new TargetNotFoundException("존재하지 않는 예약정보입니다");
 //		}
-//		RestaurantDto restaurantDto = restaurantDao.selectOne(reservationDto.getReservationRestaurant());
+//		RestaurantDto restaurantDto = restaurantDao.selectOne(reservationDto.getReservationTarget());
 //		if(restaurantDto == null) {
 //			throw new TargetNotFoundException("결제된 레스토랑 정보가 존재하지 않습니다");
 //		}
