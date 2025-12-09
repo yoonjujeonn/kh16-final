@@ -20,11 +20,10 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		//제외 패턴은 exclude에 추가
 		registry.addInterceptor(memberInterceptor)
 							.addPathPatterns(
-									"/admin/**",
-									"/business/**"
+									""
 							)
 							.excludePathPatterns(
-									"/member/business"
+									""
 							);
 		
 		registry.addInterceptor(tokenRenewalInterceptor)
