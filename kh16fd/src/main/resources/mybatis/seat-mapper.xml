@@ -19,10 +19,17 @@
   	)
   </insert>
   
-  <!-- 전체 조회 -->
+  <!-- 식당에 있는 좌석 전체 조회 -->
   <select id="list" resultType="SeatDto">
   	select * from seat
-  	where seat_restaurant_id = #{seatRestaurantId}
+  	where seat_restaurant_id = #{seatRestaurantId} 
+  	order by seat_id desc
+  </select>
+  
+  <select id="listByGroup" resultType="SeatListVO">
+  	select seat_type, seat_max_people , count(*) as count from seat 
+  	where seat_restaurant_id = #{seatRestaurantId} 
+  	group by seat_type, seat_max_people order by seat_type, seat_max_people
   </select>
   
   <!-- 상세 조회 -->

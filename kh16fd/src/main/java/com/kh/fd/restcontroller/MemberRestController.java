@@ -101,7 +101,7 @@ public class MemberRestController {
 	
 	//로그인
 	@PostMapping("/login")
-	public MemberLoginResponseVO login(@RequestBody MemberDto  memberDto) {
+	public MemberLoginResponseVO login(@RequestBody MemberDto memberDto) {
 		MemberDto findDto = memberDao.selectOne(memberDto.getMemberId());
 		if(findDto == null) { //아이디 없음
 //			return false;
