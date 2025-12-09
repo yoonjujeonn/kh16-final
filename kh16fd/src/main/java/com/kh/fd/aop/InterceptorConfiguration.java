@@ -15,14 +15,14 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 	//현재 토큰 기능은 구현하지 않았습니다
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		
+		 
 		//로그인 이 필요한 기능은 아래 add에 추가하고 
 		//제외 패턴은 exclude에 추가
 		registry.addInterceptor(memberInterceptor)
 							.addPathPatterns(
 									"/admin/**",
 									"/business/**",
-									"/kakaopay/buy/**",
+									"/kakaopay/buy/**", 
 									"/payment/**"
 							)
 							.excludePathPatterns(
