@@ -9,13 +9,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfiguration implements WebMvcConfigurer {
 	@Autowired
 	private TokenRenewalInterceptor tokenRenewalInterceptor;
-//	@Autowired
-//	private MemberInterceptor memberInterceptor;
+	@Autowired
+	private MemberInterceptor memberInterceptor;
 	
 	//현재 토큰 기능은 구현하지 않았습니다
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		
+		//로그인 이 필요한 기능은 아래 add에 추가하고 
+		//제외 패턴은 exclude에 추가
+		registry.addInterceptor(memberInterceptor)
+							.addPathPatterns(
+									"/admin/**",
+									"/business/**"
+							)
+							.excludePathPatterns(
+									"/member/business"
+							);
 		
 		registry.addInterceptor(tokenRenewalInterceptor)
 							.addPathPatterns("/**")
