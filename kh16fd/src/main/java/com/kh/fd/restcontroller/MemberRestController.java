@@ -41,7 +41,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/member")
 public class MemberRestController {
 
-    private final TokenService tokenService;
+	@Autowired
+    private TokenService tokenService;
 	@Autowired
 	private MemberDao memberDao;
 	@Autowired
