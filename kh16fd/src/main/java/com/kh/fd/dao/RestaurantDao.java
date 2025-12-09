@@ -1,5 +1,7 @@
 package com.kh.fd.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -24,5 +26,9 @@ public class RestaurantDao {
 		RestaurantDto restaurantDto = sqlSession.selectOne("restaurant.detail", restaurantId);
 		if(restaurantDto == null) throw new TargetNotFoundException();
 		return restaurantDto;
+	}
+	
+	public List<RestaurantDto> selectApprovalList(){
+		return sqlSession.selectList("restaurant.listNeedApprove");
 	}
 }

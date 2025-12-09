@@ -1,6 +1,7 @@
 package com.kh.fd.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class TimeSlotDto {
 	private Long timeSlotId;
 	private Long timeSlotTarget;
-	private LocalDateTime timeSlotTargetDate;
-	private LocalDateTime timeSlotStart;
-	private LocalDateTime timeSlotEnd;
+	private LocalDate timeSlotTargetDate;
+	private LocalTime timeSlotStart;
+	private LocalTime timeSlotEnd;
 }

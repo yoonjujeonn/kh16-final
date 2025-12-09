@@ -1,5 +1,7 @@
 package com.kh.fd.restcontroller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.fd.dao.RestaurantDao;
+import com.kh.fd.dao.RestaurantHolidayDao;
 import com.kh.fd.dto.RestaurantDto;
+import com.kh.fd.dto.RestaurantHolidayDto;
 import com.kh.fd.service.RestaurantService;
 import com.kh.fd.service.TokenService;
 import com.kh.fd.vo.TokenVO;
@@ -28,6 +32,8 @@ public class RestaurantRestController {
 	private RestaurantDao restaurantDao;
 	@Autowired
 	private TokenService tokenService;
+	@Autowired
+	private RestaurantHolidayDao restaurantHolidayDao;
 	
 	@PostMapping("/")
 	public RestaurantDto add(@RequestBody RestaurantDto restaurantDto, @RequestHeader("Authorization") String bearerToken) {
@@ -37,4 +43,10 @@ public class RestaurantRestController {
 		return restaurantDao.selectOne(restaurantId);
 	}
 	
+	@PostMapping("/holiday")
+	public void add(@RequestBody List<RestaurantHolidayDto> holidays) {
+		for(RestaurantHolidayDto holidayDto : holidays) {
+			restaurantHolidayDao.insert(holidayDto);
+		}
+	}
 }

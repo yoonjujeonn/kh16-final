@@ -34,7 +34,13 @@
         from restaurant
         order by restaurant_id desc
     </select>
-
+	
+	<!-- 승인 안된 식당 리스트 조회 -->
+	<select id="listNeedApprove" resultType="RestaurantDto">
+		select * from restaurant 
+		where restaurant_status = 'N' 
+		order by restaurant_id asc;
+	</select>
     <!-- R(상세) -->
     <select id="detail" resultType="RestaurantDto">
         select *
