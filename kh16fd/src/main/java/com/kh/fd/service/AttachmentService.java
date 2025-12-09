@@ -100,11 +100,4 @@ public class AttachmentService {
 	}
 
 
-	public boolean updateReviewNo(int attachmentNo, int reviewNo) {
-		return attachmentDao.updateReviewNo(attachmentNo, reviewNo);
-	}
-
-	public List<Integer> selectAttachmentNosByReviewNo(int reviewNo) {
-		return attachmentDao.selectAttachmentNosByReviewNo(reviewNo);
-	}
 }
