@@ -10,17 +10,49 @@
 		dual
 	</select>
 	<insert id="insert">
+		insert into review(
+		review_no, review_content,review_rating,
+		restaurant_id, member_id, review_created_at)
+		values(
+		review_seq.nextval, #{reviewContent},
+		#{reviewRating}, #{restaurantId}, #{memberId}, systimestamp
+		)
 	</insert>
 
+	<!-- 조회 -->
 	<select id="listByRestaurant" resultType="ReviewDto">
+	select 
+	review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at
+	from review
+	where restaurant_id = #{restaurantId}
+	order by review_created_at desc
 	</select>
-	
-	<select id="detail" resultType="ReviewDto">
-		select * from payment where
-		payment_no = #{paymentNo}
+	<select id="listByUser" resultType="ReviewDto">
+	select 
+    review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at
+    from review
+    where member_id = #{memberId}
+    order by review_created_at desc
 	</select>
 
-	<update id="cancel">
+	<!-- 상세 -->
+	<select id="detail" resultType="ReviewDto">
+	select 
+	review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at
+	FROM review
+	WHERE review_no = #{reviewNo}
+	</select>
+	
+	<!-- 수정 -->
+	<update id="update">
+	update review
+	set review_content = #{reviewContent}, review_rating = #{reviewRating}, review_updated_at = systimestamp
+	where review_no = #{reviewNo}
 	</update>
+	
+	<!-- 삭제 -->
+	<delete id="delete">
+	delete from review where review_no = #{reviewNo}
+	</delete>
 
 </mapper>

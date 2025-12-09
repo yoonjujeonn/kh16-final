@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.fd.dto.ReservationDto;
 import com.kh.fd.service.KakaoPayService;
 import com.kh.fd.service.PaymentService;
 import com.kh.fd.vo.TokenVO;
@@ -26,6 +27,7 @@ import com.kh.fd.vo.kakaopay.KakaoPayFlashVO;
 import com.kh.fd.vo.kakaopay.KakaoPayReadyRequestVO;
 import com.kh.fd.vo.kakaopay.KakaoPayReadyResponseVO;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.servlet.http.HttpServletResponse;
 
 @CrossOrigin
@@ -39,13 +41,19 @@ public class KakaoPayRestController {
 	
 	private Map<String, KakaoPayFlashVO> flashMap = Collections.synchronizedMap(new HashMap<>());
 	
-	@PostMapping("/buy/{reservationId}")
+	@PostMapping("/buy")
 	public KakaoPayReadyResponseVO buy (
-			@PathVariable Long reservationId, 
+			@RequestBody ReservationDto reservationDto, 
 			@RequestHeader("Frontend-Url") String frontendUrl, 
 			@RequestAttribute TokenVO tokenVO
 			) {
-		int total = 10000;//예시 예약금
+		Long reservationId = reservationDto.getReservationId();
+		Long restaurantId = reservationDto.getReservationTarget();
+		
+//		예약금 조회 구문
+//		int total = paymentService.getRestaurantReservationPrice(restaurantId);
+		
+		int total = 10000;//예시 예약금 일단 하드코딩
 		String itemName = "예약 #" + reservationId + " 결제";
 		
 		KakaoPayReadyRequestVO requestVO = KakaoPayReadyRequestVO.builder()
@@ -66,6 +74,33 @@ public class KakaoPayRestController {
 				.build());
 		return responseVO;
 	}
+//	@PostMapping("/buy/{reservationId}")
+//	public KakaoPayReadyResponseVO buy (
+//			@PathVariable Long reservationId, 
+//			@RequestHeader("Frontend-Url") String frontendUrl, 
+//			@RequestAttribute TokenVO tokenVO
+//			) {
+//		int total = 10000;//예시 예약금 일단 하드코딩
+//		String itemName = "예약 #" + reservationId + " 결제";
+//		
+//		KakaoPayReadyRequestVO requestVO = KakaoPayReadyRequestVO.builder()
+//				.partnerOrderId(UUID.randomUUID().toString())
+//				.partnerUserId(tokenVO.getLoginId())
+//				.itemName(itemName)
+//				.totalAmount(total)
+//				.build();
+//		KakaoPayReadyResponseVO responseVO = kakaoPayService.ready(requestVO);
+//		
+//		flashMap.put(requestVO.getPartnerOrderId(), 
+//				KakaoPayFlashVO.builder()
+//				.partnerOrderId(requestVO.getPartnerOrderId())
+//				.partnerUserId(requestVO.getPartnerUserId())
+//				.tid(responseVO.getTid())
+//				.returnUrl(frontendUrl)
+//				.reservationId(reservationId)
+//				.build());
+//		return responseVO;
+//	}
 	@GetMapping("/buy/success/{partnerOrderId}")
 	public void success(@PathVariable String partnerOrderId,
 			@RequestParam("pg_token") String pgToken, HttpServletResponse response) throws IOException {
