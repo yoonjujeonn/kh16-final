@@ -56,9 +56,6 @@ public class AttachmentService {
 		return attachmentNo; // 생성한 파일의 번호를 반환
 	}
 
-	/**
-	 * 파일 내용 불러오기
-	 */
 	public ByteArrayResource load(int attachmentNo) throws IOException {
 		// 파일을 찾는다
 		File target = new File(upload, String.valueOf(attachmentNo));
@@ -71,10 +68,7 @@ public class AttachmentService {
 		return resource;
 	}
 	
-	/**
-	 * 파일 삭제 (DB 삭제 및 실물 파일 삭제)
-	 * - 삭제 시 로그를 기록합니다.
-	 */
+
 	@Transactional
 	public void delete(int attachmentNo) {
 		AttachmentDto attachmentDto = attachmentDao.selectOne(attachmentNo);
