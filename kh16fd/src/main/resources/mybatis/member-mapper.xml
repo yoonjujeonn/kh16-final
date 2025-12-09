@@ -194,9 +194,6 @@
 		)
 	</insert>
 	
-	<update id="updateWithdrawTime">
-		update member set member_withdraw_time=systimestamp where member_id=#{memberId}
-	</update>
 	
 	<update id="updateLoginTime">
 		update member set member_login=systimestamp where member_id=#{memberId}
@@ -206,4 +203,20 @@
 		update member set member_change=systimestamp where member_id=#{memberId}
 	</update>
 	
+	<update id="updateWithdraw">
+		update member 
+		set 
+			member_withdraw_time=systimestamp, 
+			member_status='DORMANT' 
+		where member_id=#{memberId}
+	</update>
+
+	<update id="updateReactivate">
+		update member 
+		set 
+			member_withdraw_time=null, 
+			member_status='ACTIVE' 
+		where member_id=#{memberId}
+	</update>
+
 </mapper>

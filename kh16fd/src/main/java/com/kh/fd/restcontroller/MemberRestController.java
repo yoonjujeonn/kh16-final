@@ -116,7 +116,7 @@ public class MemberRestController {
 			throw new TargetNotFoundException("로그인 정보 오류");
 
 		}
-		
+		memberDao.updateLoginTime(memberDto.getMemberId());
 		return MemberLoginResponseVO.builder()
 					.loginId(findDto.getMemberId()) //아이디
 					.loginLevel(findDto.getMemberLevel()) //등급
@@ -172,24 +172,20 @@ public class MemberRestController {
 		
 		memberDto.setMemberId(memberId);
 		memberDao.updateMember(memberDto);
+		memberDao.updateChangeTime(memberId);
 	}
 	
 	//회원 탈퇴 기능 스케줄러로 설정해야됨 일단 비활성화 기능 만듬
 	@PatchMapping("/{memberId}/deactivate")
-	public void deactivate(@PathVariable String memberId,
-												@RequestBody MemberDto memberDto) {
+	public void deactivate(@PathVariable String memberId) {
 		MemberDto originDto = memberDao.selectOne(memberId);
 		if(originDto == null) throw new TargetNotFoundException();
 		if("관리자".equals(originDto.getMemberLevel())) {
 			throw new UnauthorizationException();
 		}
 //		memberDto.setMemberId(memberId);
-		memberDto.setMemberStatus("DORMANT");
-//		memberDto.setMemberWithdrawTime(java.time.Instant.now());
-		memberDto.setMemberWithdrawTime(LocalDateTime.now());
-		log.debug("시간 생김새 :" + LocalDateTime.now());
+		memberDao.updateWithdraw(memberId);
  
-		memberDao.updateMember(memberDto);
 	}	
 	
 	
@@ -208,6 +204,18 @@ public class MemberRestController {
 		memberDao.insertAdmin(memberDto); 
 	}
 	
+	//회원 탈퇴 롤백 기능 관리자만 허용
+	@PatchMapping("/{memberId}/reactivate")
+	public void reactivate(@PathVariable String memberId ) {
+		MemberDto originDto = memberDao.selectOne(memberId);
+		if(originDto == null) throw new TargetNotFoundException();
+		if("관리자".equals(originDto.getMemberLevel())) {
+			throw new UnauthorizationException();
+		}
+		memberDao.updateReactivate(memberId);
+		
+		
+	}
 	
 	
 }

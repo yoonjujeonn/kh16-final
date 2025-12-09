@@ -69,8 +69,13 @@ public class MemberDao {
 	public boolean updateChangeTime(String memberId) {
 		return sqlSession.update("member.updateChangeTime", memberId) > 0;
 	}
-	public boolean updateWithdrawTime(String memberId) {
-		return sqlSession.update("member.updateWithdrawTime", memberId) > 0;
+	public boolean updateWithdraw(String memberId) {
+		return sqlSession.update("member.updateWithdraw", memberId) > 0;
+	}
+	
+	//관리자 기능에 추가할것
+	public boolean updateReactivate(String memberId) {
+		return sqlSession.update("member.updateReactivate", memberId) > 0;
 	}
 	
 }
