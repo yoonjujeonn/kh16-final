@@ -15,15 +15,21 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 	//현재 토큰 기능은 구현하지 않았습니다
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		
+		 
 		//로그인 이 필요한 기능은 아래 add에 추가하고 
 		//제외 패턴은 exclude에 추가
 		registry.addInterceptor(memberInterceptor)
 							.addPathPatterns(
-									""
+									"/admin/**",
+									"/business/**",
+									"/kakaopay/buy/**", 
+									"/payment/**"
 							)
 							.excludePathPatterns(
-									""
+									"/member/business",
+									"/kakaopay/buy/success/*", 
+									"/kakaopay/buy/fail/*",
+									"/kakaopay/buy/cancel/*"
 							);
 		
 		registry.addInterceptor(tokenRenewalInterceptor)
@@ -33,7 +39,10 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 									"/member/join", //비회원 페이지들은 갱신대상아님
 									"/member/login", //비회원 페이지들은 갱신대상아님
 									"/member/logout", //토큰을 만료시켜야 하므로 갱신대상 아님
-									"/cert/**" //인증은 비회원이 사용하는 기능
+									"/cert/**", //인증은 비회원이 사용하는 기능
+									"/kakaopay/buy/success/*",
+									"/kakaopay/buy/fail/*",
+									"/kakaopay/buy/cancel/*"
 							);
 		
 		
