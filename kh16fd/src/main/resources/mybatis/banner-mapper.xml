@@ -2,15 +2,12 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="banner">
 
-    <!-- 시퀀스 -->
     <select id="sequence" resultType="int">
-    	select banner_seq.nextval from dual
+        select banner_seq.nextval from dual
     </select>
 
-    <!-- C : 등록 -->
     <insert id="insert">
         insert into banner (
             banner_no,
@@ -27,7 +24,6 @@
         )
     </insert>
 
-    <!-- R : 전체 조회 -->
     <select id="list" resultType="BannerDto">
         select
             banner_no as bannerNo,
@@ -39,7 +35,6 @@
         order by banner_order asc, banner_no desc
     </select>
 
-    <!-- R : 상세 조회 -->
     <select id="detail" resultType="BannerDto">
         select
             banner_no as bannerNo,
@@ -51,7 +46,6 @@
         where banner_no = #{bannerNo}
     </select>
 
-    <!-- U : 부분 수정 -->
     <update id="updateUnit">
         update banner
         <set>
@@ -71,7 +65,6 @@
         where banner_no = #{bannerNo}
     </update>
 
-    <!-- D : 삭제 -->
     <delete id="delete">
         delete from banner where banner_no = #{bannerNo}
     </delete>
