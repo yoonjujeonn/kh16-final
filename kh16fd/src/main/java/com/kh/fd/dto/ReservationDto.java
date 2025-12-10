@@ -16,7 +16,7 @@ public class ReservationDto {
 	private String reservationMember;
 	private Long reservationTarget;
 	private Long reservationSeat;
-	private Long reservationTime;
+	private LocalDateTime reservationTime;
 	private Integer reservationPeopleCount;
 	private String reservationStatus;
 	private LocalDateTime reservationSuccessTime;
