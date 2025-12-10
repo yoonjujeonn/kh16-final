@@ -47,7 +47,7 @@
 	<update id="update">
 	update review
 	set review_content = #{reviewContent}, review_rating = #{reviewRating}, review_updated_at = systimestamp
-	where review_no = #{reviewNo}
+	where review_no = #{reviewNo} AND member_id = #{memberId}
 	</update>
 	
 	<!-- 삭제 -->
