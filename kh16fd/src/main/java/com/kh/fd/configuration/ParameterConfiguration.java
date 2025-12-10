@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 public class ParameterConfiguration {
@@ -18,6 +19,8 @@ public class ParameterConfiguration {
 		SimpleModule module = new SimpleModule();
 		module.addDeserializer(String.class, new EmptyStringToNullDeserializer());
 		mapper.registerModule(module);
+		
+		mapper.registerModule(new JavaTimeModule());
 		
 		return mapper; 
 	}
