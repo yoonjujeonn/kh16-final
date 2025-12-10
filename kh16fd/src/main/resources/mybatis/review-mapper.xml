@@ -34,6 +34,15 @@
     where member_id = #{memberId}
     order by review_created_at desc
 	</select>
+	
+	<!-- 별점 관련 조회 -->
+	<!-- <select id="selectAverageRating" resultType="double">
+	select AVG(review_rating) from review where restaurant_id = #{restaurantId}
+	</select>
+	
+	<select id="selectReviewCount">
+	select count(*) from review where restaurant_id = #{restaurantId}
+	</select> -->
 
 	<!-- 상세 -->
 	<select id="detail" resultType="ReviewDto">
@@ -47,7 +56,7 @@
 	<update id="update">
 	update review
 	set review_content = #{reviewContent}, review_rating = #{reviewRating}, review_updated_at = systimestamp
-	where review_no = #{reviewNo}
+	where review_no = #{reviewNo} AND member_id = #{memberId}
 	</update>
 	
 	<!-- 삭제 -->

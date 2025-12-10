@@ -13,9 +13,5 @@ public class AttachmentDto {
     private String attachmentType;
     private java.sql.Timestamp attachmentTime;
 
-    private Integer restaurantNo;
-    private Integer bannerNo;
-    private Integer categoryNo;
-    private Integer reviewNo;
 }
 
