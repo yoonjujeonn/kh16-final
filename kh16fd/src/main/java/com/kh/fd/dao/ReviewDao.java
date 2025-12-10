@@ -44,4 +44,16 @@ public class ReviewDao {
 		return sqlSession.delete("review.delete", reviewNo) > 0;
 	}
 
+	// 평균 별점 조회
+//	public double selectAverageRating(int restaurantId) {
+//		Double avg = sqlSession.selectOne("review.selectAverageRating", restaurantId);
+//		return avg != null ? avg : 0.0;
+//	}
+//
+//	// 특정 식당 리뷰 개수 조회
+//	public int selectReviewCount(int restaurantId) {
+//		Integer count = sqlSession.selectOne("review.selectReviewCount", restaurantId);
+//		return count != null ? count : 0;
+//	}
+
 }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.kh.fd.dao.RestaurantDao;
 import com.kh.fd.dto.RestaurantDto;
-import com.kh.fd.service.SlotService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequestMapping("/admin")
 public class AdminRestController {
-	@Autowired
-	private SlotService slotService;
 	@Autowired
 	private RestaurantDao restaurantDao;
 	
@@ -35,9 +32,6 @@ public class AdminRestController {
 		return restaurantDao.selectOne(restaurantId);
 	}
 	
-	@PostMapping("/time/{restaurantId}")
-	public void addTimeSlot(@PathVariable long restaurantId) {
-		slotService.createTimeSlots(restaurantId);
-	}
+	
 	
 }
