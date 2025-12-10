@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.ReviewDto;
-import com.kh.fd.vo.TokenVO;
 
+@Repository
 public class ReviewDao {
 
 	@Autowired
@@ -24,8 +25,8 @@ public class ReviewDao {
 	}
 
 	// 특정 사용자가 작성한 리뷰 목록 조회
-	public List<ReviewDto> selectListByUser(TokenVO tokenVO) {
-		return sqlSession.selectList("review.listByUser", tokenVO);
+	public List<ReviewDto> selectListByUser(String memberId) {
+		return sqlSession.selectList("review.listByUser", memberId);
 	}
 
 	// 리뷰 상세 조회

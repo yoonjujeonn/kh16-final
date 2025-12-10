@@ -23,7 +23,6 @@ public class AttachmentDao {
         Integer restaurantNo = dto.getRestaurantNo() == 0 ? null : dto.getRestaurantNo();
         Integer bannerNo = dto.getBannerNo() == 0 ? null : dto.getBannerNo();
         Integer categoryNo = dto.getCategoryNo() == 0 ? null : dto.getCategoryNo();
-        Integer reviewNo = dto.getReviewNo() == 0 ? null : dto.getReviewNo();
 
         // 둘 중 두 개가 동시에 들어가면 안 됨
         if (restaurantNo != null && bannerNo != null) {
@@ -36,16 +35,10 @@ public class AttachmentDao {
         sqlSession.insert("attachment.insert", dto);
     }
 
-    /**
-     * 3. 단일 조회
-     */
     public AttachmentDto selectOne(int attachmentNo) {
         return sqlSession.selectOne("attachment.selectOne", attachmentNo);
     }
 
-    /**
-     * 4. 삭제
-     */
     public boolean delete(int attachmentNo) {
         return sqlSession.delete("attachment.delete", attachmentNo) > 0;
     }
