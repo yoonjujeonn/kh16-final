@@ -19,12 +19,12 @@ import com.kh.fd.vo.SeatVO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
-@Tag(name = "슬롯 관리 컨트롤러")
+@Tag(name = "좌석 관리 컨트롤러")
 @Slf4j
 @CrossOrigin
 @RestController
 @RequestMapping("/slot")
-public class SlotRestController {
+public class SeatRestController {
 	@Autowired
 	private SeatDao seatDao;
 	

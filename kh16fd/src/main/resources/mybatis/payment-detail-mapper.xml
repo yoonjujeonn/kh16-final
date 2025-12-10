@@ -37,5 +37,10 @@
 	select * from payment_detail where payment_detail_no = #{paymentDetailNo}
 	</select>
 	
+	<select id="check" resultType="int">
+		select count(*) from payment_detail 
+		where payment_detail_origin = #{paymentNo} 
+		and payment_detail_status = '승인'
+	</select>
 </mapper>
 

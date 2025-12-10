@@ -1,7 +1,6 @@
 package com.kh.fd.error;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -26,6 +25,10 @@ public class ErrorRestControllerAdvice {
 		return ResponseEntity.status(403).build();
 	}
 	
+	@ExceptionHandler(ReservationConflictException.class)
+	public ResponseEntity<String> reservationConflict(ReservationConflictException e){
+		return ResponseEntity.status(409).build();
+	}
 	//나머지 모든 예외
 	//- 사용자에게는 별거 아닌 것처럼, 개발자에게는 아주 상세한 정보를 남긴다
 	@ExceptionHandler(Exception.class)

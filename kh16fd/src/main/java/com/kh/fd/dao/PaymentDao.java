@@ -34,4 +34,5 @@ public class PaymentDao {
 		return sqlSession.update("payment.cancel", paymentNo)>0;
 		
 	}
+	
 }
