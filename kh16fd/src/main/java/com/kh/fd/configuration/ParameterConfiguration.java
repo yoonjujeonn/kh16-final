@@ -19,7 +19,7 @@ public class ParameterConfiguration {
 		module.addDeserializer(String.class, new EmptyStringToNullDeserializer());
 		mapper.registerModule(module);
 		
-		return mapper;
+		return mapper; 
 	}
 	
 }
