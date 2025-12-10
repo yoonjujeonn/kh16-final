@@ -19,5 +19,4 @@ public class ReservationDto {
 	private LocalDateTime reservationTime;
 	private Integer reservationPeopleCount;
 	private String reservationStatus;
-	private LocalDateTime reservationSuccessTime;
 }

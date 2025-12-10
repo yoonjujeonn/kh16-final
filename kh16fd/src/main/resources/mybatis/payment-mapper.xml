@@ -36,5 +36,5 @@
 		where
 		payment_no=#{paymentNo}
 	</update>
-
+	
 </mapper>

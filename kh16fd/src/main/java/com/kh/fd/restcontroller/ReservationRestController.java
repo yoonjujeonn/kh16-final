@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.fd.dto.ReservationDto;
+import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.service.KakaoPayService;
 import com.kh.fd.service.PaymentService;
+import com.kh.fd.service.ReservationService;
 import com.kh.fd.vo.TokenVO;
 import com.kh.fd.vo.kakaopay.KakaoPayApproveRequestVO;
 import com.kh.fd.vo.kakaopay.KakaoPayApproveResponseVO;
@@ -32,29 +34,42 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/kakaopay")
-public class KakaoPayRestController {
+@RequestMapping("/reservation")
+public class ReservationRestController {
 	@Autowired
 	private KakaoPayService kakaoPayService;
+	
 	@Autowired
 	private PaymentService paymentService;
 	
-	private Map<String, KakaoPayFlashVO> flashMap = Collections.synchronizedMap(new HashMap<>());
+	@Autowired
+	private ReservationService reservationService;
 	
-	@PostMapping("/buy")
+	private Map<String, KakaoPayFlashVO> flashMap = Collections.synchronizedMap(new HashMap<>());
+
+	
+	@PostMapping("/pay")
 	public KakaoPayReadyResponseVO buy (
 			@RequestBody ReservationDto reservationDto, 
 			@RequestHeader("Frontend-Url") String frontendUrl, 
 			@RequestAttribute TokenVO tokenVO
 			) {
+		
+		//중복 검사
+		
+		
 		Long reservationId = reservationDto.getReservationId();
-		Long restaurantId = reservationDto.getReservationTarget();
 		
-//		예약금 조회 구문
-//		int total = paymentService.getRestaurantReservationPrice(restaurantId);
+		RestaurantDto target = reservationService.checkConflictAndSendTarget(reservationDto);
 		
-		int total = 10000;//예시 예약금 일단 하드코딩
-		String itemName = "예약 #" + reservationId + " 결제";
+		int price = target.getRestaurantReservationPrice();
+		int people = reservationDto.getReservationPeopleCount();
+		
+		int total = price * people ; //예약금 * 인원
+		
+		String targetName = target.getRestaurantName();
+		
+		String itemName = "예약 #" + reservationId + " (" + targetName + " ) 결제 건";
 		
 		KakaoPayReadyRequestVO requestVO = KakaoPayReadyRequestVO.builder()
 				.partnerOrderId(UUID.randomUUID().toString())
@@ -64,6 +79,8 @@ public class KakaoPayRestController {
 				.build();
 		KakaoPayReadyResponseVO responseVO = kakaoPayService.ready(requestVO);
 		
+		
+		
 		flashMap.put(requestVO.getPartnerOrderId(), 
 				KakaoPayFlashVO.builder()
 				.partnerOrderId(requestVO.getPartnerOrderId())
@@ -71,40 +88,17 @@ public class KakaoPayRestController {
 				.tid(responseVO.getTid())
 				.returnUrl(frontendUrl)
 				.reservationId(reservationId)
+				.reservationDto(reservationDto)
 				.build());
 		return responseVO;
 	}
-//	@PostMapping("/buy/{reservationId}")
-//	public KakaoPayReadyResponseVO buy (
-//			@PathVariable Long reservationId, 
-//			@RequestHeader("Frontend-Url") String frontendUrl, 
-//			@RequestAttribute TokenVO tokenVO
-//			) {
-//		int total = 10000;//예시 예약금 일단 하드코딩
-//		String itemName = "예약 #" + reservationId + " 결제";
-//		
-//		KakaoPayReadyRequestVO requestVO = KakaoPayReadyRequestVO.builder()
-//				.partnerOrderId(UUID.randomUUID().toString())
-//				.partnerUserId(tokenVO.getLoginId())
-//				.itemName(itemName)
-//				.totalAmount(total)
-//				.build();
-//		KakaoPayReadyResponseVO responseVO = kakaoPayService.ready(requestVO);
-//		
-//		flashMap.put(requestVO.getPartnerOrderId(), 
-//				KakaoPayFlashVO.builder()
-//				.partnerOrderId(requestVO.getPartnerOrderId())
-//				.partnerUserId(requestVO.getPartnerUserId())
-//				.tid(responseVO.getTid())
-//				.returnUrl(frontendUrl)
-//				.reservationId(reservationId)
-//				.build());
-//		return responseVO;
-//	}
-	@GetMapping("/buy/success/{partnerOrderId}")
+	
+	
+	@GetMapping("/pay/success/{partnerOrderId}")
 	public void success(@PathVariable String partnerOrderId,
 			@RequestParam("pg_token") String pgToken, HttpServletResponse response) throws IOException {
 		KakaoPayFlashVO flashVO = flashMap.remove(partnerOrderId);
+		
 		//결제 승인을 위한 데이터 생성
 				KakaoPayApproveRequestVO requestVO = KakaoPayApproveRequestVO.builder()
 							.partnerOrderId(flashVO.getPartnerOrderId())
@@ -117,18 +111,21 @@ public class KakaoPayRestController {
 				KakaoPayApproveResponseVO responseVO = kakaoPayService.approve(requestVO);
 				
 				//DB 저장 코드 (payment, payment_detail)
-				paymentService.insert(responseVO, flashVO);
+				long paymentNo = paymentService.insert(responseVO, flashVO);
+				
+				//결제 완료 시 예약 테이블 저장
+				reservationService.createReservation(flashVO.getReservationDto(), paymentNo);
 				
 				response.sendRedirect(flashVO.getReturnUrl() + "/success");
 	}
 	
-	@GetMapping("/buy/cancel/{partnerOrderId}")
+	@GetMapping("/pay/cancel/{partnerOrderId}")
 	public void cancel(@PathVariable String partnerOrderId, HttpServletResponse response) throws IOException {
 		KakaoPayFlashVO flashVO = flashMap.remove(partnerOrderId);
 		response.sendRedirect(flashVO.getReturnUrl() + "/cancel");
 	}
 	
-	@GetMapping("/buy/fail/{partnerOrderId}")
+	@GetMapping("/pay/fail/{partnerOrderId}")
 	public void fail(@PathVariable String partnerOrderId, HttpServletResponse response) throws IOException {
 		KakaoPayFlashVO flashVO = flashMap.remove(partnerOrderId);
 		response.sendRedirect(flashVO.getReturnUrl() + "/fail");

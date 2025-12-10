@@ -34,4 +34,9 @@ public class PaymentDetailDao {
 	public PaymentDetailDto selectOne(long paymentDetailNo) {
 		return sqlSession.selectOne("paymentDetail.detail",paymentDetailNo);
 	}
+	
+	public boolean checkComplete(long paymentNo) {
+		int count = sqlSession.selectOne("paymentDetail.check", paymentNo);
+		return count > 0;
+	}
 }

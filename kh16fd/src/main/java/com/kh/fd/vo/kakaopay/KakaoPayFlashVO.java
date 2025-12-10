@@ -2,6 +2,7 @@ package com.kh.fd.vo.kakaopay;
 
 import java.util.List;
 
+import com.kh.fd.dto.ReservationDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +18,6 @@ public class KakaoPayFlashVO {
 	private String returnUrl;// 복귀 주소
 	private List<KakaoPayQtyVO> qtyList;
 	private Long reservationId;
+	private ReservationDto reservationDto;
 
 }
