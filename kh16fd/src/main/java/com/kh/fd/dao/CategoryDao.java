@@ -19,7 +19,7 @@ public class CategoryDao {
     }
 
     public List<CategoryDto> selectList() {
-    	return sqlSession.selectList("category.list");
+        return sqlSession.selectList("category.list");
     }
     
     public void insert(CategoryDto categoryDto) {
