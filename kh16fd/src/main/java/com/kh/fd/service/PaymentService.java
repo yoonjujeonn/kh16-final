@@ -31,8 +31,9 @@ public class PaymentService {
 //	@Autowired
 //	private ReservationDao reservationDao;
 	
+	//예약 시 결제 여부 확인을 위해 paymentNo를 반환
 	@Transactional
-	public void insert(KakaoPayApproveResponseVO responseVO, KakaoPayFlashVO flashVO) {
+	public long insert(KakaoPayApproveResponseVO responseVO, KakaoPayFlashVO flashVO) {
 		
 		Long reservationId = flashVO.getReservationId();
 //		ReservationDto reservationDto = reservationDao.selectOne(reservationId);
@@ -67,6 +68,9 @@ public class PaymentService {
 							.paymentDetailItemPrice(itemPrice)// 판매가
 							.paymentDetailQty(1)// 구매수량
 							.build());
+					
+					
+					return paymentNo;
 	}
 	
 	@Transactional
