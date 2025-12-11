@@ -19,7 +19,7 @@ public class ReviewService {
 	private AttachmentService attachmentService;
 
 	@Transactional
-	public void insertReview(ReviewDto reviewDto, MultipartFile attach) {
+	public void insert(ReviewDto reviewDto, MultipartFile attach) {
 		Integer attachmentNo = null;
 
 		if (attach != null && !attach.isEmpty()) {
@@ -34,7 +34,7 @@ public class ReviewService {
 	}
 
 	@Transactional
-	public boolean updateReview(ReviewDto reviewDto, MultipartFile newAttach) {
+	public boolean update(ReviewDto reviewDto, MultipartFile newAttach) {
 		ReviewDto existingReview = reviewDao.selectOne(reviewDto.getReviewNo());
 		if (existingReview == null) {
 			throw new TargetNotFoundException("수정 대상 리뷰가 존재하지 않습니다.");
@@ -74,7 +74,7 @@ public class ReviewService {
 	}
 
 	@Transactional
-	public boolean deleteReview(int reviewNo) {
+	public boolean delete(int reviewNo) { // ⭐⭐ memberId 파라미터 추가
 
 		// 1. 리뷰 조회 (파일 번호를 얻기 위해 필수)
 		ReviewDto existingReview = reviewDao.selectOne(reviewNo);
