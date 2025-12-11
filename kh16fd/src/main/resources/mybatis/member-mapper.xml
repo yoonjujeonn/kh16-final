@@ -76,40 +76,21 @@
 			<if test="memberBirth != null">
 			and member_birth = #{memberBirth}
 			</if>
-			<!--포인트: 구간검색 -->
-			<choose>
-				<when test="minmemberPoint != null and maxmemberPoint != null">
-					and member_point between #{minmemberPoint} and #{maxmemberPoint}
-				</when>
-				<when test="minmemberPoint != null">
-					<!-- and member_point &gt;= #{minmemberPoint} -->
-					<!--사용 못하는 글자가 있음 char data 구문을 만들어 표시 -->
-					<![CDATA[
-						and member_point >= #{minmemberPoint}
-					]]> 
-				</when>
-				<when test="maxmemberPoint != null">
-					<![CDATA[
-						and member_point <= #{minmemberPoint}
-					]]> 
-					<!-- and member_point &lt;= #{maxmemberPoint}-->
-				</when>
-			</choose>
 			
 			<!-- 가입일: 구간 검색 -->
 			<choose>
-				<when test="beginmemberJoin != null and endmemberJoin != null">
+				<when test="beginMemberJoin != null and endMemberJoin != null">
 					and member_join between 
 						to_timestamp(#{beginmemberJoin} || '00:00:00.000', 'yyyy-mm-dd hh24:mi:ss.ff3') 
 						and 
 						to_timestamp(#{endmemberJoin} || '23:59:59.999', 'yyyy-mm-dd hh24:mi:ss.ff3')
 				</when>
-				<when test="beginmemberJoin != null">
+				<when test="beginMemberJoin != null">
 					<![CDATA[
 						and member_join >= to_timestamp(#{beginmemberJoin} || '00:00:00.000', 'yyyy-mm-dd hh24:mi:ss.ff3') 
 					]]> 
 				</when>
-				<when test="endmemberJoin != null">
+				<when test="endMemberJoin != null">
 					<![CDATA[
 						and member_join <= to_timestamp(#{endmemberJoin} || '23:59:59.999', 'yyyy-mm-dd hh24:mi:ss.ff3')
 					]]> 
@@ -218,5 +199,21 @@
 			member_status='ACTIVE' 
 		where member_id=#{memberId}
 	</update>
+	
+	<select id="findMember" resultType="memberDto">
+		select
+			member_nickname,
+			member_birth,
+			member_contact,
+			member_email,
+			member_post,
+			member_address1,
+			member_address2
+		from
+		member
+		where member_id=#{memberId}
+		AND member_status = 'ACTIVE'
+	</select>
+	
 
 </mapper>

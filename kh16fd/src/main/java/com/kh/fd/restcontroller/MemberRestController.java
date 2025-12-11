@@ -215,9 +215,21 @@ public class MemberRestController {
 			throw new UnauthorizationException();
 		}
 		memberDao.updateReactivate(memberId);
-		
-		
+			
 	}
+	
+	@GetMapping("/{memberId}")
+	public MemberDto selectActiveOne(@PathVariable String memberId) {
+		MemberDto memberDto = memberDao.selectActiveOne(memberId);
+		if(memberDto == null) throw new TargetNotFoundException("존재하지 않는 회원");
+		return memberDto;
+	}
+//	@PostMapping("/{memberId}")
+//	public MemberDto selectActiveOne(@PathVariable String memberId) {
+//		MemberDto memberDto = memberDao.selectActiveOne(memberId);
+//		if(memberDto == null) throw new TargetNotFoundException("존재하지 않는 회원");
+//		return memberDto;
+//	}
 	
 	
 }
