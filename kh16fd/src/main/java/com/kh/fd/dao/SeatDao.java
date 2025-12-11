@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.kh.fd.dto.SeatDto;
 import com.kh.fd.error.TargetNotFoundException;
 import com.kh.fd.vo.SeatListVO;
+import com.kh.fd.vo.SlotListVO;
 
 @Repository
 public class SeatDao {
@@ -36,5 +37,9 @@ public class SeatDao {
 	//미리보기용 좌석 리스트
 	public List<SeatListVO> selectListByGroup(long seatRestaurantId){
 		return sqlSession.selectList("seat.listByGroup", seatRestaurantId);
+	}
+	
+	public List<SlotListVO> selectListWithReservation(long seatRestaurantId){
+		return sqlSession.selectList("seat.listWithReservation", seatRestaurantId);
 	}
 }

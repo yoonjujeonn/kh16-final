@@ -15,6 +15,7 @@ import com.kh.fd.dao.SeatDao;
 import com.kh.fd.dto.SeatDto;
 import com.kh.fd.vo.SeatListVO;
 import com.kh.fd.vo.SeatVO;
+import com.kh.fd.vo.SlotListVO;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,11 @@ public class SeatRestController {
 	@GetMapping("/seat/{restaurantId}")
 	public List<SeatListVO> list(@PathVariable long restaurantId){
 		return seatDao.selectListByGroup(restaurantId);
+	}
+	
+	@GetMapping("/{restaurantId}")
+	public List<SlotListVO> slotList(@PathVariable long restaurantId){
+		return seatDao.selectListWithReservation(restaurantId);
 	}
 	
 }
