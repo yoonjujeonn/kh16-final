@@ -58,20 +58,13 @@ public class RestaurantRestController {
 	private AttachmentDao attachmentDao;
 	
 	@PostMapping("/")
-	public RestaurantDto add(
-	    @RequestBody RestaurantRegisterVO restaurantRegisterVO,
-	    @RequestHeader(value = "Authorization", required = false) String bearerToken
-	) {
+	public RestaurantDto add(@RequestBody RestaurantRegisterVO restaurantRegisterVO, @RequestHeader("Authorization") String bearerToken) {
+	    TokenVO tokenVO = tokenService.parse(bearerToken);
 
-	    if (bearerToken != null) {
-	        TokenVO tokenVO = tokenService.parse(bearerToken);
-	        restaurantRegisterVO.setOwnerId(tokenVO.getLoginId());
-	    } else {
-	        // 토큰이 없으면 임시 owner 넣기 (DB에 있는 회원이어야 함!)
-	        restaurantRegisterVO.setOwnerId("testowner1");
-	    }
+	    restaurantRegisterVO.setOwnerId(tokenVO.getLoginId());
 
 	    long restaurantId = restaurantService.createRestaurant(restaurantRegisterVO);
+	    
 	    return restaurantDao.selectOne(restaurantId);
 	}
 
