@@ -48,7 +48,7 @@ public class RestaurantRestController {
 	        TokenVO tokenVO = tokenService.parse(bearerToken);
 	        restaurantRegisterVO.setOwnerId(tokenVO.getLoginId());
 	    } else {
-	        // 🔥 토큰이 없으면 임시 owner 넣기 (DB에 있는 회원이어야 함!)
+	        // 토큰이 없으면 임시 owner 넣기 (DB에 있는 회원이어야 함!)
 	        restaurantRegisterVO.setOwnerId("testowner1");
 	    }
 
