@@ -1,6 +1,8 @@
 package com.kh.fd.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.error.TargetNotFoundException;
 import com.kh.fd.vo.RestaurantListVO;
 import com.kh.fd.vo.SearchVO;
+import com.kh.fd.vo.PageVO;
+import com.kh.fd.vo.RestaurantListVO;
 
 @Repository
 public class RestaurantDao {
@@ -34,8 +38,30 @@ public class RestaurantDao {
 		return restaurantDto;
 	}
 	
-	public List<RestaurantDto> selectApprovalList(){
-		return sqlSession.selectList("restaurant.listNeedApprove");
+	public List<RestaurantDto> selectApprovalList(PageVO pageVO){
+		Map<String, Integer> params = new HashMap<>();
+		params.put("begin", pageVO.getBegin());
+		params.put("end", pageVO.getEnd());
+		return sqlSession.selectList("restaurant.listNeedApprove", params);
+	}
+	
+	//카테고리 + 지역그룹 포함 식당 목록
+	public List<RestaurantListVO> selectListWithCategory(PageVO pageVO){
+		Map<String, Integer> params = new HashMap<>();
+		params.put("begin", pageVO.getBegin());
+		params.put("end", pageVO.getEnd());
+		
+		return sqlSession.selectList("restaurant.listWithCategory", params);
+	}
+	
+	//페이지 계산(목록)
+	public int listCount() {
+		return sqlSession.selectOne("restaurant.listCount");
+	}
+	
+	//페이지 계산(승인해야할 식당 목록)
+	public int approvalCount() {
+		return sqlSession.selectOne("restaurant.approvalListCount");
 	}
 	//검색용
 	public List<RestaurantListVO> searchList(SearchVO searchVO) {

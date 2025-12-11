@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "리뷰 관리 컨트롤러")
 @CrossOrigin
 @RestController
-@RequestMapping("/restaurant/{restaurantId}/review")
+@RequestMapping("/restaurant/detail/{restaurantId}/review")
 public class ReviewRestController {
 	@Autowired
 	private ReviewDao reviewDao;

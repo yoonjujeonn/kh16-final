@@ -12,42 +12,35 @@
 	<insert id="insert">
 		insert into review(
 		review_no, review_content,review_rating,
-		restaurant_id, member_id, review_created_at)
+		restaurant_id, member_id, review_created_at, 
+        review_attachment_no)
 		values(
 		review_seq.nextval, #{reviewContent},
-		#{reviewRating}, #{restaurantId}, #{memberId}, systimestamp
+		#{reviewRating}, #{restaurantId}, #{memberId}, systimestamp, #{reviewAttachmentNo}
 		)
 	</insert>
 
 	<!-- 조회 -->
 	<select id="listByRestaurant" resultType="ReviewDto">
 	select 
-	review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at
+	review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at, review_attachment_no
 	from review
 	where restaurant_id = #{restaurantId}
 	order by review_created_at desc
 	</select>
 	<select id="listByUser" resultType="ReviewDto">
 	select 
-    review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at
+    review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at, review_attachment_no
     from review
     where member_id = #{memberId}
     order by review_created_at desc
 	</select>
 	
-	<!-- 별점 관련 조회 -->
-	<!-- <select id="selectAverageRating" resultType="double">
-	select AVG(review_rating) from review where restaurant_id = #{restaurantId}
-	</select>
-	
-	<select id="selectReviewCount">
-	select count(*) from review where restaurant_id = #{restaurantId}
-	</select> -->
 
 	<!-- 상세 -->
 	<select id="detail" resultType="ReviewDto">
 	select 
-	review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at
+	review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at, review_attachment_no
 	FROM review
 	WHERE review_no = #{reviewNo}
 	</select>
@@ -55,7 +48,7 @@
 	<!-- 수정 -->
 	<update id="update">
 	update review
-	set review_content = #{reviewContent}, review_rating = #{reviewRating}, review_updated_at = systimestamp
+	set review_content = #{reviewContent}, review_rating = #{reviewRating}, review_updated_at = systimestamp, review_attachment_no = #{reviewAttachmentNo}
 	where review_no = #{reviewNo} AND member_id = #{memberId}
 	</update>
 	

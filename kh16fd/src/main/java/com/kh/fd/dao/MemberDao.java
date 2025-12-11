@@ -73,9 +73,15 @@ public class MemberDao {
 		return sqlSession.update("member.updateWithdraw", memberId) > 0;
 	}
 	
+	//활성화 된 회원 찾기
+	public MemberDto selectActiveOne(String memberId) {
+		return sqlSession.selectOne("member.findMember", memberId);
+	}
+	
 	//관리자 기능에 추가할것
 	public boolean updateReactivate(String memberId) {
 		return sqlSession.update("member.updateReactivate", memberId) > 0;
 	}
+	
 	
 }
