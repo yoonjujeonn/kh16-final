@@ -18,6 +18,6 @@ public class CategoryMappingDao {
         map.put("restaurantId", restaurantId);
         map.put("categoryNo", categoryNo);
         
-        sqlSession.insert("restaurantCategoryMapping.insert", map);
+        sqlSession.insert("categoryMapping.insert", map);
     }
 }

@@ -8,12 +8,18 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.error.TargetNotFoundException;
+import com.kh.fd.vo.RestaurantListVO;
+import com.kh.fd.vo.SearchVO;
 
 @Repository
 public class RestaurantDao {
 	
 	@Autowired
 	private SqlSession sqlSession;
+	
+	public long sequence() {
+	    return sqlSession.selectOne("restaurant.sequence");
+	}
 	
 	public RestaurantDto insert(RestaurantDto restaurantDto) {
 		long sequence = sqlSession.selectOne("restaurant.sequence");
@@ -30,5 +36,9 @@ public class RestaurantDao {
 	
 	public List<RestaurantDto> selectApprovalList(){
 		return sqlSession.selectList("restaurant.listNeedApprove");
+	}
+	//검색용
+	public List<RestaurantListVO> searchList(SearchVO searchVO) {
+	    return sqlSession.selectList("restaurant.searchList", searchVO);
 	}
 }
