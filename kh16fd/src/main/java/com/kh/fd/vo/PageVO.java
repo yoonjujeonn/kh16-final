@@ -6,7 +6,7 @@ import lombok.Data;
 public class PageVO {
 	private int page = 1; 
 	//현재 페이지 번호 - defaultValue를 1로 설정
-	private int size = 8; 
+	private int size = 4;
 	//한 페이지에 표시할 데이터(게시글) 수- defaultValue를 10으로 설정
 	private String column, keyword; 
 	//검색항목, 검색어-기본값 : null(안써도 됨)

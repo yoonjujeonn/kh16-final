@@ -36,4 +36,5 @@
   		select * from reservation 
   		where reservation_id = #{reservation_id}
   	</select>
+  	
 </mapper>
