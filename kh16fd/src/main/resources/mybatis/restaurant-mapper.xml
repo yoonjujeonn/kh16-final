@@ -82,6 +82,22 @@
         delete from restaurant 
         where restaurant_id = #{restaurantId}
     </delete>
+    
+    <!-- 식당 검색 (지역 그룹 매핑용) -->
+	<select id="searchList" parameterType="com.kh.fd.vo.SearchVO" resultType="com.kh.fd.vo.RestaurantListVO">
+		select restaurant_id, restaurant_name
+			from restaurant_list
+		where instr(${column}, #{keyword}) > 0 and place_id not in (
+            select place_id
+            from place_group_mapping
+            where place_group_id = #{placeGroupId})
+    	group by
+        	restaurant_id, restaurant_name
+
+	</select>
+    
+
+=======
 	
 	<!-- 카테고리/지역 그룹 합쳐서 조회(정렬 기본) + 페이지적용 -->
 	<select id="listWithCategory" resultType="RestaurantListVO">

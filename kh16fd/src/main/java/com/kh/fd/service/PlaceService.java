@@ -1,5 +1,7 @@
 package com.kh.fd.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +12,7 @@ import com.kh.fd.dao.PlaceGroupMappingDao;
 import com.kh.fd.dto.PlaceDto;
 import com.kh.fd.dto.PlaceGroupDto;
 import com.kh.fd.dto.PlaceGroupMappingDto;
+import com.kh.fd.vo.PlaceGroupMappingRequestVO;
 
 @Service
 public class PlaceService {
@@ -45,7 +48,6 @@ public class PlaceService {
 	    } else {
 	        placeId = place.getPlaceId();
 	    }
-
 	    // 2. depth1 그룹(예: "서울") 조회 또는 생성
 	    PlaceGroupDto depth1Group = placeGroupDao.selectByName(depth1);
 	    long depth1GroupId;
@@ -60,7 +62,6 @@ public class PlaceService {
 	    } else {
 	        depth1GroupId = depth1Group.getPlaceGroupId();
 	    }
-
 	    // 3. depth1 전체 그룹("서울 전체") 조회 또는 생성
 	    String wholeGroupName = depth1 + " 전체";
 	    PlaceGroupDto wholeGroup = placeGroupDao.selectByName(wholeGroupName);
@@ -76,7 +77,6 @@ public class PlaceService {
 	    } else {
 	        wholeGroupId = wholeGroup.getPlaceGroupId();
 	    }
-
 	    // 4. 매핑
 	    boolean hasResult = placeGroupMappingDao.selectByMapping(placeId, depth1GroupId);
 	    if(!hasResult) {
@@ -97,6 +97,34 @@ public class PlaceService {
 
 	    return placeId;
 	}
+	@Transactional
+    public void createMapping(PlaceGroupMappingRequestVO placeGroupMappingRequestVO) {
+        List<Long> restaurantIds = placeGroupMappingRequestVO.getRestaurantIds();
+        Long placeGroupId = placeGroupMappingRequestVO.getPlaceGroupId();
+        for (Long restaurantId : restaurantIds) {
+            PlaceDto place = placeDao.selectPlaceByRestaurantId(restaurantId);
+            if (place == null) continue;
+            Long placeId = place.getPlaceId();
+            mappingWithParents(placeId, placeGroupId);
+        }
+    }
 	
-	
+    private void mappingWithParents(Long placeId, Long placeGroupId) {
+        Long currentGroupId = placeGroupId;
+        while (currentGroupId != null) {
+            boolean exists =
+                placeGroupMappingDao.selectByMapping(placeId, currentGroupId);
+            if (!exists) {
+                placeGroupMappingDao.insert(
+                    PlaceGroupMappingDto.builder()
+                        .placeId(placeId)
+                        .placeGroupId(currentGroupId)
+                        .build()
+                );
+            }
+         
+            currentGroupId = placeGroupDao.findParentGroupId(currentGroupId);
+        }
+    }
 }
+

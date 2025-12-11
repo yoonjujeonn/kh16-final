@@ -18,6 +18,7 @@ import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.dto.RestaurantHolidayDto;
 import com.kh.fd.service.RestaurantService;
 import com.kh.fd.service.TokenService;
+import com.kh.fd.vo.RestaurantRegisterVO;
 import com.kh.fd.vo.PageVO;
 import com.kh.fd.vo.RestaurantListPagingVO;
 import com.kh.fd.vo.RestaurantListVO;
@@ -41,12 +42,23 @@ public class RestaurantRestController {
 	private RestaurantHolidayDao restaurantHolidayDao;
 	
 	@PostMapping("/")
-	public RestaurantDto add(@RequestBody RestaurantDto restaurantDto, @RequestHeader("Authorization") String bearerToken) {
-		TokenVO tokenVO = tokenService.parse(bearerToken);
-		restaurantDto.setOwnerId(tokenVO.getLoginId());
-		long restaurantId = restaurantService.createRestaurant(restaurantDto);
-		return restaurantDao.selectOne(restaurantId);
+	public RestaurantDto add(
+	    @RequestBody RestaurantRegisterVO restaurantRegisterVO,
+	    @RequestHeader(value = "Authorization", required = false) String bearerToken
+	) {
+
+	    if (bearerToken != null) {
+	        TokenVO tokenVO = tokenService.parse(bearerToken);
+	        restaurantRegisterVO.setOwnerId(tokenVO.getLoginId());
+	    } else {
+	        // 토큰이 없으면 임시 owner 넣기 (DB에 있는 회원이어야 함!)
+	        restaurantRegisterVO.setOwnerId("testowner1");
+	    }
+
+	    long restaurantId = restaurantService.createRestaurant(restaurantRegisterVO);
+	    return restaurantDao.selectOne(restaurantId);
 	}
+
 	
 	@PostMapping("/holiday")
 	public void add(@RequestBody List<RestaurantHolidayDto> holidays) {

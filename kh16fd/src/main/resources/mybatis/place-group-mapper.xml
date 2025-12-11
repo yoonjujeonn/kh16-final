@@ -25,4 +25,10 @@
   <select id="selectByName" resultType="PlaceGroupDto">
   	select * from place_group where place_group_name = #{depth1}
   </select>
+  
+  <select id="findParentGroupId" resultType="long">
+  	select parent_group_id
+  	from place_group
+  	where place_group_id = #{placeGroupId}
+  </select>
 </mapper>
