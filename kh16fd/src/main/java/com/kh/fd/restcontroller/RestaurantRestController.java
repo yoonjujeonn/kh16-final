@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -48,6 +50,13 @@ public class RestaurantRestController {
 		for(RestaurantHolidayDto holidayDto : holidays) {
 			restaurantHolidayDao.insert(holidayDto);
 		}
+	}
+	
+	@GetMapping("/{restaurantId}")
+	public RestaurantDto detail(@PathVariable long restaurantId) {
+		RestaurantDto restaurantDto = restaurantDao.selectOne(restaurantId);
+		
+		return restaurantDto;
 	}
 	
 }
