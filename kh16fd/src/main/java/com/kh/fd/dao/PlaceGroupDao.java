@@ -22,11 +22,14 @@ public class PlaceGroupDao {
 		sqlSession.insert("placeGroup.insert", placeGroupDto);
 	}
 	
+	//이름으로 그룹 찾기
 	public PlaceGroupDto selectByName(String depth1) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("depth1", depth1);
 		
 		return sqlSession.selectOne("placeGroup.selectByName", params);
 	}
-	
+	public Long findParentGroupId(Long placeGroupId) {
+        return sqlSession.selectOne("placeGroup.findParentGroupId", placeGroupId);
+    }
 }

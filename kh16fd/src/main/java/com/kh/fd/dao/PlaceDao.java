@@ -12,6 +12,7 @@ import com.kh.fd.dto.PlaceDto;
 
 @Repository
 public class PlaceDao {
+
 	@Autowired
 	private SqlSession sqlSession;
 	
@@ -23,7 +24,7 @@ public class PlaceDao {
 		sqlSession.insert("place.insert", placeDto);
 	}
 	
-	//depth별 조회
+	// depth별 조회
 	public PlaceDto selectByDepth(String depth1, String depth2, String depth3) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("depth1", depth1);
@@ -33,13 +34,11 @@ public class PlaceDao {
 		return sqlSession.selectOne("place.selectByDepth", params);
 	}
 	
-	//	상위지역
-	public List<String> upperPlaceList() {
-        return sqlSession.selectList("place.upperPlaceList");
-    }
-
-    //하위지역 목록
-    public List<String> lowerPlaceList(String upperPlace) {
-        return sqlSession.selectList("place.lowerPlaceList", upperPlace);
+    // 관리자 지역 매핑용
+    public PlaceDto selectPlaceByRestaurantId(Long restaurantId) {
+        return sqlSession.selectOne(
+            "place.selectPlaceByRestaurantId",
+            restaurantId
+        );
     }
 }

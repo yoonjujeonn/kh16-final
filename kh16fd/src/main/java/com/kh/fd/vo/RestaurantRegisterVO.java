@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RestaurantRegisterVO {
 
-    private String ownerId;                
+    private String ownerId;
+    private Long restaurantId;
     private Long restaurantPlace;          
     private String restaurantName;
     private String restaurantOpen;
@@ -24,9 +25,12 @@ public class RestaurantRegisterVO {
     private Integer reservationInterval;
     private String restaurantContact;
     private String restaurantAddress;
+    private String address1;
+    private String address2;
     private double restaurantAddressX;
     private double restaurantAddressY;
     private String restaurantDescription;
     private String restaurantOpeningDays;
+    private Integer restaurantReservationPrice;
     private List<Long> categoryIdList;  
 }

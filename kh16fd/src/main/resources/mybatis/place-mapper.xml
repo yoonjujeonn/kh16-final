@@ -47,5 +47,18 @@
         WHERE place_depth1 = #{upperPlace}
         ORDER BY place_depth2 ASC
     </select>
+    
+    <!-- 식당 Id로 place 조회 -->
+    <select id="selectPlaceByRestaurantId" resultType="placeDto">
+        select
+            p.place_id     as placeId,
+            p.place_depth1 as placeDepth1,
+            p.place_depth2 as placeDepth2,
+            p.place_depth3 as placeDepth3
+        from place p
+        join restaurant r
+          on r.restaurant_place = p.place_id
+        where r.restaurant_id = #{restaurantId}
+    </select>
 
 </mapper>

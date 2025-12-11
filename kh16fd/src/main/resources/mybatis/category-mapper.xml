@@ -66,5 +66,31 @@
     <delete id="delete">
         delete from category where category_no = #{categoryNo}
     </delete>
+    
+    <!-- 상위카테고리 조회 -->
+    <select id="listParent" resultType="CategoryDto">
+        select 
+            category_no as categoryNo,
+            category_name as categoryName,
+            parent_category_no as parentCategoryNo,
+            category_order as categoryOrder
+        from category
+        where parent_category_no is null
+        order by category_order asc
+    </select>
+
+	<!-- 하위카테고리 조회 -->
+    <select id="listByParent" parameterType="int" resultType="CategoryDto">
+        select 
+            category_no as categoryNo,
+            category_name as categoryName,
+            parent_category_no as parentCategoryNo,
+            category_order as categoryOrder
+        from category
+        where parent_category_no = #{parentNo}
+        order by category_order asc
+    </select>
+    
+    
 
 </mapper>

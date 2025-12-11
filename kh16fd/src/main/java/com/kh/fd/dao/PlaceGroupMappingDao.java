@@ -11,21 +11,23 @@ import com.kh.fd.dto.PlaceGroupMappingDto;
 
 @Repository
 public class PlaceGroupMappingDao {
+	
 	@Autowired
 	private SqlSession sqlSession;
 	
-	public void insert(PlaceGroupMappingDto placeGroupMappingDto) {
-		sqlSession.insert("placeGroupMapping.insert", placeGroupMappingDto);
+	public void insert(PlaceGroupMappingDto dto) {
+		sqlSession.insert("placeGroupMapping.insert", dto);
 	}
-	
-	public boolean selectByMapping(long placeId, long placeGroupId) {
+//	매핑 확인
+	public boolean selectByMapping(Long placeId, Long placeGroupId) {
 		Map<String, Object> params = new HashMap<>();
-		
 		params.put("placeId", placeId);
 		params.put("placeGroupId", placeGroupId);
 		
-		int count = sqlSession.selectOne("placeGroupMapping.selectByMapping", params);
+		Integer count = sqlSession.selectOne(
+				"placeGroupMapping.selectByMapping", params
+		);
 		
-		return count > 0;
+		return count != null && count > 0;
 	}
 }
