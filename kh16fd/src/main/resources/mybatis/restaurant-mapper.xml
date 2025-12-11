@@ -96,6 +96,16 @@
 
 	</select>
 	
+		<!-- 식당 프로필 설정 -->
+  	<insert id="connect">
+  		insert into restaurant_profile values (#{restaurantId}, #{attachmentNo})
+  	</insert>
+  	
+  	<!-- 식당 번호로 첨부파일 반환 -->
+  	<select id="findProfile" resultType="int">
+  		select attachment_no from restaurant_profile where restaurant_id = #{restaurantId}
+  	</select>
+  	
 	<!-- 카테고리/지역 그룹 합쳐서 조회(정렬 기본) + 페이지적용 -->
 	<select id="listWithCategory" resultType="RestaurantListVO">
 		SELECT * FROM (

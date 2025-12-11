@@ -63,6 +63,22 @@ public class RestaurantDao {
 	public int approvalCount() {
 		return sqlSession.selectOne("restaurant.approvalListCount");
 	}
+	
+	//식당 프로필 이미지 등록
+	public void connect(long restaurantId, int attachmentNo) {
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("restaurantId", restaurantId);
+		params.put("attachmentNo", attachmentNo);
+		
+		sqlSession.insert("restaurant.connect", params);
+	}
+	
+	//번호로 파일 찾기
+	public int findAttachment(long restaurantId) {
+		return sqlSession.selectOne("restaurant.findProfile", restaurantId);
+	}
+	
 	//검색용
 	public List<RestaurantListVO> searchList(SearchVO searchVO) {
 	    return sqlSession.selectList("restaurant.searchList", searchVO);
