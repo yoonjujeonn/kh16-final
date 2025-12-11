@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.kh.fd.dao.RestaurantDao;
 import com.kh.fd.dto.RestaurantDto;
+import com.kh.fd.vo.PageVO;
+import com.kh.fd.vo.RestaurantApprovalListVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,9 +24,23 @@ public class AdminRestController {
 	private RestaurantDao restaurantDao;
 	
 	//승인 안된 식당 리스트
-	@GetMapping("/")
-	public List<RestaurantDto> approvalList(){
-		return restaurantDao.selectApprovalList();
+	@GetMapping("/page/{page}")
+	public RestaurantApprovalListVO approvalList(@PathVariable int page){
+		PageVO pageVO = new PageVO();
+		pageVO.setPage(page);
+		pageVO.setDataCount(restaurantDao.approvalCount());
+		
+		List<RestaurantDto> list = restaurantDao.selectApprovalList(pageVO);
+		
+		return RestaurantApprovalListVO.builder()
+					.page(pageVO.getPage())
+					.size(pageVO.getSize())
+					.count(pageVO.getDataCount())
+					.begin(pageVO.getBegin())
+					.end(pageVO.getEnd())
+					.last(pageVO.getPage() >= pageVO.getTotalPage())
+					.list(list)
+				.build();
 	}
 	//상세 조회
 	@PostMapping("/{restaurantId}")

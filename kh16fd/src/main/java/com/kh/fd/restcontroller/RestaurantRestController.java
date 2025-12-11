@@ -18,6 +18,9 @@ import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.dto.RestaurantHolidayDto;
 import com.kh.fd.service.RestaurantService;
 import com.kh.fd.service.TokenService;
+import com.kh.fd.vo.PageVO;
+import com.kh.fd.vo.RestaurantListPagingVO;
+import com.kh.fd.vo.RestaurantListVO;
 import com.kh.fd.vo.TokenVO;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,6 +60,25 @@ public class RestaurantRestController {
 		RestaurantDto restaurantDto = restaurantDao.selectOne(restaurantId);
 		
 		return restaurantDto;
+	}
+	
+	@GetMapping("/page/{page}")
+	public RestaurantListPagingVO list(@PathVariable int page){
+		PageVO pageVO = new PageVO();
+		pageVO.setPage(page);
+		pageVO.setDataCount(restaurantDao.listCount());
+		
+		List<RestaurantListVO> list = restaurantDao.selectListWithCategory(pageVO);
+		
+		return RestaurantListPagingVO.builder()
+					.page(pageVO.getPage())
+					.size(pageVO.getSize())
+					.count(pageVO.getDataCount())
+					.begin(pageVO.getBegin())
+					.end(pageVO.getEnd())
+					.last(pageVO.getPage() >= pageVO.getTotalPage())
+					.list(list)
+				.build();
 	}
 	
 }

@@ -37,10 +37,15 @@
 	
 	<!-- 승인 안된 식당 리스트 조회 -->
 	<select id="listNeedApprove" resultType="RestaurantDto">
-		select * from restaurant 
-		where restaurant_status = 'N' 
-		order by restaurant_id asc;
+		select * from (
+			select rownum rn, TMP.* from (
+				select * from restaurant 
+				where restaurant_status = 'N' 
+				order by restaurant_id asc
+			)TMP 
+		) where rn between #{begin} and #{end}
 	</select>
+	
     <!-- R(상세) -->
     <select id="detail" resultType="RestaurantDto">
         select *
@@ -77,5 +82,39 @@
         delete from restaurant 
         where restaurant_id = #{restaurantId}
     </delete>
-
+	
+	<!-- 카테고리/지역 그룹 합쳐서 조회(정렬 기본) + 페이지적용 -->
+	<select id="listWithCategory" resultType="RestaurantListVO">
+		SELECT * FROM (
+		    SELECT rownum AS rn, TMP.*
+		    FROM (
+		        SELECT *
+		        FROM (
+		            SELECT rl.*,
+		                   ROW_NUMBER() OVER (
+		                       PARTITION BY restaurant_id 
+		                       ORDER BY restaurant_id
+		                   ) AS dup_rn
+		            FROM restaurant_full_list rl
+		        ) t
+		        WHERE t.dup_rn = 1
+		        ORDER BY restaurant_id
+		    ) TMP
+		) 
+		WHERE rn BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<select id="listCount" resultType="int">
+		SELECT COUNT(*)
+			FROM (
+    			SELECT rl.*, ROW_NUMBER() OVER 
+    			(PARTITION BY restaurant_id ORDER BY restaurant_id) AS rn
+    		FROM restaurant_full_list rl
+		) t
+		WHERE t.rn = 1
+	</select>
+	
+	<select id="approvalListCount" resultType="int">
+		select count(*) from restaurant where restaurant_status = 'N'
+	</select>
 </mapper>
