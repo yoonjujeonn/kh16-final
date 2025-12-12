@@ -26,8 +26,8 @@ public class RestaurantService {
 
         @Transactional
         public long createRestaurant(RestaurantRegisterVO restaurantRegisterVO) {
-
-            String address = restaurantRegisterVO.getRestaurantAddress();
+            
+        	String address = restaurantRegisterVO.getRestaurantAddress();
             long placeId = placeService.createPlaceAndMapping(address);
             restaurantRegisterVO.setRestaurantPlace(placeId);
 

@@ -57,8 +57,6 @@ public class RestaurantRestController {
 	private AttachmentService attachmentService;
 	@Autowired
 	private AttachmentDao attachmentDao;
-	@Autowired
-	private SearchVO searchVO;
 	
 	@PostMapping("/")
 	public RestaurantDto add(@RequestBody RestaurantRegisterVO restaurantRegisterVO, @RequestHeader("Authorization") String bearerToken) {
