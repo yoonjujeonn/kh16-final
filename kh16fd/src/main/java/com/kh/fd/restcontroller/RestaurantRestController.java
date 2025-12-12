@@ -30,10 +30,11 @@ import com.kh.fd.dto.RestaurantHolidayDto;
 import com.kh.fd.service.AttachmentService;
 import com.kh.fd.service.RestaurantService;
 import com.kh.fd.service.TokenService;
-import com.kh.fd.vo.RestaurantRegisterVO;
 import com.kh.fd.vo.PageVO;
 import com.kh.fd.vo.RestaurantListPagingVO;
 import com.kh.fd.vo.RestaurantListVO;
+import com.kh.fd.vo.RestaurantRegisterVO;
+import com.kh.fd.vo.SearchVO;
 import com.kh.fd.vo.TokenVO;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -67,7 +68,11 @@ public class RestaurantRestController {
 	    
 	    return restaurantDao.selectOne(restaurantId);
 	}
-
+	
+	@PostMapping("/search")
+	public List<RestaurantListVO> search(@RequestBody SearchVO searchVO) {
+	    return restaurantDao.searchList(searchVO);
+	}
 	
 	@PostMapping("/holiday")
 	public void add(@RequestBody List<RestaurantHolidayDto> holidays) {

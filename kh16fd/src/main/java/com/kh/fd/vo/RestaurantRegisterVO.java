@@ -2,6 +2,8 @@ package com.kh.fd.vo;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RestaurantRegisterVO {
 
     private String ownerId;
@@ -25,12 +28,10 @@ public class RestaurantRegisterVO {
     private Integer reservationInterval;
     private String restaurantContact;
     private String restaurantAddress;
-    private String address1;
-    private String address2;
     private double restaurantAddressX;
     private double restaurantAddressY;
     private String restaurantDescription;
     private String restaurantOpeningDays;
     private Integer restaurantReservationPrice;
-    private List<Long> categoryIdList;  
+    private List<Long> categoryIdList;
 }

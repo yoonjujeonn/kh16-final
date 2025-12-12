@@ -22,12 +22,12 @@ public class RestaurantService {
     private PlaceService placeService;
 
     @Autowired
-    private CategoryMappingDao categoryMappingDao; // 
+    private CategoryMappingDao categoryMappingDao; 
 
         @Transactional
         public long createRestaurant(RestaurantRegisterVO restaurantRegisterVO) {
-
-            String address = restaurantRegisterVO.getRestaurantAddress();
+            
+        	String address = restaurantRegisterVO.getRestaurantAddress();
             long placeId = placeService.createPlaceAndMapping(address);
             restaurantRegisterVO.setRestaurantPlace(placeId);
 
