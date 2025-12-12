@@ -54,9 +54,9 @@ public class ReviewRestController {
 	    reviewDto.setReviewContent(reviewContent);
 	    reviewDto.setReviewRating(reviewRating);
 //	    reviewDto.setReviewAttachmentNo(attachmentDao.sequence());
-	    System.out.println("레스트컨트롤러 실행");
+//	    System.out.println("레스트컨트롤러 실행");
 	    reviewService.insert(reviewDto, attach);
-	    System.out.println("레스트컨트롤러 종료");
+//	    System.out.println("레스트컨트롤러 종료");
 	}
 
 	// 특정 식당의 리뷰 목록 조회

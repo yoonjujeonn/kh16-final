@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class WishlistDto {
-    private int wishlistNo;
-    private String memberId;
-    private int restaurantId;
-    private java.sql.Timestamp createdAt;
+	private String memberId;
+	private int restaurantId;
 }
