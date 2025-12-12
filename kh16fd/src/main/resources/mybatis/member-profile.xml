@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberProfile">
+  
+  	<insert id="insertProfile" parameterType="map">
+  		insert into member-profile (
+  			member_id
+  			,attachment_no
+  		) values (
+  			#{memberId}
+  			,#{attachmentNo}
+  		)
+  	</insert>
+  
+	<select id="selectAttachmentNoByMemberId"  parameterType="string" resultType="int">
+		select attachment_no
+		from member_profile
+		where member_id = #{memberId}
+	</select>
+	
+	<delete id="deleteByMemberId" parameterType="string">
+		delete from member_profile
+		where member_id = #{member_id}
+	</delete>
+  
+  	
+  
+  
+</mapper>
