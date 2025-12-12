@@ -31,6 +31,7 @@ import com.kh.fd.service.AttachmentService;
 import com.kh.fd.service.RestaurantService;
 import com.kh.fd.service.TokenService;
 import com.kh.fd.vo.RestaurantRegisterVO;
+import com.kh.fd.vo.SearchVO;
 import com.kh.fd.vo.PageVO;
 import com.kh.fd.vo.RestaurantListPagingVO;
 import com.kh.fd.vo.RestaurantListVO;
@@ -56,6 +57,8 @@ public class RestaurantRestController {
 	private AttachmentService attachmentService;
 	@Autowired
 	private AttachmentDao attachmentDao;
+	@Autowired
+	private SearchVO searchVO;
 	
 	@PostMapping("/")
 	public RestaurantDto add(@RequestBody RestaurantRegisterVO restaurantRegisterVO, @RequestHeader("Authorization") String bearerToken) {
@@ -67,7 +70,11 @@ public class RestaurantRestController {
 	    
 	    return restaurantDao.selectOne(restaurantId);
 	}
-
+	
+	@PostMapping("/search")
+	public List<RestaurantListVO> search(@RequestBody SearchVO searchVO) {
+	    return restaurantDao.searchList(searchVO);
+	}
 	
 	@PostMapping("/holiday")
 	public void add(@RequestBody List<RestaurantHolidayDto> holidays) {
