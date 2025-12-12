@@ -215,5 +215,9 @@
 		AND member_status = 'ACTIVE'
 	</select>
 	
+	<delete id="'delete">
+		delete from member where member_id = #{member_id}
+	</delete>
+	
 
 </mapper>
