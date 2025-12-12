@@ -35,7 +35,7 @@
         order by restaurant_id desc
     </select>
 	
-	<!-- 승인 안된 식당 리스트 조회 -->
+	<!-- 승인 대기 식당 리스트 조회 -->
 	<select id="listNeedApprove" resultType="RestaurantDto">
 		select * from (
 			select rownum rn, TMP.* from (
@@ -83,19 +83,46 @@
         where restaurant_id = #{restaurantId}
     </delete>
     
-    <!-- 식당 검색 (지역 그룹 매핑용) -->
-	<select id="searchList" parameterType="com.kh.fd.vo.SearchVO" resultType="com.kh.fd.vo.RestaurantListVO">
-		select restaurant_id, restaurant_name
-			from restaurant_list
-		where instr(${column}, #{keyword}) > 0 and place_id not in (
-            select place_id
-            from place_group_mapping
-            where place_group_id = #{placeGroupId})
-    	group by
-        	restaurant_id, restaurant_name
+    <!-- 통합 검색 -->
+    <select id="searchlist" parameterType="com.kh.fd.vo.SearchVO" resultType="RestaurantListVO">
 
-	</select>
-	
+        select distinct
+            r.restaurant_id,
+            r.restaurant_name,
+            r.restaurant_address
+        from restaurant r
+        left join place p
+            on r.restaurant_place = p.place_id
+        left join restaurant_category rc
+            on r.restaurant_id = rc.restaurant_id
+        left join category c
+            on rc.category_no = c.category_no
+        where 1=1
+
+        <if test="keyword != null and keyword != ''">
+            and (
+                r.restaurant_name like '%' || #{keyword} || '%'
+                or r.restaurant_address like '%' || #{keyword} || '%'
+                or p.place_sido like '%' || #{keyword} || '%'
+                or p.place_sigungu like '%' || #{keyword} || '%'
+                or p.place_dong like '%' || #{keyword} || '%'
+                or c.category_name like '%' || #{keyword} || '%'
+            )
+        </if>
+
+        <if test="placeGroupId != null">
+            and p.place_group_id = #{placeGroupId}
+        </if>
+
+        <if test="categoryId != null">
+            and c.category_no = #{categoryId}
+        </if>
+
+        order by r.restaurant_id desc
+    </select>
+    
+    
+    
 		<!-- 식당 프로필 설정 -->
   	<insert id="connect">
   		insert into restaurant_profile values (#{restaurantId}, #{attachmentNo})
