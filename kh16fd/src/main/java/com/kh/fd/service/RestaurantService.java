@@ -22,7 +22,7 @@ public class RestaurantService {
     private PlaceService placeService;
 
     @Autowired
-    private CategoryMappingDao categoryMappingDao; // 
+    private CategoryMappingDao categoryMappingDao; 
 
         @Transactional
         public long createRestaurant(RestaurantRegisterVO restaurantRegisterVO) {
