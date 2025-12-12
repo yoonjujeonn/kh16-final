@@ -1,10 +1,13 @@
 package com.kh.fd.service;
 
+import java.io.IOException;
+import com.kh.fd.restcontroller.SeatRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.fd.dao.AttachmentDao;
 import com.kh.fd.dao.ReviewDao;
 import com.kh.fd.dto.ReviewDto;
 import com.kh.fd.error.TargetNotFoundException;
@@ -12,25 +15,35 @@ import com.kh.fd.error.TargetNotFoundException;
 @Service
 public class ReviewService {
 
+    private final SeatRestController seatRestController;
+
 	@Autowired
 	private ReviewDao reviewDao;
 
 	@Autowired
 	private AttachmentService attachmentService;
 
-	@Transactional
-	public void insert(ReviewDto reviewDto, MultipartFile attach) {
-		Integer attachmentNo = null;
+	@Autowired
+	private AttachmentDao attachmentDao;
 
-		if (attach != null && !attach.isEmpty()) {
-			try {
-				attachmentNo = attachmentService.save(attach);
-				reviewDto.setReviewAttachmentNo(attachmentNo);
-			} catch (Exception e) {
-				throw new RuntimeException("첨부 파일 저장에 실패했습니다. 리뷰 등록이 취소됩니다");
-			}
-		}
-		reviewDao.insert(reviewDto);
+    ReviewService(SeatRestController seatRestController) {
+        this.seatRestController = seatRestController;
+    }
+	
+	@Transactional
+	// ⭐ Checked Exception을 throws에 선언
+	public void insert(ReviewDto reviewDto, MultipartFile attach) throws IllegalStateException, IOException {
+//	    Integer attachmentNo = null;
+//		reviewDto.setReviewAttachmentNo(attachmentDao.sequence());
+		System.out.println("리뷰서비스 메소드 실행");
+		System.out.println(reviewDto);
+		System.out.println("attach=" + attach);
+	    if (attach != null && !attach.isEmpty()) {
+	        Integer attachmentNo = attachmentService.save(attach);
+	        System.out.println("attachmentNo=" + attachmentNo);
+	        reviewDto.setReviewAttachmentNo(attachmentNo);
+	    }
+	    reviewDao.insert(reviewDto);
 	}
 
 	@Transactional
@@ -43,34 +56,33 @@ public class ReviewService {
 		Integer finalAttachmentNo = oldAttachmentNo;
 
 		try {
-			if (newAttach != null && !newAttach.isEmpty()) {
-				if (oldAttachmentNo != null) {
-					attachmentService.delete(oldAttachmentNo);
-				}
+	        // 1. 새로운 파일이 들어온 경우 처리
+	        if (newAttach != null && !newAttach.isEmpty()) {
+	            finalAttachmentNo = attachmentService.save(newAttach);
+	        } 
+	        // 2. 새 파일은 없는데, 기존 파일을 삭제하기로 한 경우 (리액트에서 null로 보냈을 때)
+	        else if (reviewDto.getReviewAttachmentNo() == null) {
+	            finalAttachmentNo = null;
+	        }
 
-				finalAttachmentNo = attachmentService.save(newAttach);
-			}
-			// 2-2. 새 파일이 없고, 기존 파일이 있었는데 삭제 요청이 온 경우
-			// (Controller에서 넘어온 reviewDto의 reviewAttachmentNo가 null이라고 가정)
-			else if (oldAttachmentNo != null && reviewDto.getReviewAttachmentNo() == null) {
-				attachmentService.delete(oldAttachmentNo);
-				finalAttachmentNo = null; // DB에 NULL 저장 준비
-			}
-			// 2-3. 내용만 수정하거나, 이미지 없는 상태 유지 (finalAttachmentNo는 oldAttachmentNo 유지)
+	        // 3. ⭐ DB를 먼저 업데이트 (순서 변경!)
+	        // 리뷰 테이블의 사진 번호를 먼저 바꾸거나 지워야 외래키 연결이 끊깁니다.
+	        reviewDto.setReviewAttachmentNo(finalAttachmentNo);
+	        boolean isUpdated = reviewDao.update(reviewDto);
 
-			// DTO에 최종 파일 번호 설정 (finalAttachmentNo가 null이면 DB에 NULL 저장)
-			reviewDto.setReviewAttachmentNo(finalAttachmentNo);
+	        // 4. ⭐ DB 업데이트가 성공한 후, 연결이 끊어진 '옛날 사진'을 삭제
+	        if (isUpdated && oldAttachmentNo != null) {
+	            // 새 파일로 교체되었거나(finalAttachmentNo가 새 번호), 삭제 요청(null)인 경우
+	            if (finalAttachmentNo == null || !oldAttachmentNo.equals(finalAttachmentNo)) {
+	                attachmentService.delete(oldAttachmentNo);
+	            }
+	        }
 
-			// 3. 리뷰 정보 업데이트
-			return reviewDao.update(reviewDto);
+	        return isUpdated;
 
-		} catch (TargetNotFoundException e) {
-			// 이 예외는 위에서 이미 처리되었으나, 혹시 delete/save 내부에서 발생할 경우를 대비
-			throw e;
-		} catch (Exception e) {
-			// 기타 오류 발생 시 롤백
-			throw new RuntimeException("리뷰 수정 및 파일 처리 중 오류 발생", e);
-		}
+	    } catch (Exception e) {
+	        throw new RuntimeException("리뷰 수정 및 파일 처리 중 오류 발생", e);
+	    }
 	}
 
 	@Transactional
