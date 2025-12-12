@@ -1,5 +1,6 @@
 package com.kh.fd.restcontroller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.fd.dao.AttachmentDao;
 import com.kh.fd.dao.ReviewDao;
 import com.kh.fd.dto.ReviewDto;
 import com.kh.fd.error.TargetNotFoundException;
@@ -32,19 +34,42 @@ public class ReviewRestController {
 
 	@Autowired
 	private ReviewService reviewService;
+	
+	@Autowired
+	private AttachmentDao attachmentDao;
 
 	// 리뷰 등록
 	@PostMapping("/")
-	public void insert(@PathVariable int restaurantId, ReviewDto reviewDto,
-			@RequestParam(required = false) MultipartFile attach) {
-		reviewDto.setRestaurantId(restaurantId);
-		reviewService.insert(reviewDto, attach);
+	public void insert(@PathVariable int restaurantId, 
+	        @RequestParam(required = false) MultipartFile attach, // 1. 파일 바인딩 충돌 방지
+	        @RequestParam String memberId, 
+	        @RequestParam String reviewContent,
+	        @RequestParam double reviewRating) throws IllegalStateException, IOException {
+	    
+	    // 2. DTO 수동 생성 및 설정
+	    ReviewDto reviewDto = new ReviewDto();
+	    
+	    reviewDto.setRestaurantId(restaurantId);
+	    reviewDto.setMemberId(memberId);
+	    reviewDto.setReviewContent(reviewContent);
+	    reviewDto.setReviewRating(reviewRating);
+//	    reviewDto.setReviewAttachmentNo(attachmentDao.sequence());
+//	    System.out.println("레스트컨트롤러 실행");
+	    reviewService.insert(reviewDto, attach);
+//	    System.out.println("레스트컨트롤러 종료");
 	}
 
 	// 특정 식당의 리뷰 목록 조회
 	@GetMapping("/")
 	public List<ReviewDto> ListByRestaurant(@PathVariable int restaurantId) {
 		return reviewDao.selectListByRestaurant(restaurantId);
+	}
+	
+	//내가 쓴 리뷰
+	@GetMapping("/myList")
+	public List<ReviewDto> listByUser(@RequestParam String memberId) {
+	    // ReviewDao에 구현된 특정 사용자의 리뷰 조회 메서드를 호출합니다.
+		return reviewDao.selectListByUser(memberId);
 	}
 
 	// 리뷰 상세

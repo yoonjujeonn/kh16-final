@@ -1,4 +1,3 @@
-
 package com.kh.fd.vo;
 
 import lombok.AllArgsConstructor;
@@ -6,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class RestaurantListVO {
 
 	private Long restaurantId;
@@ -26,4 +25,3 @@ public class RestaurantListVO {
 	private Long categoryNo;
 	private String categoryName;
 }
-

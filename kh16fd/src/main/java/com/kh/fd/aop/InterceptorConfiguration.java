@@ -11,6 +11,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 	private TokenRenewalInterceptor tokenRenewalInterceptor;
 	@Autowired
 	private MemberInterceptor memberInterceptor;
+	@Autowired
+	private AdminInterceptor adminInterceptor;
 	
 	//현재 토큰 기능은 구현하지 않았습니다
 	@Override
@@ -45,7 +47,19 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 									"/kakaopay/buy/cancel/*"
 							);
 		
-		
+		registry.addInterceptor(adminInterceptor)
+	    .addPathPatterns(
+	        "/admin/**",
+	        "/banner/**"
+	    )
+	    .excludePathPatterns(
+	        "/admin/setting",
+	        "/category/add",
+	        "/category/list",
+	        "/banner/add",
+	        "/banner/list",
+	        "/error/**"
+	    );
 	}
 	
 }

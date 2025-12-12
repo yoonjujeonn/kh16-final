@@ -5,13 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class SearchVO {
 
-    private String column;        // 검색 컬럼 (ex: restaurant_address)
-    private String keyword;       // 검색 키워드 (ex: 강남)
-    private Long placeGroupId;    // 선택한 그룹 (ex: 핫플 ID)
+	private String keyword;     // 서울, 강남, 한식, 소고기(통합검색 구현)
+	private Long placeGroupId;     // 지역 필터  (핫플, 서울권 등)
+    private Long categoryId;       // 카테고리 필터 (상/하위 카테고리)
 }

@@ -83,5 +83,8 @@ public class MemberDao {
 		return sqlSession.update("member.updateReactivate", memberId) > 0;
 	}
 	
+	public boolean delete(String memberId) {
+		return sqlSession.update("member.delete", memberId) > 0;
+	}
 	
 }
