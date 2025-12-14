@@ -84,43 +84,40 @@
     </delete>
     
     <!-- 통합 검색 -->
-    <select id="searchlist" parameterType="com.kh.fd.vo.SearchVO" resultType="RestaurantListVO">
+    <select id="searchList"
+        parameterType="com.kh.fd.vo.SearchVO"
+        resultType="com.kh.fd.vo.RestaurantListVO">
 
-        select distinct
-            r.restaurant_id,
-            r.restaurant_name,
-            r.restaurant_address
-        from restaurant r
-        left join place p
-            on r.restaurant_place = p.place_id
-        left join restaurant_category rc
-            on r.restaurant_id = rc.restaurant_id
-        left join category c
-            on rc.category_no = c.category_no
-        where 1=1
+    select distinct
+        r.restaurant_id,
+        r.restaurant_name,
+        r.restaurant_address
+    from restaurant r
+    left join place p
+        on r.restaurant_place = p.place_id
+    left join category_mapping cm
+        on r.restaurant_id = cm.restaurant_id
+    left join category c
+        on cm.category_no = c.category_no
+    where 1=1
 
-        <if test="keyword != null and keyword != ''">
-            and (
-                r.restaurant_name like '%' || #{keyword} || '%'
-                or r.restaurant_address like '%' || #{keyword} || '%'
-                or p.place_sido like '%' || #{keyword} || '%'
-                or p.place_sigungu like '%' || #{keyword} || '%'
-                or p.place_dong like '%' || #{keyword} || '%'
-                or c.category_name like '%' || #{keyword} || '%'
-            )
-        </if>
+    <if test="keyword != null and keyword != ''">
+        and (
+            r.restaurant_name like '%' || #{keyword} || '%'
+            or r.restaurant_address like '%' || #{keyword} || '%'
+            or p.place_depth1 like '%' || #{keyword} || '%'
+            or p.place_depth2 like '%' || #{keyword} || '%'
+            or p.place_depth3 like '%' || #{keyword} || '%'
+            or c.category_name like '%' || #{keyword} || '%'
+        )
+    </if>
 
-        <if test="placeGroupId != null">
-            and p.place_group_id = #{placeGroupId}
-        </if>
+    <if test="categoryId != null">
+        and c.category_no = #{categoryId}
+    </if>
 
-        <if test="categoryId != null">
-            and c.category_no = #{categoryId}
-        </if>
-
-        order by r.restaurant_id desc
-    </select>
-    
+    order by r.restaurant_id desc
+</select>
     
     
 		<!-- 식당 프로필 설정 -->

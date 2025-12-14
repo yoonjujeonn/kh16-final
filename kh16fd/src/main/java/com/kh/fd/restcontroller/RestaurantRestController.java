@@ -82,11 +82,9 @@ public class RestaurantRestController {
 		}
 	}
 	
-	@GetMapping("/{restaurantId}")
+	@GetMapping("/detail/{restaurantId}")
 	public RestaurantDto detail(@PathVariable long restaurantId) {
-		RestaurantDto restaurantDto = restaurantDao.selectOne(restaurantId);
-		
-		return restaurantDto;
+	    return restaurantDao.selectOne(restaurantId);
 	}
 	
 	@GetMapping("/page/{page}")
