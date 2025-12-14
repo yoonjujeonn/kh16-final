@@ -30,14 +30,15 @@ import com.kh.fd.dto.RestaurantHolidayDto;
 import com.kh.fd.service.AttachmentService;
 import com.kh.fd.service.RestaurantService;
 import com.kh.fd.service.TokenService;
-import com.kh.fd.vo.RestaurantRegisterVO;
-import com.kh.fd.vo.SearchVO;
 import com.kh.fd.vo.PageVO;
 import com.kh.fd.vo.RestaurantListPagingVO;
 import com.kh.fd.vo.RestaurantListVO;
+import com.kh.fd.vo.RestaurantRegisterVO;
+import com.kh.fd.vo.SearchVO;
 import com.kh.fd.vo.TokenVO;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 @Tag(name = "식당 관리 컨트롤러")
 @Slf4j
@@ -59,7 +60,7 @@ public class RestaurantRestController {
 	private AttachmentDao attachmentDao;
 	
 	@PostMapping("/")
-	public RestaurantDto add(@RequestBody RestaurantRegisterVO restaurantRegisterVO, @RequestHeader("Authorization") String bearerToken) {
+	public RestaurantDto add(@Valid @RequestBody RestaurantRegisterVO restaurantRegisterVO, @RequestHeader("Authorization") String bearerToken) {
 	    TokenVO tokenVO = tokenService.parse(bearerToken);
 
 	    restaurantRegisterVO.setOwnerId(tokenVO.getLoginId());
