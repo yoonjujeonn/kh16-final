@@ -29,6 +29,7 @@ public class ErrorRestControllerAdvice {
 	public ResponseEntity<String> reservationConflict(ReservationConflictException e){
 		return ResponseEntity.status(409).build();
 	}
+	
 	//나머지 모든 예외
 	//- 사용자에게는 별거 아닌 것처럼, 개발자에게는 아주 상세한 정보를 남긴다
 	@ExceptionHandler(Exception.class)

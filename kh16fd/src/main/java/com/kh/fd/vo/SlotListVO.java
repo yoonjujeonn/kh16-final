@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +24,7 @@ public class SlotListVO {
 	private Long reservationTarget;
 	private Integer reservationPeopleCount;
 	private String reservationStatus;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime reservationTime;
 	private Long reservationSeat;
 	private Long seatId;

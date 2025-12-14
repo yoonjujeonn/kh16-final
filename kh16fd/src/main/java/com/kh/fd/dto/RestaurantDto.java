@@ -3,6 +3,7 @@ package com.kh.fd.dto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -28,12 +29,13 @@ public class RestaurantDto {
     private Integer reservationInterval;
     private String restaurantContact;
     private String restaurantAddress;
-    private double restaurantAddressX;
-    private double restaurantAddressY;
+    private Double restaurantAddressX;
+    private Double restaurantAddressY;
     private String restaurantDescription;
     private String restaurantOpeningDays;
     private String restaurantStatus;
-    private double restaurantAvgRating;
+    private Double restaurantAvgRating;
     private Integer restaurantReservationPrice;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime restaurantCreatedAt;
 }
