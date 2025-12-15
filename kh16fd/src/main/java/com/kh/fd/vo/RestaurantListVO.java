@@ -26,4 +26,5 @@ public class RestaurantListVO {
 	private String placeGroupName;
 	private Long categoryNo;
 	private String categoryName;
+	private Integer restaurantMaxPeople;
 }
