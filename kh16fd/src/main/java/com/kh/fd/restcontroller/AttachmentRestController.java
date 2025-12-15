@@ -36,9 +36,7 @@ public class AttachmentRestController {
         ByteArrayResource resource = attachmentService.load(attachmentNo);
 
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(attachmentDto.getAttachmentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "inline; filename=\"" + attachmentDto.getAttachmentName() + "\"")
-                .body(resource);
+        	    .contentType(MediaType.parseMediaType(attachmentDto.getAttachmentType()))
+        	    .body(resource);
     }
 }
