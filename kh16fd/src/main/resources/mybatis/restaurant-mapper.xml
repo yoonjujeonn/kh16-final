@@ -30,8 +30,7 @@
 
     <!-- R(전체) -->
     <select id="list" resultType="RestaurantDto">
-        select *
-        from restaurant
+        select * from restaurant
         order by restaurant_id desc
     </select>
 	
@@ -83,40 +82,48 @@
         where restaurant_id = #{restaurantId}
     </delete>
     
-    <!-- 통합 검색 -->
     <select id="searchList"
         parameterType="com.kh.fd.vo.SearchVO"
         resultType="com.kh.fd.vo.RestaurantListVO">
 
     select distinct
-        r.restaurant_id,
-        r.restaurant_name,
-        r.restaurant_address
-    from restaurant r
-    left join place p
-        on r.restaurant_place = p.place_id
-    left join category_mapping cm
-        on r.restaurant_id = cm.restaurant_id
-    left join category c
-        on cm.category_no = c.category_no
-    where 1=1
+        restaurant.restaurant_id,
+        restaurant.restaurant_name,
+        restaurant.restaurant_address,
+        restaurant.restaurant_opening_days,
+        restaurant.restaurant_open,
+        restaurant.restaurant_close
+
+    from restaurant
+
+    left join place
+        on restaurant.restaurant_place = place.place_id
+
+    left join category_mapping
+        on restaurant.restaurant_id = category_mapping.restaurant_id
+
+    left join category child_category
+        on category_mapping.category_no = child_category.category_no
+
+    left join category parent_category
+        on child_category.parent_category_no = parent_category.category_no
+
+    where 1 = 1
 
     <if test="keyword != null and keyword != ''">
         and (
-            r.restaurant_name like '%' || #{keyword} || '%'
-            or r.restaurant_address like '%' || #{keyword} || '%'
-            or p.place_depth1 like '%' || #{keyword} || '%'
-            or p.place_depth2 like '%' || #{keyword} || '%'
-            or p.place_depth3 like '%' || #{keyword} || '%'
-            or c.category_name like '%' || #{keyword} || '%'
+            restaurant.restaurant_name like '%' || #{keyword} || '%'
+            or restaurant.restaurant_address like '%' || #{keyword} || '%'
+            or place.place_depth1 like '%' || #{keyword} || '%'
+            or place.place_depth2 like '%' || #{keyword} || '%'
+            or place.place_depth3 like '%' || #{keyword} || '%'
+
+            or child_category.category_name like '%' || #{keyword} || '%'
+            or parent_category.category_name like '%' || #{keyword} || '%'
         )
     </if>
 
-    <if test="categoryId != null">
-        and c.category_no = #{categoryId}
-    </if>
-
-    order by r.restaurant_id desc
+    order by restaurant.restaurant_id desc
 </select>
     
     
@@ -149,7 +156,7 @@
 		    ) TMP
 		) 
 		WHERE rn BETWEEN #{begin} AND #{end}
-	</select>
+	</select> 
 	
 	<select id="listCount" resultType="int">
 		SELECT COUNT(*)
