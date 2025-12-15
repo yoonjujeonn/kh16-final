@@ -35,6 +35,19 @@
   <select id="listWithReservation" resultType="SlotListVO">
   	select * from slot_list where restaurant_id = #{seatRestaurantId}
   </select>
+  
+  <select id="availableSeatType" resultType="SeatDto">
+  	SELECT s.seat_id, s.seat_type, s.seat_max_people,
+       CASE WHEN rs.reservation_seat IS NULL THEN 1 ELSE 0 END AS is_available
+		FROM seat s
+		LEFT JOIN reservation rs
+		  ON rs.reservation_seat = s.seat_id
+		 AND TO_CHAR(rs.reservation_time, 'YYYY-MM-DD') = #{slotDate}
+		 AND rs.reservation_status = '예약완료'
+		WHERE s.seat_restaurant_id = #{restaurantId}
+  	AND s.seat_max_people >= #{peopleCount}
+  </select>
+  
   <!-- 수정 -->
   
   <!-- 삭제 -->
