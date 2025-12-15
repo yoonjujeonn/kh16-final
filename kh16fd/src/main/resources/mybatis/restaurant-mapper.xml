@@ -156,7 +156,7 @@
 		    ) TMP
 		) 
 		WHERE rn BETWEEN #{begin} AND #{end}
-	</select>
+	</select> 
 	
 	<select id="listCount" resultType="int">
 		SELECT COUNT(*)
