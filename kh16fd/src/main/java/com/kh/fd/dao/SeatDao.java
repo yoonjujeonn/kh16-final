@@ -1,6 +1,8 @@
 package com.kh.fd.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.SeatDto;
 import com.kh.fd.error.TargetNotFoundException;
-import com.kh.fd.vo.SeatListVO;
 import com.kh.fd.vo.SlotListVO;
 
 @Repository
@@ -34,12 +35,17 @@ public class SeatDao {
 		return sqlSession.selectList("seat.list", seatRestaurantId);
 	}
 	
-	//미리보기용 좌석 리스트
-	public List<SeatListVO> selectListByGroup(long seatRestaurantId){
-		return sqlSession.selectList("seat.listByGroup", seatRestaurantId);
-	}
-	
+	//예약 가능한 좌석(목록 출력용)
 	public List<SlotListVO> selectListWithReservation(long seatRestaurantId){
 		return sqlSession.selectList("seat.listWithReservation", seatRestaurantId);
+	}
+	
+	//예약 가능 좌석(상세)
+	public List<SeatDto> selectAvailableSeatList(long restaurantId, String slotDate, int peopleCount){
+		Map<String, Object> params = new HashMap<>();
+		params.put("restaurantId", restaurantId);
+		params.put("slotDate", slotDate);
+		params.put("peopleCount", peopleCount);
+		return sqlSession.selectList("seat.availableSeatType", params);
 	}
 }

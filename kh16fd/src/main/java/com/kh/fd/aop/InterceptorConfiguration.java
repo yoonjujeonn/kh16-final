@@ -48,16 +48,10 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 							);
 		
 		registry.addInterceptor(adminInterceptor)
-	    .addPathPatterns(
-	        "/admin/**",
-	        "/banner/**"
-	    )
+	    .addPathPatterns("/admin/**")
 	    .excludePathPatterns(
-	        "/admin/setting",
-	        "/category/add",
-	        "/category/list",
-	        "/banner/add",
-	        "/banner/list",
+	        "/category/**",
+	        "/banner/**",
 	        "/error/**"
 	    );
 	}

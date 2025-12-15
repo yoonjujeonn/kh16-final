@@ -21,8 +21,14 @@ public class AdminInterceptor implements HandlerInterceptor{
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    public boolean preHandle(HttpServletRequest request,
+                             HttpServletResponse response,
+                             Object handler) throws Exception {
+
+
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
 
         String token = request.getHeader("Authorization");
         if (token == null || token.isEmpty()) {
@@ -31,11 +37,11 @@ public class AdminInterceptor implements HandlerInterceptor{
         
         TokenVO tokenVO = tokenService.parse(token);
 
-        if (tokenVO.getLoginId() == null) {//로그인한지 확인
+        if (tokenVO.getLoginId() == null) {
             throw new UnauthorizationException("로그인이 필요합니다");
         }
 
-        if (!"관리자".equals(tokenVO.getLoginLevel())) {//로그인 한 회원의 등급이 관리자인지 확인
+        if (!"관리자".equals(tokenVO.getLoginLevel())) {
             throw new NeedPermissionException("관리자 권한이 없습니다");
         }
 

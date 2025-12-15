@@ -34,19 +34,19 @@
 
 
     <!-- 상위지역 목록 -->
-    <select id="upperPlaceList" resultType="string">
+    <select id="upperPlaceList" resultType="java.lang.String">
         SELECT DISTINCT place_depth1
         FROM place
         ORDER BY place_depth1 ASC
     </select>
 
     <!-- 하위지역 목록 -->
-    <select id="lowerPlaceList" parameterType="string" resultType="string">
+    <select id="lowerPlaceList" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT DISTINCT place_depth2
-        FROM place
-        WHERE place_depth1 = #{upperPlace}
-        ORDER BY place_depth2 ASC
-    </select>
+    FROM place
+    WHERE place_depth1 = #{value}
+    ORDER BY place_depth2 ASC
+</select>
     
     <!-- 식당 Id로 place 조회 -->
     <select id="selectPlaceByRestaurantId" resultType="placeDto">

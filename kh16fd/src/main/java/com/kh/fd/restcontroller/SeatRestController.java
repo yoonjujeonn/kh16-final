@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.fd.dao.SeatDao;
 import com.kh.fd.dto.SeatDto;
-import com.kh.fd.vo.SeatListVO;
-import com.kh.fd.vo.SeatVO;
 import com.kh.fd.vo.SlotListVO;
+import com.kh.fd.vo.SlotRequestVO;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -29,25 +28,20 @@ public class SeatRestController {
 	@Autowired
 	private SeatDao seatDao;
 	
-	@PostMapping("/seat")
-	public void add(@RequestBody SeatVO seatVO) {
-		SeatDto seatDto = seatVO.getSeatDto();
-		int count = seatVO.getCount();
-		
-		for(int i = 0 ; i < count; i++) {
-			seatDao.insert(seatDto);
-		}
-	}
-	
-	//미리보기용 리스트
-	@GetMapping("/seat/{restaurantId}")
-	public List<SeatListVO> list(@PathVariable long restaurantId){
-		return seatDao.selectListByGroup(restaurantId);
-	}
-	
 	@GetMapping("/{restaurantId}")
 	public List<SlotListVO> slotList(@PathVariable long restaurantId){
 		return seatDao.selectListWithReservation(restaurantId);
+	}
+	
+	//이용 가능 좌석 유형
+	@PostMapping("/seat")
+	public List<SeatDto> slotListDetail(@RequestBody SlotRequestVO slotRequestVO){
+		
+		long restaurantId= slotRequestVO.getRestaurantId();
+		String slotDate = slotRequestVO.getSlotDate();
+		int peopleCount = slotRequestVO.getPeopleCount();
+		
+		return seatDao.selectAvailableSeatList(restaurantId, slotDate, peopleCount);
 	}
 	
 }
