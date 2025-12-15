@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class SlotListVO {
 	private Long restaurantId;
 	private String restaurantName;
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
 	private LocalDateTime reservationTime;
 	private Integer totalSeatCount;
 	private Integer reservedSeatCount;

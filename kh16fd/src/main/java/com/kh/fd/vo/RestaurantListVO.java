@@ -13,7 +13,9 @@ public class RestaurantListVO {
 	private String restaurantAddress;
 	private String restaurantOpen;
 	private String restaurantClose;
+	private String restaurantLastOrder;
 	private String restaurantOpeningDays;
+	private String holidayDates;
 	private double restaurantAvgRating;
 	private int reviewCount;
 	private Long placeId;
