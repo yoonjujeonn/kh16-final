@@ -34,11 +34,6 @@ public class SeatDao {
 		return sqlSession.selectList("seat.list", seatRestaurantId);
 	}
 	
-	//미리보기용 좌석 리스트
-	public List<SeatListVO> selectListByGroup(long seatRestaurantId){
-		return sqlSession.selectList("seat.listByGroup", seatRestaurantId);
-	}
-	
 	public List<SlotListVO> selectListWithReservation(long seatRestaurantId){
 		return sqlSession.selectList("seat.listWithReservation", seatRestaurantId);
 	}

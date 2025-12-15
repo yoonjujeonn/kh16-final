@@ -39,12 +39,6 @@ public class SeatRestController {
 		}
 	}
 	
-	//미리보기용 리스트
-	@GetMapping("/seat/{restaurantId}")
-	public List<SeatListVO> list(@PathVariable long restaurantId){
-		return seatDao.selectListByGroup(restaurantId);
-	}
-	
 	@GetMapping("/{restaurantId}")
 	public List<SlotListVO> slotList(@PathVariable long restaurantId){
 		return seatDao.selectListWithReservation(restaurantId);
