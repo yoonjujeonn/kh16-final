@@ -41,4 +41,11 @@ public class PlaceDao {
             restaurantId
         );
     }
+    public List<String> selectUpperList() {
+        return sqlSession.selectList("place.upperPlaceList");
+    }
+
+    public List<String> selectLowerList(String upperPlace) {
+        return sqlSession.selectList("place.lowerPlaceList", upperPlace);
+    }
 }

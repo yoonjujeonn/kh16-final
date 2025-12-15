@@ -11,6 +11,7 @@ import com.kh.fd.dao.BannerDao;
 import com.kh.fd.dto.BannerDto;
 import com.kh.fd.error.TargetNotFoundException;
 import com.kh.fd.service.AttachmentService;
+import com.kh.fd.service.TokenService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -26,46 +27,67 @@ public class BannerRestController {
     @Autowired
     private AttachmentService attachmentService;
 
-    // 배너 등록
+    @Autowired
+    private TokenService tokenService;
+
+    private void checkLogin(String bearerToken) {
+        tokenService.parse(bearerToken);
+    }
+
     @PostMapping("/add")
-    public void add(@ModelAttribute BannerDto bannerDto,@RequestParam(required = false) MultipartFile attach) throws IOException {
+    public void add(
+        @ModelAttribute BannerDto bannerDto,
+        @RequestParam(required = false) MultipartFile attach,
+        @RequestHeader(value = "Authorization", required = false) String bearerToken
+    ) throws IOException {
+
+        // 로그인 검사
+        checkLogin(bearerToken);
 
         int bannerNo = bannerDao.sequence();
         bannerDto.setBannerNo(bannerNo);
 
+        // 첨부파일 저장
         if (attach != null && !attach.isEmpty()) {
             int attachmentNo = attachmentService.save(attach);
             bannerDto.setBannerAttachmentNo(attachmentNo);
         }
 
+        // 배너 등록
         bannerDao.insert(bannerDto);
     }
 
-    // 목록
+
     @GetMapping("/list")
     public List<BannerDto> list() {
         return bannerDao.selectList();
     }
 
-    // 상세
+
     @GetMapping("/{bannerNo}")
     public BannerDto detail(@PathVariable int bannerNo) {
         BannerDto bannerDto = bannerDao.selectOne(bannerNo);
-        if (bannerDto == null) throw new TargetNotFoundException();
+        if (bannerDto == null) {
+            throw new TargetNotFoundException("존재하지 않는 배너 번호");
+        }
         return bannerDto;
     }
 
     @DeleteMapping("/{bannerNo}")
-    public void delete(@PathVariable int bannerNo) {
-        BannerDto bannerDto = bannerDao.selectOne(bannerNo);
-        if (bannerDto == null) throw new TargetNotFoundException();
+    public void delete(
+        @PathVariable int bannerNo,
+        @RequestHeader("Authorization") String bearerToken
+    ) {
+        checkLogin(bearerToken);
 
-        //배너 삭제
+        BannerDto bannerDto = bannerDao.selectOne(bannerNo);
+        if (bannerDto == null)
+            throw new TargetNotFoundException("존재하지 않는 배너 번호");
+
         bannerDao.delete(bannerNo);
 
-        //첨부파일 삭제
         if (bannerDto.getBannerAttachmentNo() != null) {
             attachmentService.delete(bannerDto.getBannerAttachmentNo());
         }
     }
-}    
+}
