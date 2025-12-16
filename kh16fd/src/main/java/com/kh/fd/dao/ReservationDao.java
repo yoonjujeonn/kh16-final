@@ -12,15 +12,15 @@ public class ReservationDao {
 	@Autowired
 	private SqlSession sqlSession;
 	
+	public long sequence() {
+		return sqlSession.selectOne("reservation.sequence");
+	}
 	public boolean checkAvailableSlot(ReservationDto reservationDto) {
 		int count = sqlSession.selectOne("reservation.checkSlot", reservationDto);
 		return count == 0; //예약 가능
 	}
 	
 	public ReservationDto insert(ReservationDto reservationDto) {
-		long sequence = sqlSession.selectOne("reservation.sequence");
-		
-		reservationDto.setReservationId(sequence);
 		
 		sqlSession.insert("reservation.insert", reservationDto);
 		

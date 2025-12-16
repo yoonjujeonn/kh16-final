@@ -37,18 +37,20 @@
   </select>
   
   <select id="availableSeatType" resultType="SeatDto">
-  	SELECT s.seat_id, s.seat_restaurant_id, s.seat_type, s.seat_max_people,
-       CASE WHEN rs.reservation_seat IS NULL THEN 1 ELSE 0 END AS is_available
-		FROM seat s
-		LEFT JOIN reservation rs
-		  ON rs.reservation_seat = s.seat_id
-		 AND (
-		       rs.reservation_time IS NULL
-		    OR (TO_CHAR(rs.reservation_time, 'YYYY-MM-DD') = #{slotDate}
-		        AND rs.reservation_status = '예약완료')
-		  )
-		WHERE s.seat_restaurant_id = #{restaurantId}
-  	AND s.seat_max_people >= #{peopleCount}
+		SELECT s.seat_id,
+	       s.seat_restaurant_id,
+	       s.seat_type,
+	       s.seat_max_people
+	FROM seat s
+	WHERE s.seat_restaurant_id = #{restaurantId}
+	  AND s.seat_max_people >= #{peopleCount}
+	  AND NOT EXISTS (
+	      SELECT 1
+	      FROM reservation rs
+	      WHERE rs.reservation_seat = s.seat_id
+	        AND rs.reservation_status = '예약완료'
+	        AND TO_CHAR(rs.reservation_time, 'YYYY-MM-dd HH24:MI') = #{slotTime}
+	  )
   </select>
   
   <!-- 수정 -->

@@ -23,12 +23,14 @@
   		reservation_id, reservation_member, 
   		reservation_target, reservation_people_count,
   		reservation_status, reservation_time, 
-  		reservation_seat
+  		reservation_seat, reservation_request_note, 
+  		reservation_purpose
   		) 
   		values(
   		#{reservationId}, #{reservationMember},
   		#{reservationTarget}, #{reservationPeopleCount}, 
-  		#{reservationStatus}
+  		'예약완료', #{reservationTime}, #{reservationSeat}, 
+  		#{reservationRequestNote}, #{reservationPurpose}
   		)
   	</insert>
   	
