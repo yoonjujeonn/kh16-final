@@ -11,9 +11,9 @@ public class MemberProfileDao {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	public void insert(String memberId, int memberProfileNo, MemberProfileVO memberProfileVO) {
-		sqlSession.insert("memberProfile.insertProfile", memberProfileVO);
-	}
+//	public void insert(String memberId, int memberProfileNo, MemberProfileVO memberProfileVO) {
+//		sqlSession.insert("memberProfile.insertProfile", memberProfileVO);
+//	}
 	
 	public MemberProfileVO selectOne(String memberId) {
 		return	sqlSession.selectOne("memberProfile.selectAttachmentNoByMemberId", memberId);
