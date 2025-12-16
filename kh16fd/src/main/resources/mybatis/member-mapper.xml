@@ -192,6 +192,7 @@
 		where member_id=#{memberId}
 	</update>
 
+	<!-- 관리자가 써야되는 기능 -->
 	<update id="updateReactivate">
 		update member 
 		set 
@@ -215,9 +216,29 @@
 		AND member_status = 'ACTIVE'
 	</select>
 	
-	<delete id="'delete">
+	<!-- 삭제 구문 -->
+	<delete id="delete">
 		delete from member where member_id = #{member_id}
 	</delete>
 	
+	<!-- 삭제 대상 조회 + 시간 조회 -->
+	<select id="findDormantMember" resultType="memberDto">
+		select
+			member_id
+			,MEMBER_WITHDRAW_TIME
+		from
+		member
+		where member_status='DORMANT'
+	</select>
+	
+	<!-- 삭제된 대상 찾아서 로그인 방지 -->
+	<select id="blockDormant" resultType="memberDto">
+		select
+			member_status
+		 from
+		 	member
+		where 
+			member_id=#{member_id}
+	</select>
 
 </mapper>

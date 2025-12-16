@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 //스케쥴러는 서버에 부담이 많이가는 작업이므로 반드시 허용 설정을 하도록 요구
-//@EnableScheduling
 //아래 설정이 있어야 스프링 암호화 설정을 무시하고 진행 가능함
+//@EnableScheduling
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class Kh16fdApplication {
 
