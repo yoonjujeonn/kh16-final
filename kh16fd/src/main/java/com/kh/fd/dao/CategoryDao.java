@@ -1,12 +1,15 @@
 package com.kh.fd.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.CategoryDto;
+import com.kh.fd.vo.CategoryImageVO;
 
 @Repository
 public class CategoryDao {
@@ -43,12 +46,34 @@ public class CategoryDao {
         return sqlSession.delete("category.delete", categoryNo) > 0;
     }
     
+    // 상위 카테고리 목록
     public List<CategoryDto> selectParentList() {
         return sqlSession.selectList("category.listParent");
     }
 
+    // 하위 카테고리 목록
     public List<CategoryDto> selectChildList(int parentNo) {
         return sqlSession.selectList("category.listByParent", parentNo);
     }
     
+    // 상위 카테고리 + 이미지 
+    public List<CategoryImageVO> selectTopCategoryWithImage() {
+        return sqlSession.selectList(
+            "category.selectTopCategoryWithImage"
+        );
+    }
+
+    // 카테고리 이미지 연결
+    public void insertCategoryImage(int categoryNo, int attachmentNo) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("categoryNo", categoryNo);
+        param.put("attachmentNo", attachmentNo);
+
+        sqlSession.insert("category.insertCategoryImage", param);
+    }
+
+    // 이미지 삭제 
+    public void deleteCategoryImage(int categoryNo) {
+        sqlSession.delete("category.deleteCategoryImage",categoryNo);
+    }
 }
