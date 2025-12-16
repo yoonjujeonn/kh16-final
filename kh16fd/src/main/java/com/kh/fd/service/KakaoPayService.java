@@ -36,15 +36,12 @@ public class KakaoPayService {
 		body.put("total_amount", String.valueOf(requestVO.getTotalAmount()));//판매금액
 		body.put("tax_free_amount", "0");//비과세액(해당없음, 0으로 설정)
 		
-//		String currentPath = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
-//		body.put("approval_url", currentPath+"/success/" + requestVO.getPartnerOrderId());
-//		body.put("cancel_url", currentPath+"/cancel/" + requestVO.getPartnerOrderId());
-//		body.put("fail_url", currentPath+"/fail/" + requestVO.getPartnerOrderId());
-		String host = "http://localhost:8080";
-		body.put("approval_url", host + "/kakaopay/buy/success/" + requestVO.getPartnerOrderId()); 
-	    body.put("cancel_url", host + "/kakaopay/buy/cancel/" + requestVO.getPartnerOrderId());
-	    body.put("fail_url", host + "/kakaopay/buy/fail/" + requestVO.getPartnerOrderId());
+		String currentPath = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
 		
+		body.put("approval_url", currentPath+"/success/" + requestVO.getPartnerOrderId());
+		body.put("cancel_url", currentPath+"/cancel/" + requestVO.getPartnerOrderId());
+		body.put("fail_url", currentPath+"/fail/" + requestVO.getPartnerOrderId());
+
 		KakaoPayReadyResponseVO responseVO = webClient.post()
 				.uri("/online/v1/payment/ready")
 				.bodyValue(body)

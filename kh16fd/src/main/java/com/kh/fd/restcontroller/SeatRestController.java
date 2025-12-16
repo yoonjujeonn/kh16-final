@@ -38,10 +38,10 @@ public class SeatRestController {
 	public List<SeatDto> slotListDetail(@RequestBody SlotRequestVO slotRequestVO){
 		
 		long restaurantId= slotRequestVO.getRestaurantId();
-		String slotDate = slotRequestVO.getSlotDate();
+		String slotTime = slotRequestVO.getSlotTime();
 		int peopleCount = slotRequestVO.getPeopleCount();
 		
-		return seatDao.selectAvailableSeatList(restaurantId, slotDate, peopleCount);
+		return seatDao.selectAvailableSeatList(restaurantId, slotTime, peopleCount);
 	}
 	
 }

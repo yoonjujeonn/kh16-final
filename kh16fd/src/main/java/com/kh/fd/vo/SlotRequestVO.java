@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class SlotRequestVO {
 	private Long restaurantId;
-	private String slotDate;
+	private String slotTime;
 	private Integer peopleCount;
 }

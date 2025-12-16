@@ -41,10 +41,10 @@ public class SeatDao {
 	}
 	
 	//예약 가능 좌석(상세)
-	public List<SeatDto> selectAvailableSeatList(long restaurantId, String slotDate, int peopleCount){
+	public List<SeatDto> selectAvailableSeatList(long restaurantId, String slotTime, int peopleCount){
 		Map<String, Object> params = new HashMap<>();
 		params.put("restaurantId", restaurantId);
-		params.put("slotDate", slotDate);
+		params.put("slotTime", slotTime);
 		params.put("peopleCount", peopleCount);
 		return sqlSession.selectList("seat.availableSeatType", params);
 	}
