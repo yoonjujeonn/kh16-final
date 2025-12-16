@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="category">
 
     <select id="sequence" resultType="long">
         select category_seq.nextval from dual
     </select>
 
-    <!-- C -->
     <insert id="insert">
-        insert into category(
-            category_no, 
-            category_name, 
-            parent_category_no, 
+        insert into category (
+            category_no,
+            category_name,
+            parent_category_no,
             category_order
         ) values (
-            #{categoryNo}, 
-            #{categoryName}, 
-            #{parentCategoryNo}, 
+            #{categoryNo},
+            #{categoryName},
+            #{parentCategoryNo},
             #{categoryOrder}
         )
     </insert>
 
-    <!-- R(전체) -->
     <select id="list" resultType="CategoryDto">
-        select 
+        select
             category_no as categoryNo,
             category_name as categoryName,
             parent_category_no as parentCategoryNo,
@@ -34,9 +33,8 @@
         order by category_order asc
     </select>
 
-	<!-- R(상세) -->
     <select id="detail" resultType="CategoryDto">
-        select 
+        select
             category_no as categoryNo,
             category_name as categoryName,
             parent_category_no as parentCategoryNo,
@@ -44,32 +42,30 @@
         from category
         where category_no = #{categoryNo}
     </select>
-	
-	<!-- U(부분 수정) -->
-    <update id="updateUnit">
-    update category
-    <set>
-        <if test="categoryName != null">
-            category_name = #{categoryName},
-        </if>
-        <if test="parentCategoryNo != null">
-            parent_category_no = #{parentCategoryNo},
-        </if>
-        <if test="categoryOrder != null">
-            category_order = #{categoryOrder},
-        </if>
-    </set> 
-    where category_no = #{categoryNo}
-</update>
 
-    <!-- D -->
+    <update id="updateUnit">
+        update category
+        <set>
+            <if test="categoryName != null">
+                category_name = #{categoryName},
+            </if>
+            <if test="parentCategoryNo != null">
+                parent_category_no = #{parentCategoryNo},
+            </if>
+            <if test="categoryOrder != null">
+                category_order = #{categoryOrder},
+            </if>
+        </set>
+        where category_no = #{categoryNo}
+    </update>
+
     <delete id="delete">
-        delete from category where category_no = #{categoryNo}
+        delete from category
+        where category_no = #{categoryNo}
     </delete>
-    
-    <!-- 상위카테고리 조회 -->
+
     <select id="listParent" resultType="CategoryDto">
-        select 
+        select
             category_no as categoryNo,
             category_name as categoryName,
             parent_category_no as parentCategoryNo,
@@ -79,9 +75,8 @@
         order by category_order asc
     </select>
 
-	<!-- 하위카테고리 조회 -->
     <select id="listByParent" parameterType="int" resultType="CategoryDto">
-        select 
+        select
             category_no as categoryNo,
             category_name as categoryName,
             parent_category_no as parentCategoryNo,
@@ -90,7 +85,38 @@
         where parent_category_no = #{parentNo}
         order by category_order asc
     </select>
-    
-    
+
+    <select id="selectTopCategoryWithImage"
+            resultType="com.kh.fd.vo.CategoryImageVO">
+        select
+            category.category_no        as categoryNo,
+            category.category_name      as categoryName,
+            category.category_order     as categoryOrder,
+            attachment.attachment_no   as attachmentNo,
+            attachment.attachment_name as attachmentName,
+            attachment.attachment_type as attachmentType
+        from category
+        left join category_image
+            on category.category_no = category_image.category_no
+        left join attachment
+            on category_image.attachment_no = attachment.attachment_no
+        where category.parent_category_no is null
+        order by category.category_order
+    </select>
+
+    <insert id="insertCategoryImage">
+        insert into category_image (
+            category_no,
+            attachment_no
+        ) values (
+            #{categoryNo},
+            #{attachmentNo}
+        )
+    </insert>
+
+    <delete id="deleteCategoryImage">
+        delete from category_image
+        where category_no = #{categoryNo}
+    </delete>
 
 </mapper>

@@ -155,7 +155,7 @@
 		        ORDER BY restaurant_id
 		    ) TMP
 		) 
-		WHERE rn BETWEEN #{begin} AND #{end}
+		WHERE rn BETWEEN #{begin} AND #{end}1
 	</select> 
 	
 	<select id="listCount" resultType="int">
