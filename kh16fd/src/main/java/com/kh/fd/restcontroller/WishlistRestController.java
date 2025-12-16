@@ -45,13 +45,18 @@ public class WishlistRestController {
 
 	@PostMapping("/check")
 	public Map<String, Object> check(@RequestBody WishlistDto wishlistDto) {
-		// 1. 내가 저장했는지 여부
-		boolean isCheck = wishlistDao.check(wishlistDto);
-		// 2. 이 식당의 전체 저장 개수
+
+		boolean isCheck = false;
+		// memberId가 있을 때만 check DAO를 호출하도록 분기 처리
+		if (wishlistDto.getMemberId() != null && !wishlistDto.getMemberId().isEmpty()) {
+			isCheck = wishlistDao.check(wishlistDto);
+		}
+
+		// 개수는 로그인 여부와 상관없이 항상 조회
 		int count = wishlistDao.countByRestaurantId(wishlistDto.getRestaurantId());
 
 		Map<String, Object> result = new HashMap<>();
-		result.put("isWish", isCheck);
+		result.put("isWish", isCheck); // 비회원은 항상 false
 		result.put("count", count);
 
 		return result;
