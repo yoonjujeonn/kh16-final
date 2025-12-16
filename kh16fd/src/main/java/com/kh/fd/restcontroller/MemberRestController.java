@@ -182,7 +182,7 @@ public class MemberRestController {
 	
 	//회원 탈퇴 기능 스케줄러로 설정해야됨 일단 비활성화 기능 만듬
 	@PatchMapping("/{memberId}/deactivate")
-	public void deactivate(@PathVariable String memberId) {
+	public boolean deactivate(@PathVariable String memberId) {
 		MemberDto originDto = memberDao.selectOne(memberId);
 		if(originDto == null) throw new TargetNotFoundException();
 		if("관리자".equals(originDto.getMemberLevel())) {
@@ -190,7 +190,7 @@ public class MemberRestController {
 		}
 //		memberDto.setMemberId(memberId);
 		memberDao.updateWithdraw(memberId);
- 
+		return true;
 	}	
 	
 	
