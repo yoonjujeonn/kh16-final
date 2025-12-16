@@ -1,0 +1,15 @@
+package com.kh.fd.vo;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data @AllArgsConstructor @NoArgsConstructor @Builder
+public class MemberProfileVO {
+	private String memberId;
+	private int attachmentNo;
+	
+	private String profileName;
+	private String profileLink;
+}
