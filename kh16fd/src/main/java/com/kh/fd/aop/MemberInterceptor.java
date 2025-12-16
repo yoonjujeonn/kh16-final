@@ -31,8 +31,7 @@ public class MemberInterceptor implements HandlerInterceptor {
 		//[2] 인증 검사
 		try {
 			String authorization = request.getHeader("Authorization");
-			if(authorization == null)
-				throw new UnauthorizationException();
+			if(authorization == null) throw new UnauthorizationException();
 			
 			TokenVO tokenVO = tokenService.parse(authorization);
 			

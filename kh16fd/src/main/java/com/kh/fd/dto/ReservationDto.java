@@ -17,8 +17,10 @@ public class ReservationDto {
 	private String reservationMember;
 	private Long reservationTarget;
 	private Long reservationSeat;
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime reservationTime;
 	private Integer reservationPeopleCount;
 	private String reservationStatus;
+	private String reservationRequestNote;
+	private String reservationPurpose;
 }

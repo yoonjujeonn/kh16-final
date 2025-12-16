@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.service.KakaoPayService;
 import com.kh.fd.service.PaymentService;
 import com.kh.fd.service.ReservationService;
+import com.kh.fd.vo.ReservationReadyVO;
 import com.kh.fd.vo.TokenVO;
 import com.kh.fd.vo.kakaopay.KakaoPayApproveRequestVO;
 import com.kh.fd.vo.kakaopay.KakaoPayApproveResponseVO;
@@ -29,9 +31,10 @@ import com.kh.fd.vo.kakaopay.KakaoPayFlashVO;
 import com.kh.fd.vo.kakaopay.KakaoPayReadyRequestVO;
 import com.kh.fd.vo.kakaopay.KakaoPayReadyResponseVO;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @CrossOrigin
 @RestController
 @RequestMapping("/reservation")
@@ -46,7 +49,6 @@ public class ReservationRestController {
 	private ReservationService reservationService;
 	
 	private Map<String, KakaoPayFlashVO> flashMap = Collections.synchronizedMap(new HashMap<>());
-
 	
 	@PostMapping("/pay")
 	public KakaoPayReadyResponseVO buy (
@@ -56,11 +58,13 @@ public class ReservationRestController {
 			) {
 		
 		//중복 검사
+		reservationDto.setReservationMember(tokenVO.getLoginId());
 		
+		ReservationReadyVO readyVO = reservationService.checkConflictAndSendTarget(reservationDto);
 		
-		Long reservationId = reservationDto.getReservationId();
+		RestaurantDto target = readyVO.getRestaurantDto();
 		
-		RestaurantDto target = reservationService.checkConflictAndSendTarget(reservationDto);
+		Long reservationId = readyVO.getReservationId();
 		
 		int price = target.getRestaurantReservationPrice();
 		int people = reservationDto.getReservationPeopleCount();
@@ -69,7 +73,7 @@ public class ReservationRestController {
 		
 		String targetName = target.getRestaurantName();
 		
-		String itemName = "예약 #" + reservationId + " (" + targetName + " ) 결제 건";
+		String itemName = "No." + reservationId + " ( " + targetName + " ) 예약금 결제 건";
 		
 		KakaoPayReadyRequestVO requestVO = KakaoPayReadyRequestVO.builder()
 				.partnerOrderId(UUID.randomUUID().toString())
@@ -77,9 +81,13 @@ public class ReservationRestController {
 				.itemName(itemName)
 				.totalAmount(total)
 				.build();
+		
+			
 		KakaoPayReadyResponseVO responseVO = kakaoPayService.ready(requestVO);
 		
+		reservationDto.setReservationId(reservationId);
 		
+		reservationService.createReservation(reservationDto);
 		
 		flashMap.put(requestVO.getPartnerOrderId(), 
 				KakaoPayFlashVO.builder()
@@ -90,6 +98,7 @@ public class ReservationRestController {
 				.reservationId(reservationId)
 				.reservationDto(reservationDto)
 				.build());
+		
 		return responseVO;
 	}
 	
@@ -97,7 +106,10 @@ public class ReservationRestController {
 	@GetMapping("/pay/success/{partnerOrderId}")
 	public void success(@PathVariable String partnerOrderId,
 			@RequestParam("pg_token") String pgToken, HttpServletResponse response) throws IOException {
+		
 		KakaoPayFlashVO flashVO = flashMap.remove(partnerOrderId);
+		
+		if(flashVO == null) return;
 		
 		//결제 승인을 위한 데이터 생성
 				KakaoPayApproveRequestVO requestVO = KakaoPayApproveRequestVO.builder()
@@ -111,10 +123,7 @@ public class ReservationRestController {
 				KakaoPayApproveResponseVO responseVO = kakaoPayService.approve(requestVO);
 				
 				//DB 저장 코드 (payment, payment_detail)
-				long paymentNo = paymentService.insert(responseVO, flashVO);
-				
-				//결제 완료 시 예약 테이블 저장
-				reservationService.createReservation(flashVO.getReservationDto(), paymentNo);
+				paymentService.insert(responseVO, flashVO);
 				
 				response.sendRedirect(flashVO.getReturnUrl() + "/success");
 	}

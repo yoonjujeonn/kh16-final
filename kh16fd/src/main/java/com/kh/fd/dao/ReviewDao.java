@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.ReviewDto;
+import com.kh.fd.vo.ReviewAdminVO;
 
 @Repository
 public class ReviewDao {
@@ -55,5 +56,9 @@ public class ReviewDao {
 //		Integer count = sqlSession.selectOne("review.selectReviewCount", restaurantId);
 //		return count != null ? count : 0;
 //	}
+	
+	public List<ReviewAdminVO> selectListAdmin(){
+		return sqlSession.selectList("review.selectListAdmin");
+	}
 
 }
