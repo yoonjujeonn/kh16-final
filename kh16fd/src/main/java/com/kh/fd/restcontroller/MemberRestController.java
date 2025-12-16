@@ -103,10 +103,15 @@ public class MemberRestController {
 	@PostMapping("/login")
 	public MemberLoginResponseVO login(@RequestBody MemberDto memberDto) {
 		MemberDto findDto = memberDao.selectOne(memberDto.getMemberId());
+		MemberDto findDormant = memberDao.findDormant(memberDto.getMemberId());
 		if(findDto == null) { //아이디 없음
 //			return false;
 			throw new TargetNotFoundException("로그인 정보 오류");
 		}
+		if(findDormant.getMemberStatus().contains("DORMANT") ) {
+			throw new UnauthorizationException("잠긴 계정입니다");
+		}
+		
 		
 		//암호화 떄문에 기존 코드처럼 dto에서 불러와 비교가 불가능
 		boolean valid = passwordEncoder.
@@ -230,6 +235,11 @@ public class MemberRestController {
 //		if(memberDto == null) throw new TargetNotFoundException("존재하지 않는 회원");
 //		return memberDto;
 //	}
+	
+	@GetMapping("/findDormant")
+	public List<MemberDto> selectDormant() {
+		return sqlSession.selectList("member.findDormantMember");
+	}
 	
 	
 }

@@ -87,4 +87,14 @@ public class MemberDao {
 		return sqlSession.update("member.delete", memberId) > 0;
 	}
 	
+	//휴먼계정 찾아 아이디+탈퇴시간 반환
+	public List<MemberDto> selectDormant() {
+		return sqlSession.selectList("member.findDormantMember");
+	}
+	
+	//아이디가 휴먼계정인지 확인
+	public MemberDto findDormant(String memberId) {
+		return sqlSession.selectOne("member.blockDormant", memberId);
+	}
+	
 }
