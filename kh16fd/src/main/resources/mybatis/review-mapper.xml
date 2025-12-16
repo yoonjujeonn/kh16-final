@@ -30,12 +30,22 @@
 	where restaurant_id = #{restaurantId}
 	order by review_created_at desc
 	</select>
-	<select id="listByUser" resultType="ReviewDto">
-	select 
-    review_no, review_content, review_rating, restaurant_id, member_id, review_created_at, review_updated_at, review_attachment_no
-    from review
-    where member_id = #{memberId}
-    order by review_created_at desc
+	<select id="listByUser" resultType="ReviewAdminVO">
+	SELECT 
+        R.review_no, 
+        R.review_content, 
+        R.review_rating, 
+        R.restaurant_id, 
+        R.member_id, 
+        R.review_created_at, 
+        R.review_updated_at, 
+        R.review_attachment_no,
+        T.restaurant_name,      
+        0 AS report_count       
+    FROM review R
+    INNER JOIN restaurant T ON R.restaurant_id = T.restaurant_id
+    WHERE R.member_id = #{memberId}
+    ORDER BY R.review_created_at DESC
 	</select>
 	
 
@@ -58,5 +68,25 @@
 	<delete id="delete">
 	delete from review where review_no = #{reviewNo}
 	</delete>
+	
+	<!-- 관리자용 리뷰조회 -->
+	<select id="selectListAdmin" resultType="ReviewAdminVO">
+	    SELECT
+	        R.review_no,                
+	        R.restaurant_id,
+	        R.member_id,
+	        R.review_content,
+	        R.review_rating,
+	        R.review_created_at,        
+	        R.review_updated_at,        
+	        R.review_attachment_no,     
+	        
+	        T.restaurant_name,          
+	        0 AS report_count         
+	
+	    FROM review R
+	    INNER JOIN restaurant T ON R.restaurant_id = T.restaurant_id
+	    ORDER BY R.review_no DESC
+	</select>
 
 </mapper>
