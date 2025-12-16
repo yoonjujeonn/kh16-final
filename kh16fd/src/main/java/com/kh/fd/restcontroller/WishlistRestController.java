@@ -1,16 +1,20 @@
 package com.kh.fd.restcontroller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.fd.dao.WishlistDao;
+import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.dto.WishlistDto;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,6 +64,14 @@ public class WishlistRestController {
 		result.put("count", count);
 
 		return result;
+	}
+
+	@GetMapping("/myList")
+	public List<RestaurantDto> selectList(@RequestParam String memberId) {
+		if (memberId == null || memberId.trim().isEmpty()) {
+			return List.of();
+		}
+		return wishlistDao.selectList(memberId);
 	}
 
 }
