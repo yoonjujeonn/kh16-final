@@ -25,7 +25,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 									"/admin/**",
 									"/business/**",
 									"/reservation/pay", 
-									"/reservation/**",
+									"/reservation/myList",
+									"/reservation/refund",
 									"/payment/**"
 							)
 							.excludePathPatterns(

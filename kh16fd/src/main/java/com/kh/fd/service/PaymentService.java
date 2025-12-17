@@ -14,6 +14,7 @@ import com.kh.fd.dto.ReservationDto;
 import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.error.TargetNotFoundException;
 import com.kh.fd.vo.kakaopay.KakaoPayApproveResponseVO;
+import com.kh.fd.vo.kakaopay.KakaoPayCancelRequestVO;
 import com.kh.fd.vo.kakaopay.KakaoPayFlashVO;
 //수정해야됨
 @Service
@@ -26,6 +27,8 @@ public class PaymentService {
 	private ReservationDao reservationDao;
 	@Autowired
 	private RestaurantDao restaurantDao;
+	@Autowired
+	private KakaoPayService kakaoPayService;
 	
 	//예약 시 결제 여부 확인을 위해 paymentNo를 반환
 	@Transactional
@@ -71,9 +74,27 @@ public class PaymentService {
 					
 	}
 	
+	//전액 취소
 	@Transactional
 	public void cancel(long paymentNo) {
 		paymentDao.cancel(paymentNo);
 		paymentDetailDao.cancel(paymentNo);
+	}
+	
+	//금액 지정 취소
+	@Transactional
+	public void cancel(long paymentNo, int refundAmount) {
+		//결제 정보 조회
+		PaymentDto paymentDto =paymentDao.selectOne(paymentNo);
+		
+		//카카오페이서비스를 통해 실제 환불
+		if(refundAmount>0) {
+			kakaoPayService.cancel(KakaoPayCancelRequestVO.builder()
+					.tid(paymentDto.getPaymentTid())
+					.cancelAmount(refundAmount)
+					.build());
+		}
+		
+		this.cancel(paymentNo);
 	}
 }
