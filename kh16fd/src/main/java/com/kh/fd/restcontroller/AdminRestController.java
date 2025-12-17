@@ -51,7 +51,7 @@ public class AdminRestController {
 
 
 	// 승인 안된 식당 리스트
-		@GetMapping("/page/{page}")
+		@GetMapping("/restaurant/page/{page}")
 		public RestaurantApprovalListVO approvalList(@PathVariable int page) {
 			PageVO pageVO = new PageVO();
 			pageVO.setPage(page);
@@ -65,7 +65,7 @@ public class AdminRestController {
 		}
 
 		// 상세 조회
-		@PostMapping("/{restaurantId}")
+		@GetMapping("/restaurant/{restaurantId}")
 		public RestaurantDto detail(@PathVariable long restaurantId) {
 			return restaurantDao.selectOne(restaurantId);
 		}
