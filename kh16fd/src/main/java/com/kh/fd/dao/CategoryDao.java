@@ -71,6 +71,14 @@ public class CategoryDao {
 
         sqlSession.insert("category.insertCategoryImage", param);
     }
+    
+    // 카테고리 이미지의 attachmentNo를 조회
+    public Integer selectCategoryImageAttachmentNo(int categoryNo) {
+        return sqlSession.selectOne(
+            "category.selectCategoryImageAttachmentNo",
+            categoryNo
+        );
+    }
 
     // 이미지 삭제 
     public void deleteCategoryImage(int categoryNo) {

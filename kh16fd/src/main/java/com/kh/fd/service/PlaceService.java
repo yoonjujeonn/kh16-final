@@ -33,10 +33,10 @@ public class PlaceService {
 	    String depth2 = tokens.length > 1 ? tokens[1] : null;
 	    String depth3 = tokens.length > 2 ? tokens[2] : null;
 	    
-		if(depth1 != null) {
-			depth1 = depth1.replaceAll("(특별자치도|특별자치시|특별시|광역시|도)$", "");
-		}
-		
+	    if(depth1 != null) {
+            depth1 = depth1.replaceAll("(특별자치도|특별자치시|특별시|광역시|도)$", "");
+        }
+	    
 	    // 1. place 조회 또는 생성
 	    PlaceDto place = placeDao.selectByDepth(depth1, depth2, depth3);
 	    long placeId;

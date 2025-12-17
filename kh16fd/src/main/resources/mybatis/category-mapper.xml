@@ -86,8 +86,7 @@
         order by category_order asc
     </select>
 
-    <select id="selectTopCategoryWithImage"
-            resultType="com.kh.fd.vo.CategoryImageVO">
+    <select id="selectTopCategoryWithImage" resultType="CategoryImageVO">
         select
             category.category_no        as categoryNo,
             category.category_name      as categoryName,
@@ -103,6 +102,12 @@
         where category.parent_category_no is null
         order by category.category_order
     </select>
+    
+    <select id="selectCategoryImageAttachmentNo" parameterType="int" resultType="java.lang.Integer">
+    	select attachment_no
+    	from category_image
+    	where category_no = #{value}
+	</select>
 
     <insert id="insertCategoryImage">
         insert into category_image (

@@ -1,11 +1,16 @@
 package com.kh.fd.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.ReservationDto;
 import com.kh.fd.error.TargetNotFoundException;
+import com.kh.fd.vo.ReservationDetailVO;
 
 @Repository
 public class ReservationDao {
@@ -31,5 +36,18 @@ public class ReservationDao {
 		ReservationDto reservationDto = sqlSession.selectOne("reservation.detail", reservationId);
 		if(reservationDto == null) throw new TargetNotFoundException();
 		return reservationDto;
+	}
+	
+	public ReservationDetailVO findDetailVO(Long reservationId) {
+		return sqlSession.selectOne("reservation.detailVO", reservationId);
+	}
+	public List<ReservationDetailVO> findAllByMember(String memberId) {
+		return sqlSession.selectList("reservation.listByMember", memberId);
+	}
+	public boolean updateStatus(Long reservationId, String status) {
+		Map<String, Object> params = new HashMap<>();
+	    params.put("reservationId", reservationId);
+	    params.put("status", status);
+	    return sqlSession.update("reservation.updateStatus", params) > 0;
 	}
 }

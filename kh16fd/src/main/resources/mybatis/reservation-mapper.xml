@@ -36,7 +36,48 @@
   	
   	<select id="detail" resultType="ReservationDto">
   		select * from reservation 
-  		where reservation_id = #{reservation_id}
+  		where reservation_id = #{reservationId}
   	</select>
+  	
+  	<!-- 예약 완료 후 상세 조회-->
+  	<select id="detailVO" resultType="ReservationDetailVO">
+		  	SELECT 
+	        R.reservation_id, 
+	        R.reservation_member,
+	        R.reservation_target,
+	        R.reservation_seat,
+	        R.reservation_time, 
+	        R.reservation_people_count,
+	        R.reservation_status,
+	        R.reservation_request_note,
+	        R.reservation_purpose,
+	        RT.restaurant_name, 
+	        RT.restaurant_address,
+	        RT.restaurant_contact,
+	        P.payment_total AS paymentTotalAmount FROM reservation R
+	    JOIN restaurant RT ON R.reservation_target = RT.restaurant_id
+	    LEFT JOIN payment P ON R.reservation_id = P.reservation_id
+	    WHERE R.reservation_id = #{reservationId}
+  	</select>
+  	
+  	<!-- 멤버 별 예약내역 조회 -->
+  	<select id="listByMember" resultType="ReservationDetailVO">
+    SELECT 
+            R.reservation_id, R.reservation_member, R.reservation_time, 
+            R.reservation_people_count, R.reservation_status,
+            RT.restaurant_name, RT.restaurant_address,
+            P.payment_total AS paymentTotalAmount,
+            P.payment_tid AS tid,
+            P.payment_time AS paymentTime
+        FROM reservation R
+        JOIN restaurant RT ON R.reservation_target = RT.restaurant_id
+        LEFT JOIN payment P ON R.reservation_id = P.reservation_id
+        WHERE R.reservation_member = #{memberId}
+        ORDER BY R.reservation_time DESC
+	</select>
+	
+	<update id="updateStatus">
+	update reservation set reservation_status = #{status} where reservation_id = #{reservationId}
+	</update>
   	
 </mapper>

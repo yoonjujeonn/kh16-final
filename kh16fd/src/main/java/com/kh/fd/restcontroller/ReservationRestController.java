@@ -3,6 +3,7 @@ package com.kh.fd.restcontroller;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.fd.dao.ReservationDao;
 import com.kh.fd.dto.ReservationDto;
 import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.service.KakaoPayService;
 import com.kh.fd.service.PaymentService;
 import com.kh.fd.service.ReservationService;
+import com.kh.fd.vo.ReservationDetailVO;
 import com.kh.fd.vo.ReservationReadyVO;
 import com.kh.fd.vo.TokenVO;
 import com.kh.fd.vo.kakaopay.KakaoPayApproveRequestVO;
@@ -47,6 +50,9 @@ public class ReservationRestController {
 	
 	@Autowired
 	private ReservationService reservationService;
+	
+	@Autowired
+	private ReservationDao reservationDao;
 	
 	private Map<String, KakaoPayFlashVO> flashMap = Collections.synchronizedMap(new HashMap<>());
 	
@@ -125,7 +131,7 @@ public class ReservationRestController {
 				//DB 저장 코드 (payment, payment_detail)
 				paymentService.insert(responseVO, flashVO);
 				
-				response.sendRedirect(flashVO.getReturnUrl() + "/success");
+				response.sendRedirect(flashVO.getReturnUrl() + "/success?reservationId=" + flashVO.getReservationId());
 	}
 	
 	@GetMapping("/pay/cancel/{partnerOrderId}")
@@ -138,6 +144,27 @@ public class ReservationRestController {
 	public void fail(@PathVariable String partnerOrderId, HttpServletResponse response) throws IOException {
 		KakaoPayFlashVO flashVO = flashMap.remove(partnerOrderId);
 		response.sendRedirect(flashVO.getReturnUrl() + "/fail");
+	}
+	
+	@GetMapping("/detail/{reservationId}")
+	public ReservationDetailVO detail(@PathVariable Long reservationId) {
+		return reservationDao.findDetailVO(reservationId);
+	}
+	
+	@GetMapping("/myList")
+	public List<ReservationDetailVO> list(@RequestAttribute TokenVO tokenVO){
+		String memberId = tokenVO.getLoginId();
+		return reservationDao.findAllByMember(memberId);
+	}
+	
+	//완료된 예약 취소(환불)
+	@PostMapping("/refund")
+	public void refundReservation(
+			@RequestParam Long reservationId,
+			@RequestAttribute TokenVO tokenVO) {
+		reservationService.cancelReservation(reservationId);
+		
+		log.info("예약 환불 취소 완료: 번호={}, 사용자={}", reservationId, tokenVO.getLoginId());
 	}
 
 }
