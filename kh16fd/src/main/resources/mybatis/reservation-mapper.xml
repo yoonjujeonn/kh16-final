@@ -39,6 +39,7 @@
   		where reservation_id = #{reservationId}
   	</select>
   	
+  	<!-- 예약 완료 후 상세 조회-->
   	<select id="detailVO" resultType="ReservationDetailVO">
 		  	SELECT 
 	        R.reservation_id, 
@@ -59,6 +60,7 @@
 	    WHERE R.reservation_id = #{reservationId}
   	</select>
   	
+  	<!-- 멤버 별 예약내역 조회 -->
   	<select id="listByMember" resultType="ReservationDetailVO">
   		SELECT 
         R.reservation_id, 
