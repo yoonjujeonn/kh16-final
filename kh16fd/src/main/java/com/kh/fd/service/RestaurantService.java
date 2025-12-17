@@ -75,4 +75,21 @@ public class RestaurantService {
             
             return restaurantId;
     }
+    
+    //주소 수정 처리
+    @Transactional
+    public RestaurantDto updateRestaurantPlace(RestaurantDto restaurantDto) {
+    	String address = restaurantDto.getRestaurantAddress();
+    	long placeId = placeService.createPlaceAndMapping(address);
+    	restaurantDto.setRestaurantPlace(placeId);
+    	
+    	restaurantDto = RestaurantDto.builder()
+    		.restaurantAddress(restaurantDto.getRestaurantAddress())
+    		.restaurantAddressX(restaurantDto.getRestaurantAddressX())
+    		.restaurantAddressY(restaurantDto.getRestaurantAddressY())
+    	.build();
+    	
+    	return restaurantDto;
+    }
+    
 }

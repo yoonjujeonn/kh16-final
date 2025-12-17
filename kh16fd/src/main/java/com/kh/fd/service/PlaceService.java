@@ -36,6 +36,7 @@ public class PlaceService {
 	    if(depth1 != null) {
             depth1 = depth1.replaceAll("(특별자치도|특별자치시|특별시|광역시|도)$", "");
         }
+	    
 	    // 1. place 조회 또는 생성
 	    PlaceDto place = placeDao.selectByDepth(depth1, depth2, depth3);
 	    long placeId;
@@ -100,6 +101,7 @@ public class PlaceService {
 
 	    return placeId;
 	}
+	
 	@Transactional
     public void createMapping(PlaceGroupMappingRequestVO placeGroupMappingRequestVO) {
         List<Long> restaurantIds = placeGroupMappingRequestVO.getRestaurantIds();

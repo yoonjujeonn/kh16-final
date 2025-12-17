@@ -30,7 +30,7 @@
 		select * from payment where
 		payment_no = #{paymentNo}
 	</select>
-
+	
 	<update id="cancel">
 		update payment set payment_remain=0
 		where

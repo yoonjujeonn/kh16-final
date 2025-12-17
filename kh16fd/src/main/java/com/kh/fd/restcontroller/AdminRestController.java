@@ -70,12 +70,11 @@ public class AdminRestController {
                 .build();
     }
 
-    // 상세 조회
-    @PostMapping("/{restaurantId}")
-    public RestaurantDto detail(@PathVariable long restaurantId) {
-        return restaurantDao.selectOne(restaurantId);
-    }
-
+		// 상세 조회
+		@GetMapping("/restaurant/{restaurantId}")
+		public RestaurantDto detail(@PathVariable long restaurantId) {
+			return restaurantDao.selectFormByAdmin(restaurantId);
+		}
     // 관리자용 리뷰 전체 목록
     @GetMapping("/review/list")
     public List<ReviewAdminVO> reviewList() {
