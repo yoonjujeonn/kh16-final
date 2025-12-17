@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.PlaceDto;
+import com.kh.fd.dto.PlaceImageDto;
+import com.kh.fd.vo.PlaceImageVO;
 
 @Repository
 public class PlaceDao {
@@ -47,5 +49,46 @@ public class PlaceDao {
 
     public List<String> selectLowerList(String upperPlace) {
         return sqlSession.selectList("place.lowerPlaceList", upperPlace);
+    }
+    
+    public List<PlaceDto> selectList() {
+        return sqlSession.selectList("place.list");
+    }
+    
+    //지역 이미지 
+    public void insertPlaceImage(Long placeId, int attachmentNo) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("placeId", placeId);
+        param.put("attachmentNo", attachmentNo);
+
+        sqlSession.insert("place.insertPlaceImage", param);
+    }
+    
+    //단일 지역 조회
+    public PlaceDto selectOne(Long placeId) {
+        return sqlSession.selectOne("place.selectOne", placeId);
+    }
+    
+    //depth1별 대표 지역 조회 (이미지 등록용)
+    public List<PlaceDto> selectDepth1RepresentativeList() {
+        return sqlSession.selectList("place.selectDepth1RepresentativeList");
+    }
+
+    // 지역 이미지 attachmentNo 조회
+    public Integer selectPlaceImageAttachmentNo(Long placeId) {
+        return sqlSession.selectOne(
+            "place.selectPlaceImageAttachmentNo",
+            placeId
+        );
+    }
+    
+    //depth1별 이미지 조회
+    public List<PlaceImageVO> selectDepth1WithImage() {
+        return sqlSession.selectList("place.selectDepth1WithImage");
+    }
+
+    // 지역 이미지 삭제
+    public void deletePlaceImage(Long placeId) {
+        sqlSession.delete("place.deletePlaceImage", placeId);
     }
 }

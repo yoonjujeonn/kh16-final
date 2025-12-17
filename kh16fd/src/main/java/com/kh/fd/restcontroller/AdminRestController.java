@@ -9,10 +9,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.fd.dao.BannerDao;
 import com.kh.fd.dao.CategoryDao;
+import com.kh.fd.dao.PlaceDao;
 import com.kh.fd.dao.RestaurantDao;
 import com.kh.fd.dao.ReviewDao;
 import com.kh.fd.dto.BannerDto;
 import com.kh.fd.dto.CategoryDto;
+import com.kh.fd.dto.PlaceImageDto;
 import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.error.TargetNotFoundException;
 import com.kh.fd.service.AttachmentService;
@@ -20,8 +22,10 @@ import com.kh.fd.vo.PageVO;
 import com.kh.fd.vo.RestaurantApprovalListVO;
 import com.kh.fd.vo.ReviewAdminVO;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
+@Tag(name = "관리자 기능 컨트롤러")
 @Slf4j
 @RestController
 @RequestMapping("/admin")
@@ -42,6 +46,9 @@ public class AdminRestController {
 
     @Autowired
     private ReviewDao reviewDao;
+    
+    @Autowired
+    private PlaceDao placeDao;
 
     // 승인 안된 식당 리스트
     @GetMapping("/page/{page}")
@@ -181,6 +188,43 @@ public class AdminRestController {
 
         if (attachmentNo != null) {
         	attachmentService.delete(attachmentNo);
+        }
+    }
+    
+    //지역 이미지 등록
+    @PostMapping("/place/image")
+    public void addPlaceImage(
+            @RequestParam Long placeId,
+            @RequestParam MultipartFile attach
+    ) throws IOException {
+
+        if (placeDao.selectOne(placeId) == null) {
+            throw new TargetNotFoundException("존재하지 않는 지역");
+        }
+
+        Integer oldAttachmentNo = placeDao.selectPlaceImageAttachmentNo(placeId);
+
+        if (oldAttachmentNo != null) {
+            attachmentService.delete(oldAttachmentNo);
+        }
+
+        if (attach != null && !attach.isEmpty()) {
+            int attachmentNo = attachmentService.save(attach); 
+            placeDao.insertPlaceImage(placeId, attachmentNo);
+        }
+    }
+    //지역 이미지 삭제
+    @DeleteMapping("/place/image/{placeId}")
+    public void deletePlaceImage(@PathVariable Long placeId) {
+
+        if (placeDao.selectOne(placeId) == null) {
+            throw new TargetNotFoundException("존재하지 않는 지역");
+        }
+
+        Integer attachmentNo = placeDao.selectPlaceImageAttachmentNo(placeId);
+
+        if (attachmentNo != null) {
+            attachmentService.delete(attachmentNo);
         }
     }
 }
