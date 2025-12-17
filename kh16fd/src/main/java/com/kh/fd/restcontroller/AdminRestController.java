@@ -67,7 +67,7 @@ public class AdminRestController {
 		// 상세 조회
 		@GetMapping("/restaurant/{restaurantId}")
 		public RestaurantDto detail(@PathVariable long restaurantId) {
-			return restaurantDao.selectOne(restaurantId);
+			return restaurantDao.selectFormByAdmin(restaurantId);
 		}
 
 		// 관리자용 리뷰 전체 목록 조회

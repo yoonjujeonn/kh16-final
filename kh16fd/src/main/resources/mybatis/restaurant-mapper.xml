@@ -34,53 +34,153 @@
         order by restaurant_id desc
     </select>
 	
-	<!-- 승인 대기 식당 리스트 조회 -->
+	<!-- 승인 대기 식당 리스트 조회(관리자) -->
 	<select id="listNeedApprove" resultType="RestaurantDto">
 		select * from (
 			select rownum rn, TMP.* from (
-				select * from restaurant 
+				select * from restaurant
 				where restaurant_status = 'N' 
 				order by restaurant_id asc
 			)TMP 
 		) where rn between #{begin} and #{end}
 	</select>
 	
-    <!-- R(상세) -->
+	<!-- 승인 대기 식당 상세 -->
+	<select id="detailNeedApprove" resultType="RestaurantDto">
+		select * from restaurant 
+		where restaurant_id = #{restaurantId}
+		and restaurant_status = 'N'
+	</select>
+	
+    <!-- 상세(데이터 조회용) -->
     <select id="detail" resultType="RestaurantDto">
-        select *
-        from restaurant
-        where restaurant_id = #{restaurantId}
-    </select>
+	    select *
+	    from restaurant
+	    where restaurant_id = #{restaurantId}
+	</select>
+	
+	<!-- 상세(출력용) -->
+	<select id="detailWithCategory" resultType="RestaurantDetailVO">
+		SELECT 
+        r.*,
+		rh.holiday_dates,
+    	rh.place_depth1,
+	    rh.place_depth2,
+	    rh.place_depth3,
+	    rh.place_group_id,
+	    rh.place_group_name,
+	    rh.category_no,
+	    rh.category_name,
+	    rh.restaurant_avg_rating,
+	    rh.review_count,
+	    rh.restaurant_max_people
+	    from restaurant r left outer join restaurant_full_list rh 
+	    on r.restaurant_id = rh.restaurant_id where r.restaurant_id = #{restaurantId} 
+		and rownum = 1
+	</select>
+	
+	<!-- 식당 주인용 조회 -->
+	<!-- 승인 대기 중인 식당 목록 -->
+	<select id="pendingFormList" resultType="RestaurantDto">
+		select * from restaurant 
+		where owner_id = #{ownerId} 
+		and restaurant_status = 'N'
+	</select>
+	
+	<!-- 승인 대기 중인 식당 상세 -->
+	<select id="pendingFormDetail" resultType="RestaurantDto">
+		select * from restaurant_list
+		where restaurant_id = #{restaurantId} 
+		and owner_id = #{ownerId} 
+		and restaurant_status = 'N' 
+	</select>
+	
+	<update id="updateUnitForm">
+    update restaurant
+    <set>
+        <if test="restaurantName != null">
+            restaurant_name = #{restaurantName},
+        </if>
+        <if test="restaurantOpen != null">
+            restaurant_open = #{restaurantOpen},
+        </if>
+        <if test="restaurantClose != null">
+            restaurant_close = #{restaurantClose},
+        </if>
+        <if test="restaurantBreakStart != null">
+            restaurant_break_start = #{restaurantBreakStart},
+        </if>
+        <if test="restaurantBreakEnd != null">
+            restaurant_break_end = #{restaurantBreakEnd},
+        </if>
+        <if test="restaurantDescription != null">
+            restaurant_decription = #{restaurantDescription},
+        </if>
+        <if test="restaurantLastOrder != null">
+            restaurant_last_order = #{restaurantLastOrder},
+        </if>
+        <if test="restaurantOpeningDays != null">
+            restaurant_opening_days = #{restaurantOpeningDays},
+        </if>
+        <if test="reservationInterval != null">
+            reservation_interval = #{reservationInterval}
+        </if>
+    </set>
+    	where restaurant_id = #{restaurantId}
+	</update>
 
-    <!-- U(부분 수정) -->
-    <update id="updateUnit">
-        update restaurant
+	
+	<!-- 주소 수정(식당 주인) -->
+	<update id="updateAddressForm">
+		update restaurant set 
+		restaurant_place = #{restaurantPlace},
+		restaurant_address = #{restaurantAddress},
+		restaurant_address_x = #{restaurantAddressX},
+		restaurant_address_y = #{restaurantAddressY}
+		where restaurant_id = #{restaurantId}
+	</update>
+	
+	<!-- 식당 등록 승인 -->
+	<update id="approveByAdmin">
+		update restaurant set restaurant_status = 'Y' 
+		where restaurant_id = #{restaurantId}
+	</update>
+	
+	<!-- 주소 수정 -->
+	<update id="updateAddressByAdmin">
+		update restaurant set 
+		restaurant_place = #{restaurantPlace},
+		restaurant_address = #{restaurantAddress},
+		restaurant_address_x = #{restaurantAddressX},
+		restaurant_address_y = #{restaurantAddressY}
+		where restaurant_id = #{restaurantId}
+	</update>
+	
+    <!-- U(부분 수정 - 가능한 것만) -->
+    <update id="updateUnitByAdmin">
+        update restaurant 
         <set>
             <if test="ownerId != null"> owner_id = #{ownerId}, </if>
-            <if test="restaurantPlace != 0"> restaurant_place = #{restaurantPlace}, </if>
             <if test="restaurantName != null"> restaurant_name = #{restaurantName}, </if>
             <if test="restaurantOpen != null"> restaurant_open = #{restaurantOpen}, </if>
             <if test="restaurantClose != null"> restaurant_close = #{restaurantClose}, </if>
             <if test="restaurantBreakStart != null"> restaurant_break_start = #{restaurantBreakStart}, </if>
             <if test="restaurantBreakEnd != null"> restaurant_break_end = #{restaurantBreakEnd}, </if>
-            <if test="reservationInterval != 0"> reservation_interval = #{reservationInterval}, </if>
-            <if test="restaurantPhone != null"> restaurant_phone = #{restaurantPhone}, </if>
-            <if test="restaurantAddressX != 0"> restaurant_address_x = #{restaurantAddressX}, </if>
-            <if test="restaurantAddressY != 0"> restaurant_address_y = #{restaurantAddressY}, </if>
+            <if test="reservationInterval != null"> reservation_interval = #{reservationInterval}, </if>
+            <if test="restaurantContact != null"> restaurant_contact = #{restaurantContact}, </if>
             <if test="restaurantDescription != null"> restaurant_description = #{restaurantDescription}, </if>
-            <if test="restaurantOpeningHours != null"> restaurant_opening_hours = #{restaurantOpeningHours}, </if>
-            <if test="restaurantOperationStatus != null"> restaurant_operation_status = #{restaurantOperationStatus}, </if>
+            <if test="restaurantLastOrder != null"> restaurant_last_order = #{restaurantLastOrder}, </if>
+            <if test="restaurantOpeningDays != null"> restaurant_opening_days = #{restaurantOpeningDays}, </if>
             <if test="restaurantStatus != null"> restaurant_status = #{restaurantStatus}, </if>
-            <if test="restaurantAvgRating != 0"> restaurant_avg_rating = #{restaurantAvgRating}, </if>
         </set>
         where restaurant_id = #{restaurantId}
     </update>
 
-    <!-- D -->
-    <delete id="delete">
-        delete from restaurant 
-        where restaurant_id = #{restaurantId}
-    </delete>
+    <!-- U(D) 실제 삭제는 x 상태만 변경 -->
+    <update id="deleteByAdmin">
+        update restaurant 
+        restaurant_operation_status = #{restaurantOperationStatus}
+    </update>
     
     <select id="searchList"
         parameterType="com.kh.fd.vo.SearchVO"

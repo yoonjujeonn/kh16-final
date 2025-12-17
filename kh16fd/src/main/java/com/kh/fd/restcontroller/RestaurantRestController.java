@@ -31,6 +31,7 @@ import com.kh.fd.service.AttachmentService;
 import com.kh.fd.service.RestaurantService;
 import com.kh.fd.service.TokenService;
 import com.kh.fd.vo.PageVO;
+import com.kh.fd.vo.RestaurantDetailVO;
 import com.kh.fd.vo.RestaurantListPagingVO;
 import com.kh.fd.vo.RestaurantListVO;
 import com.kh.fd.vo.RestaurantRegisterVO;
@@ -82,11 +83,33 @@ public class RestaurantRestController {
 		}
 	}
 	
+	//식당 상세 조회
 	@GetMapping("/detail/{restaurantId}")
-	public RestaurantDto detail(@PathVariable long restaurantId) {
-	    return restaurantDao.selectOne(restaurantId);
+	public RestaurantDetailVO detail(@PathVariable long restaurantId) {
+	    RestaurantDto restaurantDto = restaurantDao.selectOne(restaurantId);
+	    
+	    RestaurantDetailVO detailVO = restaurantDao.selectOneWithCategory(restaurantDto.getRestaurantId());
+	    
+	    RestaurantDetailVO result = RestaurantDetailVO.builder()
+	    			.restaurantDto(restaurantDto)
+	    			.categoryName(detailVO.getCategoryName())
+	    			.categoryNo(detailVO.getCategoryNo())
+	    			.holidayDates(detailVO.getHolidayDates())
+	    			.placeDepth1(detailVO.getPlaceDepth1())
+	    			.placeDepth2(detailVO.getPlaceDepth2())
+	    			.placeDepth3(detailVO.getPlaceDepth3())
+	    			.placeGroupId(detailVO.getPlaceGroupId())
+	    			.placeGroupName(detailVO.getPlaceGroupName())
+	    			.restaurantAvgRating(detailVO.getRestaurantAvgRating())
+	    			.restaurantMaxPeople(detailVO.getRestaurantMaxPeople())
+	    			.reviewCount(detailVO.getReviewCount())
+	    		.build();
+	    
+	    
+	    return result;
 	}
 	
+	//전체 식당 조회
 	@GetMapping("/page/{page}")
 	public RestaurantListPagingVO list(@PathVariable int page){
 		PageVO pageVO = new PageVO();
