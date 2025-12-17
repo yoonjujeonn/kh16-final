@@ -1,6 +1,8 @@
 package com.kh.fd.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +43,11 @@ public class ReservationDao {
 	}
 	public List<ReservationDetailVO> findAllByMember(String memberId) {
 		return sqlSession.selectList("reservation.listByMember", memberId);
+	}
+	public boolean updateStatus(Long reservationId, String status) {
+		Map<String, Object> params = new HashMap<>();
+	    params.put("reservationId", reservationId);
+	    params.put("status", status);
+	    return sqlSession.update("reservation.updateStatus", params) > 0;
 	}
 }

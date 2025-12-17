@@ -156,5 +156,15 @@ public class ReservationRestController {
 		String memberId = tokenVO.getLoginId();
 		return reservationDao.findAllByMember(memberId);
 	}
+	
+	//완료된 예약 취소(환불)
+	@PostMapping("/refund")
+	public void refundReservation(
+			@RequestParam Long reservationId,
+			@RequestAttribute TokenVO tokenVO) {
+		reservationService.cancelReservation(reservationId);
+		
+		log.info("예약 환불 취소 완료: 번호={}, 사용자={}", reservationId, tokenVO.getLoginId());
+	}
 
 }

@@ -37,4 +37,8 @@
 		payment_no=#{paymentNo}
 	</update>
 	
+	<select id="selectOneByReservationId" resultType="PaymentDto">
+		select * from payment where reservation_id = #{reservationId}
+	</select>
+	
 </mapper>
