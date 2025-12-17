@@ -12,7 +12,7 @@ import com.kh.fd.vo.CategoryImageVO;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "카테고리 조회 컨트롤러")
+@Tag(name = "카테고리 컨트롤러")
 @RestController
 @RequestMapping("/category")
 @CrossOrigin(origins = "http://localhost:5173")
