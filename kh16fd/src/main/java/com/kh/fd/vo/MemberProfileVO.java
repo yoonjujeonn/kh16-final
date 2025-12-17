@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class MemberProfileVO {
 	private String memberId;
-	private int attachmentNo;
-	
-	private String profileName;
-	private String profileLink;
+    private int attachmentNo;
+    private String attachmentName;
+    private String attachmentType;
 }

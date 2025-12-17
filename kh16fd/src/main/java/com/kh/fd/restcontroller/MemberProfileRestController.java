@@ -19,12 +19,15 @@ import com.kh.fd.service.AttachmentService;
 import com.kh.fd.service.MemberProfileService;
 import com.kh.fd.service.TokenService;
 import com.kh.fd.vo.MemberProfileVO;
+import com.kh.fd.vo.TokenVO;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 
 //(origins = "http://localhost:5173") 잘 안되면 이거 밑에 삽입할것
 @Tag(name="멤버 프로필 컨트롤러")
 @RestController
+@Slf4j
 @RequestMapping("/memberProfile")
 @CrossOrigin
 public class MemberProfileRestController {
@@ -46,20 +49,22 @@ public class MemberProfileRestController {
     
     @PostMapping("/add")
     public void add(
-    		@ModelAttribute MemberProfileVO memberProfileVO,
-    		@RequestParam(required = false) MultipartFile attach,
-    		@RequestHeader(value = "Authorization", required = false) String bearerToken
+            @ModelAttribute MemberProfileVO memberProfileVO,
+            @RequestParam(required = false) MultipartFile attach,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken
     ) throws IllegalStateException, IOException {
-    	//로그인 검사
-    	checkLogin(bearerToken);
-    	
-    	if(attach != null && !attach.isEmpty()) {
-    		int attachmentNo = attachmentService.save(attach);
-    		memberProfileVO.setAttachmentNo(attachmentNo);
-    	}
-    	
-    	memberProfileService.saveProfile(memberProfileVO);
-    	
+        // 1. 로그인 검사 및 토큰에서 아이디 추출
+        checkLogin(bearerToken);
+        String memberId = tokenService.parse(bearerToken).getLoginId();
+        
+        // 2. 파일이 전송되었을 때만 서비스 호출 (방어 코드)
+        if(attach != null && !attach.isEmpty()) {
+            // 모든 로직(기존 삭제, 새 파일 저장, DB 매칭)을 서비스에서 처리하도록 전달
+            memberProfileService.saveProfile(memberProfileVO, attach, memberId);
+        } else {
+            // 파일이 없을 경우에 대한 처리 (생략 가능 혹은 안내 메시지)
+            log.warn("업로드된 파일이 없습니다.");
+        }
     }
     
     @GetMapping("/{memberId}")
