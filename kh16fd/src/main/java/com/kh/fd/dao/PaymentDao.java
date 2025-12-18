@@ -34,6 +34,14 @@ public class PaymentDao {
 		return sqlSession.update("payment.cancel", paymentNo)>0;
 		
 	}
+	public boolean cancel(long paymentNo, int refundAmount) {
+		PaymentDto paymentDto = PaymentDto.builder()
+				.paymentNo(paymentNo)
+				.paymentRefund(refundAmount)
+				.build();
+		return sqlSession.update("payment.cancel", paymentDto)>0;
+		
+	}
 
 	public PaymentDto selectOneByReservationId(Long reservationId) {
 		return sqlSession.selectOne("payment.selectOneByReservationId", reservationId);

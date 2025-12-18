@@ -54,7 +54,9 @@
 	        RT.restaurant_name, 
 	        RT.restaurant_address,
 	        RT.restaurant_contact,
-	        P.payment_total AS paymentTotalAmount FROM reservation R
+	        P.payment_total AS paymentTotalAmount,
+	        P.payment_refund AS refundAmount
+	         FROM reservation R
 	    JOIN restaurant RT ON R.reservation_target = RT.restaurant_id
 	    LEFT JOIN payment P ON R.reservation_id = P.reservation_id
 	    WHERE R.reservation_id = #{reservationId}
@@ -62,18 +64,21 @@
   	
   	<!-- 멤버 별 예약내역 조회 -->
   	<select id="listByMember" resultType="ReservationDetailVO">
-    SELECT 
+    	SELECT 
             R.reservation_id, R.reservation_member, R.reservation_time, 
             R.reservation_people_count, R.reservation_status,
             RT.restaurant_name, RT.restaurant_address,
             P.payment_total AS paymentTotalAmount,
             P.payment_tid AS tid,
-            P.payment_time AS paymentTime
+            P.payment_time AS paymentTime,
+            P.payment_refund AS refundAmount
         FROM reservation R
         JOIN restaurant RT ON R.reservation_target = RT.restaurant_id
         LEFT JOIN payment P ON R.reservation_id = P.reservation_id
         WHERE R.reservation_member = #{memberId}
-        ORDER BY R.reservation_time DESC
+        ORDER BY 
+    CASE WHEN reservation_status = '예약완료' THEN 1 ELSE 2 END ASC,
+    reservation_time DESC
 	</select>
 	
 	<update id="updateStatus">
