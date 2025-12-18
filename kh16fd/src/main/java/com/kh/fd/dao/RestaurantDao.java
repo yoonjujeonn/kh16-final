@@ -121,4 +121,10 @@ public class RestaurantDao {
 	public List<RestaurantListVO> searchList(SearchVO searchVO) {
 	    return sqlSession.selectList("restaurant.searchList", searchVO);
 	}
+	
+	//식당 승인
+	public boolean approveByAdmin(long restaurantId) {
+		return sqlSession.update("restaurant.approveByAdmin", restaurantId) > 0;
+	}
+	
 }
