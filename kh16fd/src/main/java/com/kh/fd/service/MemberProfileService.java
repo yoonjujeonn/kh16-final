@@ -30,8 +30,8 @@ public class MemberProfileService {
 		
 		vo.setMemberId(memberId);
 		MemberProfileVO oldProfile = memberProfileDao.selectOne(memberId);
-		// 1. 기존 프로필이 있나 확인		
-		if(oldProfile != null) {
+		// 1. 기존 프로필이 있나 확인
+		if(oldProfile.getAttachmentNo() > 0) {
 			attachmentService.delete(oldProfile.getAttachmentNo());
 		}
 		//2. 파일 저장
