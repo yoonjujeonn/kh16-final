@@ -98,6 +98,8 @@ public class ReservationService {
 		//PaymentService를 통해 실제 결제 취소 진행
 		paymentService.cancel(paymentDto.getPaymentNo(), refundAmount);
 		
+		paymentDao.cancel(paymentDto.getPaymentNo(), refundAmount);
+		
 		//예약 상태 변경
 		reservationDao.updateStatus(reservationId, "예약취소");
 

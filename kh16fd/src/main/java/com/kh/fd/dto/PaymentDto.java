@@ -19,6 +19,6 @@ public class PaymentDto {
 	private Integer paymentRemain;
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
 	private LocalDateTime paymentTime;
-	
+	private int paymentRefund;
 	private Long reservationId;
 }
