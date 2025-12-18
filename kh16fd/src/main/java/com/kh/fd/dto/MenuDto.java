@@ -5,14 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class MenuDto {
-    private int menuId;
-    private int restaurantId;
+    private Long menuId;
+    private Long restaurantId;
     private String menuName;
-    private int menuPrice;
+    private Integer menuPrice;
     private String menuInfo;
 }
