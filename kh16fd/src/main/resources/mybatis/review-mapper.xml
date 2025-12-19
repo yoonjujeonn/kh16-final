@@ -69,6 +69,10 @@
 	delete from review where review_no = #{reviewNo}
 	</delete>
 	
+	<select id="reviewAvg" resultType="ReviewListVO">
+		select * from restaurant_review_list where restaurant_id = #{restaurantId}
+	</select>
+	
 	<!-- 관리자용 리뷰조회 -->
 	<select id="selectListAdmin" resultType="ReviewAdminVO">
 	    SELECT

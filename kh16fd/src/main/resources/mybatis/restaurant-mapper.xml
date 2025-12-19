@@ -342,4 +342,11 @@
 	<select id="approvalListCount" resultType="int">
 		select count(*) from restaurant where restaurant_status = 'N'
 	</select>
+	
+	<!-- 별점 평균 수정 -->
+	<update id="updateReviewAvg">
+		update restaurant set 
+		restaurant_avg_rating = #{restaurantAvgRating}
+		where restaurant_id = #{restaurantId}
+	</update>
 </mapper>
