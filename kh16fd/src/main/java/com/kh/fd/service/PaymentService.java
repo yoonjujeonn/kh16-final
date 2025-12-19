@@ -93,6 +93,7 @@ public class PaymentService {
 					.build());
 		}
 		
-		this.cancel(paymentNo);
+		paymentDao.cancel(paymentNo, refundAmount);
+		paymentDetailDao.cancel(paymentNo);
 	}
 }

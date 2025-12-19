@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -7,7 +7,7 @@
 
     <!-- 식당 카테고리 매핑 등록 -->
     <insert id="insert">
-        INSERT INTO category_mapping (
+        insert into category_mapping (
             restaurant_id,
             category_no
         ) VALUES (
@@ -18,16 +18,16 @@
 
     <!-- 식당별 매핑 목록 조회 -->
     <select id="selectListByRestaurant" resultType="int">
-        SELECT category_no
-        FROM category_mapping
-        WHERE restaurant_id = #{restaurantId}
-        ORDER BY category_no ASC
+        select category_no
+        from category_mapping
+        where restaurant_id = #{restaurantId}
+        order category_no asc
     </select>
 
     <!-- 식당 매핑 전체 삭제 -->
     <delete id="deleteByRestaurant">
-        DELETE FROM category_mapping
-        WHERE restaurant_id = #{restaurantId}
+        delete from category_mapping
+        where restaurant_id = #{restaurantId}
     </delete>
 
 </mapper>

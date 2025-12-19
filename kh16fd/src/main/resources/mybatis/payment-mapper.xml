@@ -32,7 +32,8 @@
 	</select>
 	
 	<update id="cancel">
-		update payment set payment_remain=0
+		update payment set payment_remain=0,
+		payment_refund = #{paymentRefund}
 		where
 		payment_no=#{paymentNo}
 	</update>

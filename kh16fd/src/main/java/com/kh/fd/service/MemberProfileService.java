@@ -30,18 +30,23 @@ public class MemberProfileService {
 		
 		vo.setMemberId(memberId);
 		MemberProfileVO oldProfile = memberProfileDao.selectOne(memberId);
-		// 1. 기존 프로필이 있나 확인		
-		if(oldProfile != null) {
-			attachmentService.delete(oldProfile.getAttachmentNo());
-		}
+
+		// 1. 기존 프로필이 존재하는지 확인
+	    if (oldProfile != null && oldProfile.getAttachmentNo() > 0) {
+	        // 기존 프로필 파일이 있으면 삭제
+	        attachmentService.delete(oldProfile.getAttachmentNo());
+	    }		
 		//2. 파일 저장
-		int	attachmentNo = attachmentService.save(attach);
-		//3. vo에 주입
-		vo.setAttachmentNo(attachmentNo);
-		// 4. MERGE 실행 (MEMBER_PROFILE 테이블)
-	    memberProfileDao.updateAndInsert(vo);
-	    
-	    log.info("프로필 변경 완료: 회원={}, 새 파일번호={}", memberId, attachmentNo);
+	    if(attach != null && !attach.isEmpty() ) {	    	
+
+	    	int	attachmentNo = attachmentService.save(attach);
+	    	//3. vo에 주입
+	    	vo.setAttachmentNo(attachmentNo);
+	    	// 4. MERGE 실행 (MEMBER_PROFILE 테이블)
+	    	memberProfileDao.updateAndInsert(vo);
+	    	
+	    	log.info("프로필 변경 완료: 회원={}, 새 파일번호={}", memberId, attachmentNo);
+	    }
 	}
 	
 	
