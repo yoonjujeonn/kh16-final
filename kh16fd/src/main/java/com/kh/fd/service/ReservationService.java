@@ -2,6 +2,7 @@ package com.kh.fd.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,11 @@ import com.kh.fd.dao.SlotLockDao;
 import com.kh.fd.dto.PaymentDto;
 import com.kh.fd.dto.ReservationDto;
 import com.kh.fd.dto.RestaurantDto;
+import com.kh.fd.error.NeedPermissionException;
 import com.kh.fd.error.ReservationConflictException;
+import com.kh.fd.vo.ReservationDetailVO;
 import com.kh.fd.vo.ReservationReadyVO;
+import com.kh.fd.vo.TokenVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -110,6 +114,31 @@ public class ReservationService {
 		//예약 상태 변경
 		reservationDao.updateStatus(reservationId, "예약취소");
 
+	}
+	
+	@Transactional
+	public void updateReservationStatusByOwner(Long reservationId, String newStatus, TokenVO tokenVO) {
+		String ownerId = reservationDao.getOwnverIdByReservationId(reservationId);
+		
+		boolean isOwner = tokenVO.getLoginId().equals(ownerId);
+		boolean isAdmin = tokenVO.getLoginLevel().equals("관리자");
+		
+		if(!isOwner && !isAdmin) {
+			throw new NeedPermissionException("해당 예약 상태를 변경할 수 있는 권한이 없습니다.");
+		}
+		boolean result = reservationDao.updateStatus(reservationId, newStatus);
+		
+		if(!result) {
+			throw new RuntimeException("예약 상태 업데이트에 실패했습니다.");
+		}
+		
+		if(newStatus.equals("방문완료")) {
+			log.info("방문완료 처리됨 - 예약번호: {}", reservationId);
+		}
+	}
+	
+	public List<ReservationDetailVO> getOwnerReservationList(String ownerId){
+		return reservationDao.findAllByOwner(ownerId);
 	}
 	
 	
