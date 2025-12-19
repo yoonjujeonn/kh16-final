@@ -16,6 +16,7 @@ import com.kh.fd.error.TargetNotFoundException;
 import com.kh.fd.vo.kakaopay.KakaoPayApproveResponseVO;
 import com.kh.fd.vo.kakaopay.KakaoPayCancelRequestVO;
 import com.kh.fd.vo.kakaopay.KakaoPayFlashVO;
+
 //수정해야됨
 @Service
 public class PaymentService {
@@ -30,7 +31,6 @@ public class PaymentService {
 	@Autowired
 	private KakaoPayService kakaoPayService;
 	
-	//예약 시 결제 여부 확인을 위해 paymentNo를 반환
 	@Transactional
 	public void insert(KakaoPayApproveResponseVO responseVO, KakaoPayFlashVO flashVO) {
 		
@@ -69,8 +69,6 @@ public class PaymentService {
 							.paymentDetailItemPrice(itemPrice)// 판매가
 							.paymentDetailQty(1)// 구매수량
 							.build());
-					
-					
 					
 	}
 	
