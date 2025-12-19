@@ -16,6 +16,7 @@
   		#{slotLockedBy}, #{slotLockTime} 
   	)
   </insert>
+  <!-- 락 삭제 -->
   <delete id="delete">
   	delete from slot_lock 
   	where slot_lock_id = #{slotLockId}
