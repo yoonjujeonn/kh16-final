@@ -48,7 +48,6 @@ public class ReviewRestController {
 	    
 	    // 2. DTO 수동 생성 및 설정
 	    ReviewDto reviewDto = new ReviewDto();
-	    
 	    reviewDto.setRestaurantId(restaurantId);
 	    reviewDto.setMemberId(memberId);
 	    reviewDto.setReviewContent(reviewContent);

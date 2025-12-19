@@ -80,19 +80,53 @@
 	</select>
 	
 	<!-- 식당 주인용 조회 -->
-	<!-- 승인 대기 중인 식당 목록 -->
-	<select id="pendingFormList" resultType="RestaurantDto">
-		select * from restaurant 
-		where owner_id = #{ownerId} 
-		and restaurant_status = 'N'
+	<select id="myRestaurantList" resultType="RestaurantDto">
+    select *
+    	from restaurant
+    where owner_id = #{ownerId}
+    order by restaurant_id desc
 	</select>
 	
-	<!-- 승인 대기 중인 식당 상세 -->
-	<select id="pendingFormDetail" resultType="RestaurantDto">
-		select * from restaurant_list
-		where restaurant_id = #{restaurantId} 
-		and owner_id = #{ownerId} 
-		and restaurant_status = 'N' 
+	<!-- 승인 대기 중인 식당 목록 -->
+	<select id="pendingFormList" resultType="RestaurantDto">
+    	select *
+    	from restaurant
+    	where owner_id = #{ownerId}
+    	order by restaurant_id desc
+	</select>
+	
+	 <select id="pendingFormDetail" parameterType="map" resultType="RestaurantDto">
+    select
+        restaurant_id,
+        owner_id,
+        restaurant_name,
+        restaurant_contact,
+        restaurant_address,
+        restaurant_address_x,
+        restaurant_address_y,
+
+        restaurant_open,
+        restaurant_close,
+        restaurant_break_start,
+        restaurant_break_end,
+        restaurant_last_order,
+
+        restaurant_opening_days,
+        reservation_interval,
+        restaurant_reservation_price,
+
+        restaurant_description
+    from restaurant
+    where restaurant_id = #{restaurantId}
+      and owner_id = #{ownerId}
+	</select>
+	
+	<!-- 식당 올린 사람 Id 조회 -->
+	<select id="selectFormListByOwnerId" parameterType="string" resultType="RestaurantDto">
+    select *
+    from restaurant
+    where owner_id = #{ownerId}
+    order by restaurant_id desc
 	</select>
 	
 	<update id="updateUnitForm">
@@ -101,27 +135,43 @@
         <if test="restaurantName != null">
             restaurant_name = #{restaurantName},
         </if>
+
+        <if test="restaurantContact != null">
+            restaurant_contact = #{restaurantContact},
+        </if>
+
         <if test="restaurantOpen != null">
             restaurant_open = #{restaurantOpen},
         </if>
+
         <if test="restaurantClose != null">
             restaurant_close = #{restaurantClose},
         </if>
+
         <if test="restaurantBreakStart != null">
             restaurant_break_start = #{restaurantBreakStart},
         </if>
+
         <if test="restaurantBreakEnd != null">
             restaurant_break_end = #{restaurantBreakEnd},
         </if>
+
         <if test="restaurantDescription != null">
-            restaurant_decription = #{restaurantDescription},
+            restaurant_description = #{restaurantDescription},
         </if>
+
         <if test="restaurantLastOrder != null">
             restaurant_last_order = #{restaurantLastOrder},
         </if>
+
         <if test="restaurantOpeningDays != null">
             restaurant_opening_days = #{restaurantOpeningDays},
         </if>
+        
+        <if test="restaurantReservationPrice != null">
+            restaurant_reservation_price = #{restaurantReservationPrice},
+        </if>
+
         <if test="reservationInterval != null">
             reservation_interval = #{reservationInterval}
         </if>
@@ -258,6 +308,27 @@
 		WHERE rn BETWEEN #{begin} AND #{end}
 	</select> 
 	
+	<select id="ownerDetail" resultType="RestaurantOwnerDetailVO">
+    select
+        restaurant_id,
+        restaurant_name,
+        restaurant_contact,
+        restaurant_address,
+        restaurant_address_x,
+        restaurant_address_y,
+        restaurant_description,
+        restaurant_open,
+        restaurant_close,
+        restaurant_break_start,
+        restaurant_break_end,
+        restaurant_last_order,
+        restaurant_opening_days,
+        reservation_interval,
+        restaurant_reservation_price
+    from restaurant
+    where restaurant_id = #{restaurantId}
+</select>
+	
 	<select id="listCount" resultType="int">
 		SELECT COUNT(*)
 			FROM (
@@ -271,4 +342,11 @@
 	<select id="approvalListCount" resultType="int">
 		select count(*) from restaurant where restaurant_status = 'N'
 	</select>
+	
+	<!-- 별점 평균 수정 -->
+	<update id="updateReviewAvg">
+		update restaurant set 
+		restaurant_avg_rating = #{restaurantAvgRating}
+		where restaurant_id = #{restaurantId}
+	</update>
 </mapper>

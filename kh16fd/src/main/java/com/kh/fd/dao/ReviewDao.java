@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.fd.dto.ReviewDto;
 import com.kh.fd.vo.ReviewAdminVO;
+import com.kh.fd.vo.ReviewListVO;
 
 @Repository
 public class ReviewDao {
@@ -44,7 +45,12 @@ public class ReviewDao {
 	public boolean delete(int reviewNo) {
 		return sqlSession.delete("review.delete", reviewNo) > 0;
 	}
-
+	
+	//식당별 평균 별점 조회
+	public ReviewListVO reviewAvg(long restaurantId) {
+		return sqlSession.selectOne("review.reviewAvg", restaurantId);
+	}
+	
 	// 평균 별점 조회
 //	public double selectAverageRating(int restaurantId) {
 //		Double avg = sqlSession.selectOne("review.selectAverageRating", restaurantId);
