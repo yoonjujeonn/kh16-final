@@ -232,48 +232,62 @@
         restaurant_operation_status = #{restaurantOperationStatus}
     </update>
     
-    <select id="searchList"
-        parameterType="com.kh.fd.vo.SearchVO"
-        resultType="com.kh.fd.vo.RestaurantListVO">
+    <select id="searchList" parameterType="SearchVO" resultType="RestaurantListVO">
 
-    select distinct
-        restaurant.restaurant_id,
-        restaurant.restaurant_name,
-        restaurant.restaurant_address,
-        restaurant.restaurant_opening_days,
-        restaurant.restaurant_open,
-        restaurant.restaurant_close
+    SELECT *
+    FROM (
+        SELECT
+            restaurant_id as restaurantId,
+            restaurant_name as restaurantName,
+            restaurant_address as restaurantAddress,
+            restaurant_open as restaurantOpen,
+            restaurant_close as restaurantClose,
+            restaurant_last_order as restaurantLastOrder,
+            restaurant_opening_days as restaurantOpeningDays,
+            holiday_dates as holidayDates,
 
-    from restaurant
+            restaurant_avg_rating as restaurantAvgRating,
+            review_count as reviewCount,
+            restaurant_max_people as restaurantMaxPeople,
 
-    left join place
-        on restaurant.restaurant_place = place.place_id
+            place_id as placeId,
+            place_depth1 as placeDepth1,
+            place_depth2 as placeDepth2,
+            place_depth3 as placeDepth3,
+            place_group_id as placeGroupId,
+            place_group_name as placeGroupName,
 
-    left join category_mapping
-        on restaurant.restaurant_id = category_mapping.restaurant_id
+            category_no as categoryNo,
+            category_name as categoryName,
 
-    left join category child_category
-        on category_mapping.category_no = child_category.category_no
+            row_number() over (
+                partition by restaurant_id
+                order by restaurant_id
+            ) as rowNumber
+        from restaurant_full_list
+        where 1 = 1
 
-    left join category parent_category
-        on child_category.parent_category_no = parent_category.category_no
+        <if test="keyword != null and keyword != ''">
+            and (
+                restaurant_name like '%' || #{keyword} || '%'
+                or restaurant_address like '%' || #{keyword} || '%'
+                or place_depth1 like '%' || #{keyword} || '%'
+                or place_depth2 like '%' || #{keyword} || '%'
+                or place_depth3 like '%' || #{keyword} || '%'
+                or category_name like '%' || #{keyword} || '%'
+            )
+        </if>
 
-    where 1 = 1
+        <if test="placeGroupId != null">
+            AND place_group_id = #{placeGroupId}
+        </if>
 
-    <if test="keyword != null and keyword != ''">
-        and (
-            restaurant.restaurant_name like '%' || #{keyword} || '%'
-            or restaurant.restaurant_address like '%' || #{keyword} || '%'
-            or place.place_depth1 like '%' || #{keyword} || '%'
-            or place.place_depth2 like '%' || #{keyword} || '%'
-            or place.place_depth3 like '%' || #{keyword} || '%'
-
-            or child_category.category_name like '%' || #{keyword} || '%'
-            or parent_category.category_name like '%' || #{keyword} || '%'
-        )
-    </if>
-
-    order by restaurant.restaurant_id desc
+        <if test="categoryId != null">
+            AND category_no = #{categoryId}
+        </if>
+    )
+    WHERE rowNumber = 1
+    ORDER BY restaurantId DESC
 </select>
     
     
