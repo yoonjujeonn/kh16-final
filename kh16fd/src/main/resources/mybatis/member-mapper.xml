@@ -47,7 +47,7 @@
 		- 문자열, 숫자, 날짜 , 일치, 유사, 구간 등 다양한 처리가 가능하게 구현
 		- 컬럼이 있어도 되고 없어도 되도록 조건부 처리
 	-->
-	<select id="complexSearch" resultType="memberDto">
+	<select id="complexSearch" resultType="MemberComplexSearchVO">
 		select * from member
 		<!-- 
 			where절이 조건부로 존재할 때 사용하는 태그 
@@ -115,6 +115,15 @@
 					instr(member_address1, #{token}) > 0
 				</foreach>
 			</if>
+			
+			<!-- 원하는 등급을 검색 -->
+			<if test="memberStatusList != null and memberStatusList.size() > 0">
+				<!-- item(변수명), collection(저장소), separator(구분자) -->
+				<foreach item="memberStatus" collection="memberStatusList"
+								separator="," open="and member_status in (" close=")">
+					#{memberStatus}
+				</foreach>
+			</if>			
 			
 		</where>
 	</select>	
@@ -195,6 +204,7 @@
 		where member_id=#{memberId}
 	</update>
 
+	<!-- 회원 재 활성화 -->
 	<!-- 관리자가 써야되는 기능 -->
 	<update id="updateReactivate">
 		update member 
@@ -234,6 +244,7 @@
 		where member_status='DORMANT'
 	</select>
 	
+	
 	<!-- 삭제된 대상 찾아서 로그인 방지 -->
 	<select id="blockDormant" resultType="memberDto">
 		select
@@ -242,6 +253,23 @@
 		 	member
 		where 
 			member_id=#{member_id}
+	</select>
+
+	<!--관리자 제외한 회원 세기 -->
+	<select id="notAdminListCount" resultType="int">
+		select count(*) from member
+		where member_level in ('일반회원', '자영업자')
+	</select>
+
+	<!-- 관리자 제외한 회원 리스트 조회 -->
+	<select id="notAdminLIst" resultType="MemberDto">
+		select * from (
+			select rownum rn, TMP.* from(
+				select * from member
+				where member_level in ('일반회원', '자영업자')
+				order by member_id asc
+			) TMP
+		) where rn between #{begin} and #{end}	
 	</select>
 
 </mapper>

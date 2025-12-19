@@ -23,6 +23,7 @@ public class MemberComplexSearchVO {
 	private String beginMemberJoin, endMemberJoin;
 	private List<String> memberLevelList;
 	private String memberAddress;
+	private List<String> memberStatusList;
 	
 	public Set<String> getAddressTokenList() {
 		if(memberAddress == null) return null;

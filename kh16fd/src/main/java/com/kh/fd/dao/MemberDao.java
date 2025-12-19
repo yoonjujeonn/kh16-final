@@ -8,8 +8,11 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.kh.fd.dto.MemberDto;
+import com.kh.fd.vo.MemberComplexSearchVO;
+import com.kh.fd.vo.PageVO;
 
 @Repository
 public class MemberDao {
@@ -56,7 +59,7 @@ public class MemberDao {
 		Map<String, Object> params = new HashMap<>();
 		params.put("column", column);
 		params.put("keyword", keyword);
-		return sqlSession.selectList("member.seasch", params);
+		return sqlSession.selectList("member.search", params);
 	}	
 	
 	public boolean updateMember(MemberDto memberDto) {
@@ -96,5 +99,23 @@ public class MemberDao {
 	public MemberDto findDormant(String memberId) {
 		return sqlSession.selectOne("member.blockDormant", memberId);
 	}
+	
+	//관리자용 검색
+	public List<MemberDto> multiSearchList(@RequestBody MemberComplexSearchVO vo) {
+		return sqlSession.selectList("member.complexSearch", vo);
+	}
+
+	//관리자용 숫자세기
+	public int notAdminCount() {
+		return sqlSession.selectOne("member.notAdminListCount");
+	}
+
+	//관리자용 리스트
+	public List<MemberDto> notAdminList(PageVO pageVO) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put("begin", pageVO.getBegin());
+		params.put("end", pageVO.getEnd());
+		return sqlSession.selectList("member.notAdminLIst", params);
+	}	
 	
 }

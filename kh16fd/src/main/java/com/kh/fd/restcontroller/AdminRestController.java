@@ -3,21 +3,36 @@ package com.kh.fd.restcontroller;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.fd.dao.BannerDao;
 import com.kh.fd.dao.CategoryDao;
+import com.kh.fd.dao.MemberDao;
 import com.kh.fd.dao.PlaceDao;
 import com.kh.fd.dao.RestaurantDao;
 import com.kh.fd.dao.ReviewDao;
 import com.kh.fd.dto.BannerDto;
 import com.kh.fd.dto.CategoryDto;
-import com.kh.fd.dto.PlaceImageDto;
+import com.kh.fd.dto.MemberDto;
 import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.error.TargetNotFoundException;
+import com.kh.fd.error.UnauthorizationException;
 import com.kh.fd.service.AttachmentService;
+import com.kh.fd.vo.MemberComplexSearchVO;
 import com.kh.fd.vo.PageVO;
 import com.kh.fd.vo.RestaurantApprovalListVO;
 import com.kh.fd.vo.ReviewAdminVO;
@@ -49,6 +64,12 @@ public class AdminRestController {
     
     @Autowired
     private PlaceDao placeDao;
+    
+    @Autowired
+    private MemberDao memberDao;
+    
+	@Autowired
+	private SqlSession sqlSession;
 
     // 승인 안된 식당 리스트
     @GetMapping("/page/{page}")
@@ -234,4 +255,43 @@ public class AdminRestController {
             attachmentService.delete(attachmentNo);
         }
     }
+    
+	//복합검색 (기능 테스트용 잘 됨) 그냥 dao에 만든거 관리자 컨트롤러로 옮길것
+	@PostMapping("/member/search") //어쩔 수 없는 선택
+	public List<MemberDto> search(@RequestBody MemberComplexSearchVO vo) {
+		return sqlSession.selectList("member.complexSearch", vo);
+	}
+    
+	//회원 탈퇴 기능 스케줄러로 설정해야됨 일단 비활성화 기능 만듬
+	@PatchMapping("/{memberId}/deactivate")
+	public boolean deactivate(@PathVariable String memberId) {
+		MemberDto originDto = memberDao.selectOne(memberId);
+		if(originDto == null) throw new TargetNotFoundException();
+		if("관리자".equals(originDto.getMemberLevel())) {
+			throw new UnauthorizationException();
+		}
+//		memberDto.setMemberId(memberId);
+		memberDao.updateWithdraw(memberId);
+		return true;
+	}	
+	
+	//회원 탈퇴 롤백 기능 관리자만 허용
+	@PatchMapping("/{memberId}/reactivate")
+	public void reactivate(@PathVariable String memberId ) {
+		MemberDto originDto = memberDao.selectOne(memberId);
+		if(originDto == null) throw new TargetNotFoundException();
+		if("관리자".equals(originDto.getMemberLevel())) {
+			throw new UnauthorizationException();
+		}
+		memberDao.updateReactivate(memberId);
+			
+	}
+	
+	@GetMapping("/{memberId}")
+	public MemberDto selectActiveOne(@PathVariable String memberId) {
+		MemberDto memberDto = memberDao.selectActiveOne(memberId);
+		if(memberDto == null) throw new TargetNotFoundException("존재하지 않는 회원");
+		return memberDto;
+	}
+	
 }

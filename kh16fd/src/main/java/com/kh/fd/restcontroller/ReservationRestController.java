@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -36,9 +37,11 @@ import com.kh.fd.vo.kakaopay.KakaoPayFlashVO;
 import com.kh.fd.vo.kakaopay.KakaoPayReadyRequestVO;
 import com.kh.fd.vo.kakaopay.KakaoPayReadyResponseVO;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
+@Tag(name = "예약 관리 컨트롤러")
 @Slf4j
 @CrossOrigin
 @RestController
@@ -168,6 +171,24 @@ public class ReservationRestController {
 		reservationService.cancelReservation(reservationId);
 		
 		log.info("예약 환불 취소 완료: 번호={}, 사용자={}", reservationId, tokenVO.getLoginId());
+	}
+	
+	//예약 상태 변경 (식당주인용 : 방문완료/노쇼)
+	@PatchMapping("/status/{reservationId}")
+	public void updateStatus(@PathVariable Long reservationId,
+			@RequestBody ReservationDto reservationDto,
+			@RequestAttribute TokenVO tokenVO) {
+		
+		reservationService.updateReservationStatusByOwner(reservationId, reservationDto.getReservationStatus(), tokenVO);
+		
+		log.info("예약 상태 변경 완료 : 번호={}, 변경 후 상태={}",
+				reservationId, reservationDto.getReservationStatus());
+	}
+	
+	@GetMapping("/ownerList")
+	public List<ReservationDetailVO> ownerList(@RequestAttribute TokenVO tokenVO){
+		String ownerId = tokenVO.getLoginId();
+		return reservationService.getOwnerReservationList(ownerId);
 	}
 
 }
