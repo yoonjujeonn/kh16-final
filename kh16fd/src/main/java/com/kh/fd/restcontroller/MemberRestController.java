@@ -20,12 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.fd.dao.MemberDao;
 import com.kh.fd.dao.MemberTokenDao;
 import com.kh.fd.dto.MemberDto;
+import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.error.TargetNotFoundException;
 import com.kh.fd.error.UnauthorizationException;
 import com.kh.fd.service.TokenService;
 import com.kh.fd.vo.MemberComplexSearchVO;
 import com.kh.fd.vo.MemberLoginResponseVO;
+import com.kh.fd.vo.MemberNotAdminListVO;
 import com.kh.fd.vo.MemberRefreshVO;
+import com.kh.fd.vo.PageVO;
+//import com.kh.fd.vo.RestaurantApprovalListVO;
 import com.kh.fd.vo.TokenVO;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -161,7 +165,7 @@ public class MemberRestController {
 	}		
 	
 	
-	//복합검색
+	//복합검색 (기능 테스트용 잘 됨) 그냥 dao에 만든거 관리자 컨트롤러로 옮길것
 	@PostMapping("/search") //어쩔 수 없는 선택
 	public List<MemberDto> search(@RequestBody MemberComplexSearchVO vo) {
 		return sqlSession.selectList("member.complexSearch", vo);
@@ -240,6 +244,27 @@ public class MemberRestController {
 	public List<MemberDto> selectDormant() {
 		return sqlSession.selectList("member.findDormantMember");
 	}
+	
+	
+    // 검색 + 일반 페이징
+    @GetMapping("/page/{page}")
+    public MemberNotAdminListVO approvalList(@PathVariable int page) {
+        PageVO pageVO = new PageVO();
+        pageVO.setPage(page);
+        pageVO.setDataCount(memberDao.notAdminCount());
+
+        List<MemberDto> list = memberDao.notAdminList(pageVO);
+
+        return MemberNotAdminListVO.builder()
+                .page(pageVO.getPage())
+                .size(pageVO.getSize())
+                .count(pageVO.getDataCount())
+                .begin(pageVO.getBegin())
+                .end(pageVO.getEnd())
+                .last(pageVO.getPage() >= pageVO.getTotalPage())
+                .list(list)
+                .build();
+    }
 	
 	
 }
