@@ -81,8 +81,40 @@
     reservation_time DESC
 	</select>
 	
+	<select id="listByOwner" resultType="ReservationDetailVO">
+		SELECT 
+        RS.RESERVATION_ID, 
+        RS.RESERVATION_MEMBER, 
+        RS.RESERVATION_TARGET, 
+        RS.RESERVATION_SEAT, 
+        RS.RESERVATION_TIME, 
+        RS.RESERVATION_PEOPLE_COUNT, 
+        RS.RESERVATION_STATUS, 
+        RS.RESERVATION_REQUEST_NOTE, 
+        RS.RESERVATION_PURPOSE,
+        RT.RESTAURANT_NAME, 
+        RT.RESTAURANT_ADDRESS, 
+        RT.RESTAURANT_CONTACT,
+        P.PAYMENT_TOTAL AS paymentTotalAmount,
+        P.PAYMENT_REFUND AS refundAmount,
+        P.PAYMENT_TID AS tid,
+        P.PAYMENT_TIME AS paymentTime
+    FROM RESERVATION RS
+    JOIN RESTAURANT RT ON RS.RESERVATION_TARGET = RT.RESTAURANT_ID
+    LEFT OUTER JOIN PAYMENT P ON RS.RESERVATION_ID = P.RESERVATION_ID
+    WHERE RT.OWNER_ID = #{ownerId}
+    ORDER BY RS.RESERVATION_TIME DESC
+	</select>
+	
 	<update id="updateStatus">
 	update reservation set reservation_status = #{status} where reservation_id = #{reservationId}
 	</update>
+	
+	<select id="getOwnerId" resultType="string">
+		SELECT T2.OWNER_ID 
+	    FROM RESERVATION T1
+	    JOIN RESTAURANT T2 ON T1.RESERVATION_TARGET = T2.RESTAURANT_ID
+	    WHERE T1.RESERVATION_ID = #{reservationId}
+	</select>
   	
 </mapper>
