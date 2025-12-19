@@ -1,16 +1,20 @@
 package com.kh.fd.service;
 
 import java.io.IOException;
-import com.kh.fd.restcontroller.SeatRestController;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.fd.dao.AttachmentDao;
+import com.kh.fd.dao.RestaurantDao;
 import com.kh.fd.dao.ReviewDao;
+import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.dto.ReviewDto;
 import com.kh.fd.error.TargetNotFoundException;
+import com.kh.fd.restcontroller.SeatRestController;
+import com.kh.fd.vo.ReviewListVO;
 
 @Service
 public class ReviewService {
@@ -25,7 +29,10 @@ public class ReviewService {
 
 	@Autowired
 	private AttachmentDao attachmentDao;
-
+	
+	@Autowired
+	private RestaurantDao restaurantDao;
+	
     ReviewService(SeatRestController seatRestController) {
         this.seatRestController = seatRestController;
     }
@@ -44,6 +51,14 @@ public class ReviewService {
 	        reviewDto.setReviewAttachmentNo(attachmentNo);
 	    }
 	    reviewDao.insert(reviewDto);
+	    
+	    //리뷰 등록 시 식당 별점 평균 업데이트
+	    ReviewListVO avg = reviewDao.reviewAvg(reviewDto.getRestaurantId());
+	    
+	    double avgRating = avg.getRestaurantAvgRating();
+	    
+	    restaurantDao.updateReviewAvg(reviewDto.getRestaurantId(), avgRating);
+	    
 	}
 
 	@Transactional

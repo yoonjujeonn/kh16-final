@@ -127,4 +127,12 @@ public class RestaurantDao {
 		return sqlSession.update("restaurant.approveByAdmin", restaurantId) > 0;
 	}
 	
+	//리뷰 등록 시 평균값 수정
+	public boolean updateReviewAvg(long restaurantId, double restaurantAvgRating) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("restaurantId", restaurantId);
+		params.put("restaurantAvgRating", restaurantAvgRating);
+		
+		return sqlSession.update("restaurant.updateReviewAvg", params) > 0;
+	}
 }
