@@ -13,6 +13,7 @@ import com.kh.fd.error.TargetNotFoundException;
 import com.kh.fd.vo.PageVO;
 import com.kh.fd.vo.RestaurantDetailVO;
 import com.kh.fd.vo.RestaurantListVO;
+import com.kh.fd.vo.RestaurantOwnerDetailVO;
 import com.kh.fd.vo.SearchVO;
 
 @Repository
@@ -60,7 +61,7 @@ public class RestaurantDao {
 	
 	//식당 주인이 조회할 미승인 식당 목록
 	public List<RestaurantDto> selectFormListByOwnerId(String ownerId){
-		return sqlSession.selectList("restaurant.pendingFormList", ownerId);
+	    return sqlSession.selectList("restaurant.pendingFormList", ownerId);
 	}
 	
 	//식당 주인이 조회할 미승인 식당 상세
@@ -120,5 +121,25 @@ public class RestaurantDao {
 	//검색용
 	public List<RestaurantListVO> searchList(SearchVO searchVO) {
 	    return sqlSession.selectList("restaurant.searchList", searchVO);
+	}
+	
+	//식당이 선택한 카테고리 ID 목록
+	public List<Long> selectCategoryIdList(long restaurantId) {
+	    return sqlSession.selectList(
+	        "restaurant.selectCategoryIdList",
+	        restaurantId
+	    );
+	}
+	//사장님 식당 상세 (카테고리 포함)
+	public RestaurantOwnerDetailVO selectOwnerDetail(long restaurantId) {
+
+	    RestaurantOwnerDetailVO restaurantOwnerDetailVOvo = sqlSession.selectOne("restaurant.ownerDetail", restaurantId);
+
+	    if (restaurantOwnerDetailVOvo == null) throw new TargetNotFoundException();
+
+	    List<Long> categoryIdList = selectCategoryIdList(restaurantId);
+	    restaurantOwnerDetailVOvo.setCategoryIdList(categoryIdList);
+
+	    return restaurantOwnerDetailVOvo;
 	}
 }
