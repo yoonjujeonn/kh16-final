@@ -84,4 +84,32 @@ public class CategoryDao {
     public void deleteCategoryImage(int categoryNo) {
         sqlSession.delete("category.deleteCategoryImage",categoryNo);
     }
+
+    // 특정 식당이 선택한 카테고리 목록 조회
+    public List<CategoryDto> selectCategoryByRestaurant(int restaurantId) {
+        return sqlSession.selectList(
+            "category.selectCategoryByRestaurant",
+            restaurantId
+        );
+    }
+
+    // 특정 식당의 카테고리 매핑 전체 삭제
+    public int deleteRestaurantCategory(int restaurantId) {
+        return sqlSession.delete(
+            "category.deleteRestaurantCategory",
+            restaurantId
+        );
+    }
+
+    // 특정 식당에 카테고리 1개 매핑 추가
+    public int insertRestaurantCategory(int restaurantId, int categoryNo) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("restaurantId", restaurantId);
+        param.put("categoryNo", categoryNo);
+
+        return sqlSession.insert(
+            "category.insertRestaurantCategory",
+            param
+        );
+    }
 }
