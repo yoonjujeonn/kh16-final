@@ -13,6 +13,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 	private MemberInterceptor memberInterceptor;
 	@Autowired
 	private AdminInterceptor adminInterceptor;
+	@Autowired
+	private OwnerInterceptor ownerInterceptor;
 	
 	//현재 토큰 기능은 구현하지 않았습니다
 	@Override
@@ -52,6 +54,10 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
         .excludePathPatterns(
             "/error/**"
         );
+		
+		registry.addInterceptor(ownerInterceptor)
+		.addPathPatterns("/restaurant/", "/owner")
+		;
 	}
 	
 }
