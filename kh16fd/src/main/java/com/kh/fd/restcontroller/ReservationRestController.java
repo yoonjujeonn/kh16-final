@@ -1,6 +1,7 @@
 package com.kh.fd.restcontroller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.fd.dao.ReservationDao;
+import com.kh.fd.dao.SlotLockDao;
 import com.kh.fd.dto.ReservationDto;
 import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.service.KakaoPayService;
@@ -130,6 +132,7 @@ public class ReservationRestController {
 				
 				//DB 저장 코드 (payment, payment_detail)
 				paymentService.insert(responseVO, flashVO);
+				
 				
 				response.sendRedirect(flashVO.getReturnUrl() + "/success?reservationId=" + flashVO.getReservationId());
 	}
