@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "메뉴 관리 컨트롤러")
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/owner/restaurant")
 @CrossOrigin
 public class MenuRestController {
 
@@ -20,31 +20,40 @@ public class MenuRestController {
     private MenuDao menuDao;
 
     // 메뉴 등록
-    @PostMapping("/")
-    public void insert(@RequestBody MenuDto menuDto) {
+    @PostMapping("/{restaurantId}/menu")
+    public void insert(
+        @PathVariable long restaurantId,
+        @RequestBody MenuDto menuDto
+    ) {
+        menuDto.setRestaurantId(restaurantId);
         menuDao.insert(menuDto);
     }
 
     // 식당별 메뉴 목록 조회
-    @GetMapping("/list/{restaurantId}")
-    public List<MenuDto> list(@PathVariable long restaurantId) {
+    @GetMapping("/{restaurantId}/menu")
+    public List<MenuDto> list(
+        @PathVariable long restaurantId
+    ) {
         return menuDao.selectList(restaurantId);
     }
 
     // 메뉴 수정
-    @PutMapping("/{menuId}")
+    @PutMapping("/{restaurantId}/menu/{menuId}")
     public void update(
+        @PathVariable long restaurantId,
         @PathVariable long menuId,
         @RequestBody MenuDto menuDto
     ) {
         menuDto.setMenuId(menuId);
+        menuDto.setRestaurantId(restaurantId);
         menuDao.update(menuDto);
     }
 
     // 메뉴 삭제
-    @DeleteMapping("/{menuId}")
-    public void delete(@PathVariable long menuId) {
+    @DeleteMapping("/{restaurantId}/menu/{menuId}")
+    public void delete(
+        @PathVariable long menuId
+    ) {
         menuDao.delete(menuId);
     }
 }
-

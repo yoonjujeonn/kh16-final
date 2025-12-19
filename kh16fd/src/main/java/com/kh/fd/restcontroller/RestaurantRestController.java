@@ -158,15 +158,15 @@ public class RestaurantRestController {
 	        ByteArrayResource resource = attachmentService.load(attachmentNo);
 	        
 	        // MIME 타입에서 확장자 추출
-	        String mimeType = attachmentDto.getAttachmentType(); // e.g., "image/png"
-	        String ext = mimeType.substring(mimeType.indexOf("/") + 1); // "png"
+	        String mimeType = attachmentDto.getAttachmentType(); 
+	        String ext = mimeType.substring(mimeType.indexOf("/") + 1); 
 
 	        // 동적 파일 이름
 	        String fileName = "profileBy" + restaurantId + "." + ext;
 	        
 	        // MIME 타입, 파일 이름 설정
 	        return ResponseEntity.ok()
-	                .contentType(MediaType.parseMediaType(attachmentDto.getAttachmentType())) // 또는 attachmentDto.getAttachmentType()
+	                .contentType(MediaType.parseMediaType(attachmentDto.getAttachmentType())) 
 	                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")
 	                .body(resource);
 
@@ -183,7 +183,7 @@ public class RestaurantRestController {
 	                    .body(resource);
 
 	        } catch (Exception ex) {
-	            // 기본 이미지도 못 읽으면 404
+
 	            return ResponseEntity.notFound().build();
 	        }
 	    }
