@@ -51,6 +51,12 @@
 	        AND rs.reservation_status = '예약완료'
 	        AND TO_CHAR(rs.reservation_time, 'YYYY-MM-dd HH24:MI') = #{slotTime}
 	  )
+	  AND NOT EXISTS (
+      SELECT 1
+      FROM slot_lock sl
+      WHERE sl.seat_id = s.seat_id
+        AND sl.slot_expired_at > SYSTIMESTAMP
+  	 )
   </select>
   
   <!-- 수정 -->

@@ -143,15 +143,15 @@
   	 		<if test="memberPost != null">
 	 	 		, member_post = #{memberPost}
   	 		</if>
-  	 		, member_post = #{memberPost}
+<!--   	 		, member_post = #{memberPost} -->
   	 		<if test="memberAddress1 != null">
 	 	 		, member_address1 = #{memberAddress1}
   	 		</if>
-  	 		, member_address1 = #{memberAddress1}
+<!--   	 		, member_address1 = #{memberAddress1} -->
   	 		<if test="memberAddress2 != null">
 	 	 		, member_address2 = #{memberAddress2}
   	 		</if>
-  	 		, member_address2 = #{memberAddress2}
+<!--   	 		, member_address2 = #{memberAddress2} -->
   	 		<if test="memberJoin != null">
 	 	 		, member_join = #{memberJoin}
   	 		</if>

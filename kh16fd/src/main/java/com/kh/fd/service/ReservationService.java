@@ -1,24 +1,21 @@
 package com.kh.fd.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.fd.dao.PaymentDao;
-import com.kh.fd.dao.PaymentDetailDao;
 import com.kh.fd.dao.ReservationDao;
 import com.kh.fd.dao.RestaurantDao;
-import com.kh.fd.dto.PaymentDetailDto;
+import com.kh.fd.dao.SlotLockDao;
 import com.kh.fd.dto.PaymentDto;
 import com.kh.fd.dto.ReservationDto;
 import com.kh.fd.dto.RestaurantDto;
 import com.kh.fd.error.ReservationConflictException;
-import com.kh.fd.error.TargetNotFoundException;
 import com.kh.fd.vo.ReservationReadyVO;
-import com.kh.fd.vo.kakaopay.KakaoPayApproveResponseVO;
-import com.kh.fd.vo.kakaopay.KakaoPayFlashVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +34,10 @@ public class ReservationService {
 	
 	@Autowired
 	private PaymentService paymentService;
-
+	
+	@Autowired
+	private SlotLockDao slotLockDao;
+	
 	// 결제 시작 전 중복 체크 & 식당 정보 제공
 	public ReservationReadyVO checkConflictAndSendTarget(ReservationDto reservationDto) {
 
@@ -68,7 +68,14 @@ public class ReservationService {
 			throw new ReservationConflictException("이미 예약된 좌석입니다");
 
 		reservationDao.insert(reservationDto);
-
+		
+		long seatId = reservationDto.getReservationSeat();
+		LocalDateTime reservationTime = reservationDto.getReservationTime();
+		
+		long slotLockId = slotLockDao.selectOneByReservation(seatId, reservationTime);
+		
+		//lock 제거
+		slotLockDao.deleteLock(slotLockId);
 	}
 
 	@Transactional
@@ -104,5 +111,6 @@ public class ReservationService {
 		reservationDao.updateStatus(reservationId, "예약취소");
 
 	}
-
+	
+	
 }

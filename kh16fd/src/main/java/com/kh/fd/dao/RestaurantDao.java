@@ -142,4 +142,9 @@ public class RestaurantDao {
 
 	    return restaurantOwnerDetailVOvo;
 	}
+	//식당 승인
+	public boolean approveByAdmin(long restaurantId) {
+		return sqlSession.update("restaurant.approveByAdmin", restaurantId) > 0;
+	}
+	
 }
