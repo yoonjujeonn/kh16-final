@@ -48,4 +48,7 @@ public class SeatDao {
 		params.put("peopleCount", peopleCount);
 		return sqlSession.selectList("seat.availableSeatType", params);
 	}
+	public void delete(long seatId) {
+	    sqlSession.delete("seat.delete", seatId);
+	}
 }
