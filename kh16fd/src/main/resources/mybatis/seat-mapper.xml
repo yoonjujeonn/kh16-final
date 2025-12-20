@@ -58,8 +58,11 @@
         AND sl.slot_expired_at > SYSTIMESTAMP
   	 )
   </select>
-  
-  <!-- 수정 -->
-  
+ 
   <!-- 삭제 -->
+  <delete id="delete" parameterType="long">
+    	delete from seat
+    	where seat_id = #{seatId}
+	</delete>
+
 </mapper>

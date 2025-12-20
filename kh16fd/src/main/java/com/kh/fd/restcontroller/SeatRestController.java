@@ -64,4 +64,22 @@ public class SeatRestController {
 		slotLockDao.deleteLock(slotLockId);
 	}
 	
+	// 좌석 목록 (이 식당에 등록된 좌석 그대로)
+	@GetMapping("/seat/list/{restaurantId}")
+	public List<SeatDto> seatList(@PathVariable long restaurantId) {
+	    return seatDao.selectList(restaurantId);
+	}
+
+	// 좌석 등록 (1개 단위)
+	@PostMapping("/seat/add")
+	public void addSeat(@RequestBody SeatDto seatDto) {
+	    seatDao.insert(seatDto);
+	}
+
+	// 좌석 삭제 (1개 단위)
+	@DeleteMapping("/seat/{seatId}")
+	public void deleteSeat(@PathVariable long seatId) {
+	    seatDao.delete(seatId);
+	}
+	
 }
