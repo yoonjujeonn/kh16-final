@@ -170,6 +170,20 @@ public class AdminRestController {
         categoryDto.setCategoryNo(categoryNo);
         categoryDao.updateUnit(categoryDto);
     }
+    
+    // 카테고리 부분 수정 
+    @PatchMapping("/category/{categoryNo}")
+    public void editCategoryUnit(
+            @PathVariable int categoryNo,
+            @RequestBody CategoryDto categoryDto
+    ) {
+        if (categoryDao.selectOne(categoryNo) == null) {
+            throw new TargetNotFoundException("존재하지 않는 카테고리");
+        }
+
+        categoryDto.setCategoryNo(categoryNo);
+        categoryDao.updateUnit(categoryDto);
+    }
 
     // 카테고리 삭제
     @DeleteMapping("/category/{categoryNo}")
