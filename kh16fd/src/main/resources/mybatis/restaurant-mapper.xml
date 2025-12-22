@@ -231,6 +231,7 @@
         restaurant_operation_status = #{restaurantOperationStatus}
     </update>
     
+    <!-- 검색 -->
     <select id="searchList" parameterType="SearchVO" resultType="RestaurantListVO">
 
     select * from (
@@ -275,13 +276,13 @@
             or category_name like '%' || #{keyword} || '%'
 
             <!-- 상위 카테고리 → 하위 카테고리 검색 -->
-            or category_no in (
-                select c2.category_no
-                from category c1
-                join category c2
-                  on c2.parent_category_no = c1.category_no
-                where c1.category_name like '%' || #{keyword} || '%'
-            )
+         or category_no in (
+    		select child_category.category_no
+    		from category top_category
+    		join category child_category
+      			on child_category.parent_category_no = top_category.category_no
+		    where top_category.category_name like '%' || #{keyword} || '%'		
+			)   
         )
     </if>
 
