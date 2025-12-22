@@ -34,6 +34,13 @@ public class SlotLockDao {
 		return sqlSession.selectOne("slotLock.idByReservation", params);
 	}
 	
+	public String lockedUser(long seatId, LocalDateTime reservationTime) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("seatId", seatId);
+		params.put("reservationTime", reservationTime);
+		
+		return sqlSession.selectOne("slotLock.checkId", params);
+	}
 	public boolean deleteLock(long slotLockId) {
 		SlotLockDto slotLockDto = sqlSession.selectOne("slotLock.detail", slotLockId);
 		if(slotLockDto == null) throw new TargetNotFoundException();

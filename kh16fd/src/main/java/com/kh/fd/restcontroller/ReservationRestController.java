@@ -25,6 +25,7 @@ import com.kh.fd.dao.ReservationDao;
 import com.kh.fd.dao.SlotLockDao;
 import com.kh.fd.dto.ReservationDto;
 import com.kh.fd.dto.RestaurantDto;
+import com.kh.fd.error.ReservationConflictException;
 import com.kh.fd.service.KakaoPayService;
 import com.kh.fd.service.PaymentService;
 import com.kh.fd.service.ReservationService;

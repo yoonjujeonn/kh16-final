@@ -26,6 +26,9 @@
   	select * from slot_lock where slot_lock_id = #{slotLockId}
   </select>
   
+  <select id="checkId" resultType="string">
+  	select slot_locked_by from slot_lock where seat_id = #{seatId} and slot_lock_time = #{reservationTime}
+  </select>
   <select id="idByReservation" resultType="long">
   	select slot_lock_id from slot_lock where seat_id = #{seatId} and slot_lock_time = #{reservationTime}
   </select>
