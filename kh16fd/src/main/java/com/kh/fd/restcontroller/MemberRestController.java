@@ -217,14 +217,14 @@ public class MemberRestController {
 	
 	//회원 탈퇴 롤백 기능 관리자만 허용
 	@PatchMapping("/{memberId}/reactivate")
-	public void reactivate(@PathVariable String memberId ) {
+	public boolean reactivate(@PathVariable String memberId ) {
 		MemberDto originDto = memberDao.selectOne(memberId);
 		if(originDto == null) throw new TargetNotFoundException();
 		if("관리자".equals(originDto.getMemberLevel())) {
 			throw new UnauthorizationException();
 		}
 		memberDao.updateReactivate(memberId);
-			
+		return true;
 	}
 	
 	@GetMapping("/{memberId}")

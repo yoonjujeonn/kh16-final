@@ -53,7 +53,7 @@ public class EmailService {
 		//메시지 생성 및 전송
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(email);
-		message.setSubject("[KH 정보교육원] 인증번호를 확인하세요");
+		message.setSubject("[미식 로그] 인증번호를 확인하세요");
 		message.setText("인증번호는 [" + certNumber+"]번 입니다");
 		sender.send(message);
 		
@@ -78,7 +78,7 @@ public class EmailService {
 		MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
 		
 		helper.setTo(memberDto.getMemberEmail());
-		helper.setSubject("[KH정보교육원] 가입을 환영합니다!");
+		helper.setSubject("[미식 로그] 가입을 환영합니다!");
 		//이메일 본문 설정
 		ClassPathResource resource = new ClassPathResource("templates/welcome2.html");
 		File target = resource.getFile();
