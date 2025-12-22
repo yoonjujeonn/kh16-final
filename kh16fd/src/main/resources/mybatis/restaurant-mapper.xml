@@ -226,7 +226,6 @@
         where restaurant_id = #{restaurantId}
     </update>
 
-    <!-- U(D) 실제 삭제는 x 상태만 변경 -->
     <update id="deleteByAdmin">
         update restaurant 
         restaurant_operation_status = #{restaurantOperationStatus}
@@ -234,61 +233,70 @@
     
     <select id="searchList" parameterType="SearchVO" resultType="RestaurantListVO">
 
-    SELECT *
-    FROM (
-        SELECT
-            restaurant_id as restaurantId,
-            restaurant_name as restaurantName,
-            restaurant_address as restaurantAddress,
-            restaurant_open as restaurantOpen,
-            restaurant_close as restaurantClose,
-            restaurant_last_order as restaurantLastOrder,
-            restaurant_opening_days as restaurantOpeningDays,
-            holiday_dates as holidayDates,
+    select * from (
+    select
+        restaurant_id as restaurantId,
+        restaurant_name as restaurantName,
+        restaurant_address as restaurantAddress,
+        restaurant_open as restaurantOpen,
+        restaurant_close as restaurantClose,
+        restaurant_last_order as restaurantLastOrder,
+        restaurant_opening_days as restaurantOpeningDays,
+        holiday_dates as holidayDates,
 
-            restaurant_avg_rating as restaurantAvgRating,
-            review_count as reviewCount,
-            restaurant_max_people as restaurantMaxPeople,
+        restaurant_avg_rating as restaurantAvgRating,
+        review_count as reviewCount,
+        restaurant_max_people as restaurantMaxPeople,
 
-            place_id as placeId,
-            place_depth1 as placeDepth1,
-            place_depth2 as placeDepth2,
-            place_depth3 as placeDepth3,
-            place_group_id as placeGroupId,
-            place_group_name as placeGroupName,
+        place_id as placeId,
+        place_depth1 as placeDepth1,
+        place_depth2 as placeDepth2,
+        place_depth3 as placeDepth3,
+        place_group_id as placeGroupId,
+        place_group_name as placeGroupName,
 
-            category_no as categoryNo,
-            category_name as categoryName,
+        category_no as categoryNo,
+        category_name as categoryName,
 
-            row_number() over (
-                partition by restaurant_id
-                order by restaurant_id
-            ) as rowNumber
-        from restaurant_full_list
-        where 1 = 1
+        row_number() over (
+            partition by restaurant_id
+            order by restaurant_id
+        ) as rowNumber
+    from restaurant_full_list
+    where 1 = 1
 
-        <if test="keyword != null and keyword != ''">
-            and (
-                restaurant_name like '%' || #{keyword} || '%'
-                or restaurant_address like '%' || #{keyword} || '%'
-                or place_depth1 like '%' || #{keyword} || '%'
-                or place_depth2 like '%' || #{keyword} || '%'
-                or place_depth3 like '%' || #{keyword} || '%'
-                or category_name like '%' || #{keyword} || '%'
+	<if test="keyword != null and keyword != ''">
+        and (
+            restaurant_name like '%' || #{keyword} || '%'
+            or restaurant_address like '%' || #{keyword} || '%'
+            or place_depth1 like '%' || #{keyword} || '%'
+            or place_depth2 like '%' || #{keyword} || '%'
+            or place_depth3 like '%' || #{keyword} || '%'
+            or category_name like '%' || #{keyword} || '%'
+
+            <!-- 상위 카테고리 → 하위 카테고리 검색 -->
+            or category_no in (
+                select c2.category_no
+                from category c1
+                join category c2
+                  on c2.parent_category_no = c1.category_no
+                where c1.category_name like '%' || #{keyword} || '%'
             )
-        </if>
+        )
+    </if>
 
-        <if test="placeGroupId != null">
-            AND place_group_id = #{placeGroupId}
-        </if>
+    <if test="placeGroupId != null">
+        and place_group_id = #{placeGroupId}
+    </if>
 
-        <if test="categoryId != null">
-            AND category_no = #{categoryId}
-        </if>
-    )
-    WHERE rowNumber = 1
-    ORDER BY restaurantId DESC
-</select>
+    <if test="categoryId != null">
+        and category_no = #{categoryId}
+    </if>
+
+	)
+	where rowNumber = 1
+	order by restaurantId desc
+	</select>
     
     
 		<!-- 식당 프로필 설정 -->
