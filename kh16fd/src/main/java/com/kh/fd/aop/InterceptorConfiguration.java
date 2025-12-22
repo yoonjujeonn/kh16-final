@@ -35,8 +35,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 									"/owner/**"
 							)
 							.excludePathPatterns(
-									"/member/business"
-									
+									"/member/business"									
 							);
 		
 		registry.addInterceptor(tokenRenewalInterceptor)
@@ -56,7 +55,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
         );
 		
 		registry.addInterceptor(ownerInterceptor)
-		.addPathPatterns("/restaurant/", "/owner")
+		.addPathPatterns("/restaurant/", "/owner/**")
 		;
 	}
 	

@@ -54,7 +54,15 @@ public class ReservationService {
 		Long restaurantId = reservationDto.getReservationTarget();
 
 		RestaurantDto target = restaurantDao.selectOne(restaurantId);
-
+		
+		long seatId = reservationDto.getReservationSeat();
+		
+		LocalDateTime reservationTime = reservationDto.getReservationTime();
+		
+		boolean isLockUser = slotLockDao.lockedUser(seatId, reservationTime) == reservationDto.getReservationMember();
+		
+		if(isLockUser == false) throw new ReservationConflictException("이미 선점된 좌석입니다");
+		
 		ReservationReadyVO readyVO = ReservationReadyVO.builder().restaurantDto(target)
 				.reservationId(reservationDao.sequence()).build();
 		return readyVO;
